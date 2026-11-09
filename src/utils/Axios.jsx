@@ -41,7 +41,7 @@ export const clearStoredToken = () => localStorage.removeItem(TOKEN_KEY);
 Axios.interceptors.request.use(
   (config) => {
     // Inject tenant ID so the master backend knows which database to query
-    if (TENANT_ID && TENANT_ID !== "00002") {
+    if (TENANT_ID && TENANT_ID !== "YOUR_TENANT_PROJECT_ID") {
       config.headers['x-tenant-id'] = TENANT_ID;
     }
 
