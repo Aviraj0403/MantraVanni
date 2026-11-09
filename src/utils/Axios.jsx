@@ -10,7 +10,7 @@ const Axios = axios.create({
 });
 
 // ✅ Here you specify the exact tenant ID so the master backend knows whose data to show
-const TENANT_ID = "00001"; // <--- Demo will now pull data for project 00001
+const TENANT_ID = "00002"; // <--- Demo will now pull data for project 00001
 
 // Track if we're currently refreshing to prevent multiple refresh calls
 let isRefreshing = false;
@@ -41,7 +41,7 @@ export const clearStoredToken = () => localStorage.removeItem(TOKEN_KEY);
 Axios.interceptors.request.use(
   (config) => {
     // Inject tenant ID so the master backend knows which database to query
-    if (TENANT_ID && TENANT_ID !== "YOUR_TENANT_PROJECT_ID") {
+    if (TENANT_ID && TENANT_ID !== "00002") {
       config.headers['x-tenant-id'] = TENANT_ID;
     }
 
@@ -84,7 +84,7 @@ Axios.interceptors.response.use(
 
     // Handle 401 errors — try token refresh
     if (error.response?.status === 401 && !originalRequest._retry && !shouldSkipRefresh) {
-      
+
       if (isRefreshing) {
         // If already refreshing, queue this request
         return new Promise((resolve, reject) => {
@@ -118,7 +118,7 @@ Axios.interceptors.response.use(
 
         processQueue(null);
         isRefreshing = false;
-        
+
         return Axios(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
@@ -129,13 +129,13 @@ Axios.interceptors.response.use(
         localStorage.removeItem("user");
         localStorage.removeItem("user_data");
         sessionStorage.clear();
-        
+
         // Redirect to login with return URL
         const currentPath = window.location.pathname;
         if (currentPath !== '/signin' && currentPath !== '/signup') {
           window.location.href = `/signin?redirect=${encodeURIComponent(currentPath)}`;
         }
-        
+
         return Promise.reject(refreshError);
       }
     }
