@@ -10,3 +10,4 @@ export const getPublicSettings = async () => {
     return null;
   }
 };
+
