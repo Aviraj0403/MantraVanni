@@ -84,7 +84,7 @@ export default function DesktopHeader() {
         }`}
       >
         <span>
-            शुभ आरम्भ • Welcome to <strong>Puja Samagri</strong>
+            शुभ आरम्भ • Welcome to <strong>MantraVanni</strong>
         </span>
         <div className="flex items-center gap-6 text-brand-text">
          <span className="flex items-center gap-2 text-brand-text">
@@ -179,7 +179,7 @@ export default function DesktopHeader() {
        <Link to="/" className="flex items-center gap-3">
   <span className="grid place-items-center w-11 h-11 rounded-full bg-[#a94217] text-[#fff1da] text-2xl shadow-inner">ॐ</span>
   <span className="leading-none">
-    <strong className="block text-2xl text-[#63251a] tracking-wide">Puja Samagri</strong>
+    <strong className="block text-2xl text-[#63251a] tracking-wide">MantraVanni</strong>
     <small className="text-[10px] uppercase tracking-[0.24em] text-[#c45c19]">Sacred living</small>
   </span>
 </Link>

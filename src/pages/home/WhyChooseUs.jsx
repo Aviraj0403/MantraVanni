@@ -53,11 +53,11 @@ export default function WhyChooseUs() {
         {/* Main Content Area with 3D Depth */}
         <div className="flex flex-col overflow-hidden rounded-b-3xl border border-amber-200/80 bg-white/95 shadow-2xl backdrop-blur-md lg:flex-row">
 
-          {/* Left Column - Why Choose Puja Samagri */}
+          {/* Left Column - Why Choose MantraVanni */}
           <div className="flex flex-1 flex-col p-6 sm:p-10 border-b lg:border-b-0 lg:border-r border-amber-100/80">
             <div className="mb-8 flex items-center gap-3">
               <span className="text-3xl filter drop-shadow">🕉️</span>
-              <h2 className="font-serif text-3xl font-bold text-[#3E2723] gold-emboss-3d">Why Choose Puja Samagri?</h2>
+              <h2 className="font-serif text-3xl font-bold text-[#3E2723] gold-emboss-3d">Why Choose MantraVanni?</h2>
             </div>
 
             <div className="space-y-6">

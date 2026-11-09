@@ -1,4 +1,4 @@
-name: CI/CD Pipeline for GKStore FRONTEND
+name: CI/CD Pipeline for MantraVanni FRONTEND
 
 on:
   push:

@@ -21,13 +21,13 @@ export default function AboutUs() {
         <div>
           <h2 className="text-4xl font-semibold text-primary-500 mb-6">Our Story</h2>
           <p className="text-brand-text mb-4">
-            At Puja Samagri, we believe devotion lives in the details. Our collection brings authentic puja essentials, sacred idols, incense, diyas, and thoughtful gifts together for homes that honour tradition.
+            At MantraVanni, we believe devotion lives in the details. Our collection brings authentic puja essentials, sacred idols, incense, diyas, and thoughtful gifts together for homes that honour tradition.
           </p>
           <p className="text-brand-text mb-4">
             Every product is selected with care, respect for craftsmanship, and a promise of authenticity. From daily prayers to festivals and new beginnings, we help you create a more meaningful ritual at home.
           </p>
           <p className="text-brand-text">
-            Puja Samagri is a trusted companion for devotees across India, making sacred living feel beautiful, accessible, and deeply personal.
+            MantraVanni is a trusted companion for devotees across India, making sacred living feel beautiful, accessible, and deeply personal.
           </p>
         </div>
         <img
@@ -122,7 +122,7 @@ export default function AboutUs() {
           </div>
           <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
             <p className="text-brand-text mb-4">
-              "Fast delivery and beautiful packing. Puja Samagri made our festival shopping so easy!"
+              "Fast delivery and beautiful packing. MantraVanni made our festival shopping so easy!"
             </p>
             <h4 className="font-semibold text-primary-500">– Priya Singh</h4>
           </div>

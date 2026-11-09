@@ -154,7 +154,7 @@ export default function ShippingInfo() {
           <p className="text-gray-600 leading-relaxed text-sm">We're always here to help:</p>
 
           <ul className="text-brand-text mt-3 space-y-1 text-sm">
-            <li className="flex items-center gap-2"><Mail size={18} />nishasagar8510@gmail.com</li>
+            <li className="flex items-center gap-2"><Mail size={18} />support@mantravanni.com</li>
             <li className="flex items-center gap-2"><Phone size={18} />+91 8510879296</li>
           </ul>
         </motion.div>

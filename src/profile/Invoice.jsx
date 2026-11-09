@@ -127,7 +127,7 @@ export default function Invoice() {
             <img src={logo} alt="Logo" className="w-20 md:w-24" />
             <div className="text-center md:text-left">
               <h1 className="text-2xl md:text-3xl font-bold text-primary-600">
-                Nisha Sagar
+                MantraVanni
               </h1>
               <p className="text-gray-500 text-xs md:text-sm">
                 Premium Cosmetics & Beauty Products

@@ -50,7 +50,7 @@ export default function Footer() {
          <div className="flex items-center gap-3 mb-3">
   <span className="grid place-items-center w-12 h-12 rounded-full bg-[#a94217] text-[#fff1da] text-2xl">ॐ</span>
   <div>
-    <strong className="block text-3xl text-[#63251a]">Puja Samagri</strong>
+    <strong className="block text-3xl text-[#63251a]">MantraVanni</strong>
     <span className="text-xs uppercase tracking-[0.2em] text-[#c45c19]">Sacred living</span>
   </div>
 
@@ -153,7 +153,7 @@ export default function Footer() {
               <Phone className="text-primary-500" size={18} />  +91 8510879296
             </li>
             <li className="flex items-center gap-3">
-              <Mail className="text-primary-500" size={18} /> nishasagar8510@gmail.com
+              <Mail className="text-primary-500" size={18} /> support@mantravanni.com
             </li>
           </ul>
         </div>
@@ -182,7 +182,7 @@ export default function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-gray-200 py-5 px-6 md:px-20 flex flex-col md:flex-row justify-between items-center text-gray-600 text-sm gap-3">
         <p className="text-center text-sm text-gray-600">
-  © 2025 Puja Samagri. All rights reserved. | Made by{" "}
+  © 2025 MantraVanni. All rights reserved. | Made by{" "}
  <a
   href="https://www.jdinfotechsolutions.in/"
   target="_blank"

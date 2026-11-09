@@ -95,7 +95,7 @@ const location = useLocation();
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 justify-center">
             <span className="grid place-items-center w-9 h-9 rounded-full bg-[#a94217] text-[#fff1da] text-xl">ॐ</span>
-            <span className="text-xl font-semibold text-[#63251a]">Puja Samagri</span>
+            <span className="text-xl font-semibold text-[#63251a]">MantraVanni</span>
           </Link>
 
           {/* Profile + Cart */}

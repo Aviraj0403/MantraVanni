@@ -286,7 +286,7 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
               </MapContainer>
             ) : (
               <div className="flex items-center justify-center h-full text-gray-500">
-                <img src="/Logo.webp" alt="Nisha Sagar" className="w-full h-full object-cover" />
+                <img src="/Logo.webp" alt="MantraVanni" className="w-full h-full object-cover" />
                 <p>Map will appear here after syncing location</p>
               </div>
             )}

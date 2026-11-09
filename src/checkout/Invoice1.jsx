@@ -165,7 +165,7 @@ export default function Invoice() {
             <img src={logo} alt="Logo" className="w-20 md:w-24" />
             <div className="text-center md:text-left">
               <h1 className="text-2xl md:text-3xl font-bold text-primary-600">
-                Nisha Sagar
+                MantraVanni
               </h1>
               <p className="text-gray-500 text-xs md:text-sm">
                 Premium Cosmetics & Beauty Products
@@ -279,17 +279,17 @@ export default function Invoice() {
 
         {/* FOOTER */}
         <div className="mt-6 border-t border-primary-200 pt-3 text-xs md:text-sm text-gray-500 space-y-1">
-          <p><strong>Note:</strong> Thank you for shopping with Nisha Sagar.</p>
+          <p><strong>Note:</strong> Thank you for shopping with MantraVanni.</p>
           <p>
             For any queries, contact{" "}
             <span className="text-primary-600 font-semibold">
-              nishasagar8510@gmail.com
+              support@mantravanni.com
             </span>
           </p>
         </div>
 
         <p className="text-center text-gray-400 text-[10px] md:text-xs mt-4">
-          ❤️ Made with love by Nisha Sagar
+          ❤️ Made with love by MantraVanni
         </p>
       </div>
     </div>
