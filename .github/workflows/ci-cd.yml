@@ -1,0 +1,48 @@
+name: CI/CD Pipeline for GKStore FRONTEND
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy Frontend to VPS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no root@72.61.174.82 "
+            # Load Node/NPM/PM2 (because server uses NVM)
+            export NVM_DIR=\"/root/.nvm\"
+            source \"\$NVM_DIR/nvm.sh\"
+
+            cd /var/www/GKStore/gkstore-frontend &&
+
+            # Pull latest code
+            git pull origin main &&
+
+            # Install dependencies
+            npm ci &&
+
+            # Build production files
+            npm run build &&
+
+            # Restart PM2 frontend app
+            pm2 restart gkstore-front 
+
+            # Save PM2 processes
+            pm2 save
+          "

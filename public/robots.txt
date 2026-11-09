@@ -1,0 +1,9 @@
+# Allow all crawlers
+User-agent: *
+Disallow:
+
+# Sitemap for .in domain
+Sitemap: https://gurmeetkaurstore.in/sitemap.xml
+
+# Sitemap for .com domain
+Sitemap: https://gurmeetkaurstore.com/sitemap.xml
