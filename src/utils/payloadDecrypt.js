@@ -45,3 +45,4 @@ export const decryptSettingsPayload = async (token) => {
     return null;
   }
 };
+
