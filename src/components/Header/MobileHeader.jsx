@@ -21,6 +21,7 @@ import { getMenuCategories } from "../../services/categoryApi";
 import { useAuth } from "../../context/AuthContext";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { getPublicSettings } from "../../services/settingsApi";
 
 
 export default function MobileHeader() {
@@ -42,6 +43,15 @@ const location = useLocation();
     queryKey: ["categories"],
     queryFn: getMenuCategories,
   });
+
+  const { data: storeSettings } = useQuery({
+    queryKey: ["publicSettings"],
+    queryFn: getPublicSettings,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const isWalletEnabled = storeSettings?.walletEnabled !== false && storeSettings?.modules?.wallet !== false;
+  const isWishlistEnabled = storeSettings?.wishlistEnabled !== false && storeSettings?.modules?.wishlist !== false;
 
   const handleLogout = async () => {
     await logout();
@@ -101,13 +111,15 @@ const location = useLocation();
           {/* Profile + Cart */}
           <div className="flex items-center gap-4 text-brand-text">
             {/* Wallet Quick Button */}
-            <Link
-              to="/wallet"
-              className="relative flex flex-col items-center text-xs text-emerald-600 font-semibold hover:text-emerald-700 transition bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-200"
-            >
-              <Wallet size={18} />
-              <span>Wallet</span>
-            </Link>
+            {isWalletEnabled && (
+              <Link
+                to="/wallet"
+                className="relative flex flex-col items-center text-xs text-emerald-600 font-semibold hover:text-emerald-700 transition bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-200"
+              >
+                <Wallet size={18} />
+                <span>Wallet</span>
+              </Link>
+            )}
 
             {/* Profile */}
             <button
@@ -193,14 +205,16 @@ const location = useLocation();
           <span className="text-xs">Offers</span>
         </Link> */}
 
-        <Link
-          to="/wallet"
-          onClick={() => setActiveTab("wallet")}
-          className={`flex flex-col items-center ${activeTab === "wallet" ? "text-emerald-600 font-bold" : "text-brand-text"}`}
-        >
-          <Wallet size={22} />
-          <span className="text-xs">Wallet</span>
-        </Link>
+        {isWalletEnabled && (
+          <Link
+            to="/wallet"
+            onClick={() => setActiveTab("wallet")}
+            className={`flex flex-col items-center ${activeTab === "wallet" ? "text-emerald-600 font-bold" : "text-brand-text"}`}
+          >
+            <Wallet size={22} />
+            <span className="text-xs">Wallet</span>
+          </Link>
+        )}
 
         <button
           onClick={() => {
@@ -240,23 +254,27 @@ const location = useLocation();
               <span>My Profile</span>
             </button>
 
-            <Link
-              to="/wallet"
-              onClick={() => setIsMenuOpen(false)}
-              className="flex items-center gap-3 text-emerald-700 font-semibold hover:text-emerald-800 transition bg-emerald-50 p-2 rounded-lg"
-            >
-              <Wallet size={22} />
-              <span>My Wallet & E-Ledger</span>
-            </Link>
+            {isWalletEnabled && (
+              <Link
+                to="/wallet"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center gap-3 text-emerald-700 font-semibold hover:text-emerald-800 transition bg-emerald-50 p-2 rounded-lg"
+              >
+                <Wallet size={22} />
+                <span>My Wallet & E-Ledger</span>
+              </Link>
+            )}
 
-            <Link
-              to="/wishlist"
-              onClick={() => setIsMenuOpen(false)}
-              className="flex items-center gap-3 text-brand-text hover:text-primary-600 transition"
-            >
-              <Heart size={22} />
-              <span>My Wishlist</span>
-            </Link>
+            {isWishlistEnabled && (
+              <Link
+                to="/wishlist"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center gap-3 text-brand-text hover:text-primary-600 transition"
+              >
+                <Heart size={22} />
+                <span>My Wishlist</span>
+              </Link>
+            )}
 
             <Link
               to="/cart"

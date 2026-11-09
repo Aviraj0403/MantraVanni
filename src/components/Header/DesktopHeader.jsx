@@ -8,6 +8,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useSelector } from "react-redux";
 import { HiOutlinePhone } from "react-icons/hi";
 import { getLocalWishlist } from "../../utils/wishlistHelper";
+import { getPublicSettings } from "../../services/settingsApi";
 
 export default function DesktopHeader() {
   const navigate = useNavigate();
@@ -23,6 +24,15 @@ export default function DesktopHeader() {
     queryKey: ["categories"],
     queryFn: getMenuCategories,
   });
+
+  const { data: storeSettings } = useQuery({
+    queryKey: ["publicSettings"],
+    queryFn: getPublicSettings,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const isWalletEnabled = storeSettings?.walletEnabled !== false && storeSettings?.modules?.wallet !== false;
+  const isWishlistEnabled = storeSettings?.wishlistEnabled !== false && storeSettings?.modules?.wishlist !== false;
 
   const handleLogout = async () => {
     await logout();
@@ -134,20 +144,23 @@ export default function DesktopHeader() {
 
         {/* Right Side */}
         <div className="absolute right-8 top-1/2 -translate-y-1/2 flex items-center gap-6 text-white font-medium">
-          <Link to="/wishlist" className="flex items-center gap-1.5 text-sm font-semibold hover:text-red-200 transition relative">
-            <Heart size={16} className="text-red-200 fill-red-200" />
-            <span>WISHLIST</span>
-            {wishlistCount > 0 && (
-              <span className="bg-rose-600 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full shadow-sm">
-                {wishlistCount}
-              </span>
-            )}
-          </Link>
+          {isWishlistEnabled && (
+            <Link to="/wishlist" className="flex items-center gap-1.5 text-sm font-semibold hover:text-red-200 transition relative">
+              <Heart size={16} className="text-red-200 fill-red-200" />
+              <span>WISHLIST</span>
+              {wishlistCount > 0 && (
+                <span className="bg-rose-600 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full shadow-sm">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+          )}
 
-
-          <Link to="/wallet" className="flex items-center gap-1.5 text-sm font-semibold hover:text-emerald-200 transition bg-white/10 px-2.5 py-1 rounded-lg border border-white/20">
-            <Wallet size={16} className="text-emerald-300" /> WALLET
-          </Link>
+          {isWalletEnabled && (
+            <Link to="/wallet" className="flex items-center gap-1.5 text-sm font-semibold hover:text-emerald-200 transition bg-white/10 px-2.5 py-1 rounded-lg border border-white/20">
+              <Wallet size={16} className="text-emerald-300" /> WALLET
+            </Link>
+          )}
 
           <Link to="/contact-us" className="flex items-center gap-1 hover:text-gray-200 transition">
             <Info size={15} /> SUPPORT
