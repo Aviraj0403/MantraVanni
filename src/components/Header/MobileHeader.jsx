@@ -109,16 +109,6 @@ export default function MobileHeader() {
           <BrandMark size="sm" className="mx-auto min-w-0 justify-center gap-2" />
 
           <div className="flex items-center gap-1.5">
-            {isWalletEnabled && (
-              <Link
-                to="/wallet"
-                className="grid h-10 w-10 place-items-center rounded-full text-brand-text transition hover:bg-secondary-50 hover:text-accent active:scale-95"
-                aria-label="Open wallet"
-              >
-                <Wallet size={22} strokeWidth={1.7} />
-              </Link>
-            )}
-
             <Link
               to="/cart"
               className="relative grid h-10 w-10 place-items-center rounded-full text-brand-text transition hover:bg-secondary-50 hover:text-accent active:scale-95"
@@ -259,14 +249,6 @@ export default function MobileHeader() {
                   <Heart size={18} />
                 </span>
                 Wishlist
-              </Link>
-            )}
-            {isWalletEnabled && (
-              <Link to="/wallet" className={quickLinkClass}>
-                <span className={quickIconClass}>
-                  <Wallet size={18} />
-                </span>
-                Wallet
               </Link>
             )}
           </div>

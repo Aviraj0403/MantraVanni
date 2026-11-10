@@ -36,8 +36,8 @@ export default function Footer() {
           <BrandMark variant="light" size="md" />
 
           <p className="text-sm mt-6 mb-6 leading-relaxed text-white/85">
-            Bring the warmth of the temple into your home with authentic puja
-            essentials, thoughtfully chosen for every sacred moment.
+            Your trusted spiritual partner on the journey.
+            Peace, prosperity and protection.
           </p>
 
           <div className="flex gap-3">
@@ -92,7 +92,7 @@ export default function Footer() {
             <li><Link to="/#best-sellers" className={linkClass}>Best Sellers</Link></li>
             <li><Link to="/#combo-products" className={linkClass}>Combo Offers</Link></li>
             <li><Link to="/new-products" className={linkClass}>Idols & Murtis</Link></li>
-            <li><Link to="/new-products" className={linkClass}>Puja Samagri</Link></li>
+            <li><Link to="/new-products" className={linkClass}>Puja Essentials</Link></li>
             <li><Link to="/new-products" className={linkClass}>Festive Gifts</Link></li>
           </ul>
         </div>
@@ -105,9 +105,6 @@ export default function Footer() {
             <li><Link to="/profile" className={linkClass}>Orders</Link></li>
             {isWishlistEnabled && (
               <li><Link to="/wishlist" className={linkClass}>Wishlist</Link></li>
-            )}
-            {isWalletEnabled && (
-              <li><Link to="/wallet" className={linkClass}>Wallet</Link></li>
             )}
             <li><Link to="/cart" className={linkClass}>Cart</Link></li>
           </ul>

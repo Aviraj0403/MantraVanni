@@ -112,7 +112,7 @@ export default function WishlistPage() {
               <Heart size={32} />
             </div>
             <h2 className="text-2xl font-serif font-bold text-brand-text">Your Wishlist is Empty</h2>
-            <p className="text-brand-text/70 text-sm max-w-md mx-auto mt-2 mb-6">Explore our pure puja samagri, brass idols, and divine products to save them for later.</p>
+            <p className="text-brand-text/70 text-sm max-w-md mx-auto mt-2 mb-6">Explore our spiritual products, sacred idols, and divine essentials to save them for later.</p>
             <Link
               to="/"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold px-6 py-3 rounded-2xl shadow-md hover:scale-105 transition-all"

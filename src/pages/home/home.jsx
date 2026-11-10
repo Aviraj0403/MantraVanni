@@ -14,7 +14,6 @@ import SacredSlokaStrip from "./SacredSlokaStrip";
 import BeautyBanner from "./BeautyDiscountBanner";
 import CosmeticTestimonials from "./CosmeticTestimonials";
 
-import BulkoRetailerBanner from "../../components/BulkoRetailerBanner";
 
 function Home() {
   const location = useLocation();
@@ -42,7 +41,6 @@ function Home() {
         <BannerSlider />
       </div>
       <div className="px-0 sm:px-4 md:px-8 space-y-4 md:space-y-8 pb-12">
-        <BulkoRetailerBanner />
         <CategorySlider />
         <ComboSection />
         <BestsellerSection />

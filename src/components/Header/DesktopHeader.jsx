@@ -9,7 +9,6 @@ import {
   Sparkles,
   Truck,
   UserRound,
-  Wallet,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
@@ -83,7 +82,7 @@ export default function DesktopHeader() {
         <div className="mx-auto flex w-full max-w-[1280px] items-center justify-center gap-14">
           <p className="flex items-center gap-2 whitespace-nowrap">
             <Sparkles size={13} className="text-secondary-300" />
-            शुभ आरम्भ • Welcome to MantraVanni — Sacred essentials for every puja
+            शुभ आरम्भ • Welcome to MantraVanni — Where Spirituality Meets Purity
           </p>
           <p className="flex items-center gap-2 whitespace-nowrap">
             <Phone size={13} className="text-secondary-200" />
@@ -199,12 +198,6 @@ export default function DesktopHeader() {
                     {wishlistCount}
                   </span>
                 )}
-              </Link>
-            )}
-
-            {isWalletEnabled && (
-              <Link to="/wallet" className="transition hover:text-primary-600" aria-label="Wallet">
-                <Wallet size={22} strokeWidth={1.8} />
               </Link>
             )}
 

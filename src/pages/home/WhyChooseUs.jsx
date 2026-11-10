@@ -11,9 +11,9 @@ const stats = [
 ];
 
 const reasons = [
-  { icon: CheckCircle2, title: "100% Pure & Vedic Approved", text: "Every incense stick, dhoop, camphor, and samagri is handcrafted with traditional purity standards." },
+  { icon: CheckCircle2, title: "100% Pure & Vedic Approved", text: "Every incense stick, dhoop, camphor, and sacred offering is handcrafted with traditional purity standards." },
   { icon: Heart, title: "Divine Freshness & Aura", text: "Specially formulated natural aromatics that cleanse your home aura and invite positivity and peace." },
-  { icon: Users, title: "Pure Cow Ghee & Sacred Herbs", text: "Our Hawan Samagri and Diya wicks use 100% pure ingredients without synthetic chemicals." },
+  { icon: Users, title: "Pure Cow Ghee & Sacred Herbs", text: "Our hawan essentials and diya wicks use 100% pure ingredients without synthetic chemicals." },
   { icon: Lock, title: "Safe & Sanitized Delivery", text: "Eco-friendly, secure packaging directly from sacred artisans to your doorsteps." },
 ];
 
