@@ -8,11 +8,10 @@ import { toast } from 'react-toastify'; // Assuming you use react-toastify for n
 import { useAuth } from "../context/AuthContext";
 
 export default function AddressSidebar({ isOpen, onClose, refreshAddresses, userName, email, address: propAddress, embedded = false }) {
-
   const { user } = useAuth();
   const [address, setAddress] = useState({
     // name: user?.userName || "",  // Prefill with userName from context
-    name:  "",
+    name: "",
     email: user?.email || "",
     phone: "",
     street: "",
@@ -118,7 +117,7 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
     setAddress((prev) => ({ ...prev, [name]: value }));
     // Clear error for this field as user types
     setErrors((prev) => ({ ...prev, [name]: "" }));
-    
+
     // Reset pincode validation when pincode changes
     if (name === 'pincode') {
       setPincodeValidation({
@@ -148,7 +147,7 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
 
     try {
       const { data } = await checkPincodeServiceability(pincode);
-      
+
       if (data.success) {
         setPincodeValidation({
           isValidating: false,
@@ -196,7 +195,7 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
     const newErrors = {};
     // required fields: phone, pincode, street, city
     if (!address.name) newErrors.name = "Name is required";
-    if(!address.name) newErrors.name = "Name is required";
+    if (!address.name) newErrors.name = "Name is required";
 
     if (!address.phone) newErrors.phone = "Phone number is required";
     else if (!/^\d{10}$/.test(address.phone)) newErrors.phone = "Enter a valid 10-digit phone number";
@@ -260,129 +259,129 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
     // { label: "City *", field: "city", type: "text", required: true },
     { label: "State", field: "state", type: "text" },
     // { label: "Country", field: "country", type: "text" },
-    
+
   ];
 
   const panel = (
-    <div className="w-full sm:w-[420px] bg-white h-full shadow-2xl p-0 overflow-y-auto relative">
-        {/* Header Section */}
-        <div className="sticky top-0 z-[10000] bg-white px-6 py-4 flex justify-between items-center border-b border-gray-200 shadow-sm">
-          <h2 className="text-xl font-semibold text-brand-text">Add New Address</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-brand-text text-lg font-bold">
-            ✕
-          </button>
+    <div className="w-full sm:w-[420px] bg-brand-bg h-full shadow-2xl p-0 overflow-y-auto relative">
+      {/* Header Section */}
+      <div className="sticky top-0 z-[10000] bg-brand-bg px-6 py-4 flex justify-between items-center border-b border-secondary-200 shadow-sm">
+        <h2 className="font-serif text-xl font-semibold text-brand-text">Add New Address</h2>
+        <button onClick={onClose} className="text-gray-500 hover:text-brand-text text-lg font-bold">
+          ✕
+        </button>
+      </div>
+
+      {/* Content Section */}
+      <div className="p-6">
+        {/* Leaflet Map or Custom Image */}
+        <div className="w-full h-48 rounded-lg overflow-hidden mb-4 border">
+          {location.lat ? (
+            <MapContainer center={[location.lat, location.lng]} zoom={16} style={{ width: "100%", height: "100%" }}>
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              <Marker position={[location.lat, location.lng]}>
+                <Popup>{address.street}</Popup>
+              </Marker>
+            </MapContainer>
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-2 h-full text-gray-500">
+              <span className="grid h-16 w-16 place-items-center rounded-full bg-accent font-serif text-3xl text-secondary-100">ॐ</span>
+              <p className="text-sm text-center px-4">Map will appear here after syncing location</p>
+            </div>
+          )}
         </div>
 
-        {/* Content Section */}
-        <div className="p-6">
-          {/* Leaflet Map or Custom Image */}
-          <div className="w-full h-48 rounded-lg overflow-hidden mb-4 border">
-            {location.lat ? (
-              <MapContainer center={[location.lat, location.lng]} zoom={16} style={{ width: "100%", height: "100%" }}>
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                <Marker position={[location.lat, location.lng]}>
-                  <Popup>{address.street}</Popup>
-                </Marker>
-              </MapContainer>
-            ) : (
-              <div className="flex items-center justify-center h-full text-gray-500">
-                <img src="/Logo.webp" alt="MantraVanni" className="w-full h-full object-cover" />
-                <p>Map will appear here after syncing location</p>
-              </div>
-            )}
-          </div>
+        {/* Sync Button */}
+        <button
+          onClick={handleSyncLocation}
+          className="w-full bg-secondary-50 text-primary-700 border border-secondary-200 font-medium py-2 rounded-lg mb-5 hover:bg-secondary-100 transition"
+        >
+          📍 Sync My Location
+        </button>
 
-          {/* Sync Button */}
-          <button
-            onClick={handleSyncLocation}
-            className="w-full bg-blue-100 text-blue-700 font-medium py-2 rounded-lg mb-5 hover:bg-blue-200 transition"
-          >
-            📍 Sync My Location
-          </button>
+        {/* Address Form */}
+        <form onSubmit={saveAddress} className="space-y-4">
+          {fields.map(({ label, field, type, maxLength }) => (
+            <div key={field}>
+              <label className="block text-brand-text font-medium mb-1">
+                {label}
+              </label>
+              <div className="relative">
+                <input
+                  type={type}
+                  name={field}
+                  value={address[field]}
+                  maxLength={maxLength}
+                  onChange={handleChange}
+                  onBlur={field === 'pincode' ? handlePincodeBlur : undefined}
+                  placeholder={label}
+                  className={`w-full rounded-lg px-3 py-2 outline-none border ${errors[field] ? 'border-red-500 focus:ring-2 focus:ring-red-400' : 'border-secondary-200 bg-brand-bg focus:ring-2 focus:ring-primary-400'}`}
+                />
 
-          {/* Address Form */}
-          <form onSubmit={saveAddress} className="space-y-4">
-            {fields.map(({ label, field, type, maxLength }) => (
-              <div key={field}>
-                <label className="block text-brand-text font-medium mb-1">
-                  {label}
-                </label>
-                <div className="relative">
-                  <input
-                    type={type}
-                    name={field}
-                    value={address[field]}
-                    maxLength={maxLength}
-                    onChange={handleChange}
-                    onBlur={field === 'pincode' ? handlePincodeBlur : undefined}
-                    placeholder={label}
-                    className={`w-full rounded-lg px-3 py-2 outline-none border ${errors[field] ? 'border-red-500 focus:ring-2 focus:ring-red-400' : 'border-gray-300 focus:ring-2 focus:ring-primary-400'}`}
-                  />
-                  
-                  {/* Pincode validation indicator */}
-                  {field === 'pincode' && address.pincode && address.pincode.length === 6 && (
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      {pincodeValidation.isValidating ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
-                      ) : pincodeValidation.isValid === true ? (
-                        pincodeValidation.isServiceable ? (
-                          <span className="text-green-500 text-lg">✓</span>
-                        ) : (
-                          <span className="text-red-500 text-lg">✗</span>
-                        )
-                      ) : pincodeValidation.isValid === false ? (
+                {/* Pincode validation indicator */}
+                {field === 'pincode' && address.pincode && address.pincode.length === 6 && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    {pincodeValidation.isValidating ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
+                    ) : pincodeValidation.isValid === true ? (
+                      pincodeValidation.isServiceable ? (
+                        <span className="text-green-500 text-lg">✓</span>
+                      ) : (
                         <span className="text-red-500 text-lg">✗</span>
-                      ) : null}
+                      )
+                    ) : pincodeValidation.isValid === false ? (
+                      <span className="text-red-500 text-lg">✗</span>
+                    ) : null}
+                  </div>
+                )}
+              </div>
+
+              {/* Pincode validation message */}
+              {field === 'pincode' && pincodeValidation.message && (
+                <div className={`text-sm mt-1 ${pincodeValidation.isServiceable ? 'text-green-600' : 'text-red-500'}`}>
+                  {pincodeValidation.message}
+                  {pincodeValidation.deliveryInfo && (
+                    <div className="text-xs text-gray-600 mt-1">
+                      Estimated delivery: {pincodeValidation.deliveryInfo.estimatedDelivery}
                     </div>
                   )}
                 </div>
-                
-                {/* Pincode validation message */}
-                {field === 'pincode' && pincodeValidation.message && (
-                  <div className={`text-sm mt-1 ${pincodeValidation.isServiceable ? 'text-green-600' : 'text-red-500'}`}>
-                    {pincodeValidation.message}
-                    {pincodeValidation.deliveryInfo && (
-                      <div className="text-xs text-gray-600 mt-1">
-                        Estimated delivery: {pincodeValidation.deliveryInfo.estimatedDelivery}
-                      </div>
-                    )}
-                  </div>
-                )}
-                
-                {errors[field] && (
-                  <p className="text-red-500 text-sm mt-1">{errors[field]}</p>
-                )}
-              </div>
-            ))}
+              )}
 
-            {/* Address Type */}
-            <div>
-              <label className="block text-brand-text font-medium mb-2">Address Type</label>
-              <div className="flex gap-4">
-                {["Home", "Work", "Other"].map((type) => (
-                  <label key={type} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="addressType"
-                      checked={address.addressType === type}
-                      onChange={() => setAddress({ ...address, addressType: type })}
-                    />
-                    <span>{type}</span>
-                  </label>
-                ))}
-              </div>
+              {errors[field] && (
+                <p className="text-red-500 text-sm mt-1">{errors[field]}</p>
+              )}
             </div>
+          ))}
 
-            <button
-              type="submit"
-              className="w-full bg-primary-500 text-white py-2 rounded-lg font-medium hover:bg-primary-600 transition mt-2"
-              disabled={isLoading}
-            >
-              {isLoading ? "Saving..." : "Save Address"}
-            </button>
-          </form>
-        </div>
+          {/* Address Type */}
+          <div>
+            <label className="block text-brand-text font-medium mb-2">Address Type</label>
+            <div className="flex gap-4">
+              {["Home", "Work", "Other"].map((type) => (
+                <label key={type} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="addressType"
+                    checked={address.addressType === type}
+                    onChange={() => setAddress({ ...address, addressType: type })}
+                  />
+                  <span>{type}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-primary-500 text-white py-2 rounded-lg font-medium hover:bg-primary-600 transition mt-2 shadow-md"
+            disabled={isLoading}
+          >
+            {isLoading ? "Saving..." : "Save Address"}
+          </button>
+        </form>
       </div>
+    </div>
   );
 
   if (embedded) {

@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Printer, Download } from "lucide-react";
-import logo from "../image/Logo.webp";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Axios from "../utils/Axios"; // Axios for fetching order data
@@ -107,16 +106,12 @@ export default function Invoice() {
     <div className="min-h-screen bg-primary-50 p-4 md:p-6 flex justify-center items-start relative">
 
       {/* WATERMARK */}
-      <img
-        src={logo}
-        alt="Watermark Logo"
-        className="absolute top-1/2 left-1/2 w-[90%] md:w-3/4 max-w-xl opacity-3 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-11 select-none"
-      />
+      <div aria-hidden="true" className="absolute top-1/2 left-1/2 text-[22rem] leading-none text-accent opacity-[0.03] -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none">ॐ</div>
 
       {/* INVOICE CONTAINER */}
       <div
         ref={invoiceRef}
-        className="bg-white shadow-xl rounded-2xl p-4 md:p-8 w-full max-w-4xl border border-primary-200 relative z-10"
+        className="bg-brand-bg shadow-xl rounded-2xl p-4 md:p-8 w-full max-w-4xl border border-primary-200 relative z-10"
       >
 
         {/* HEADER */}
@@ -124,13 +119,13 @@ export default function Invoice() {
 
           {/* Logo + Brand */}
           <div className="flex flex-col md:flex-row items-center gap-3 md:gap-6">
-            <img src={logo} alt="Logo" className="w-20 md:w-24" />
+            <div className="grid place-items-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-accent text-secondary-200 text-4xl md:text-5xl shrink-0">ॐ</div>
             <div className="text-center md:text-left">
-              <h1 className="text-2xl md:text-3xl font-bold text-primary-600">
+              <h1 className="text-2xl md:text-3xl font-serif font-bold text-accent">
                 MantraVanni
               </h1>
               <p className="text-gray-500 text-xs md:text-sm">
-                Premium Cosmetics & Beauty Products
+                Sacred living
               </p>
             </div>
           </div>

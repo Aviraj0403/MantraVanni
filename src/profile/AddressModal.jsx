@@ -37,7 +37,7 @@ return (
     <div
       onClick={(e) => e.stopPropagation()}
       className="
-        bg-white w-full max-w-2xl
+        bg-brand-bg w-full max-w-2xl
         rounded-lg shadow-lg
         max-h-full
         flex flex-col
@@ -46,7 +46,7 @@ return (
       aria-modal="true"
     >
       {/* Modal Header */}
-      <div className="sticky top-0 z-20 bg-white border-b px-5 py-3 flex justify-between">
+      <div className="sticky top-0 z-20 bg-brand-bg border-b px-5 py-3 flex justify-between">
         <h2 className="text-lg font-semibold text-brand-text">
           {formMode === "edit" ? "Edit Address" : "Add New Address"}
         </h2>

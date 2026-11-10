@@ -65,14 +65,15 @@ export default function PromoBanner() {
 
   if (loading) {
     return (
-      <div className="w-full h-64 bg-gray-100 animate-pulse flex items-center justify-center">
-        <div className="text-gray-500">Loading promo banners...</div>
+      <div className="mx-3 my-5 h-64 animate-pulse rounded-xl bg-secondary-50 flex items-center justify-center sm:mx-6 lg:mx-5">
+        <div className="text-brand-text/50">Loading promo banners...</div>
       </div>
     );
   }
 
 return (
-  <div className="relative w-full overflow-hidden">
+  <section id="promo-banner" className="bg-brand-bg px-3 py-5 sm:px-6 lg:px-5">
+  <div className="relative mx-auto w-full overflow-hidden rounded-xl">
     {/* Slider Container with Responsive Height */}
     <div
       className="flex transition-transform duration-700 ease-in-out"
@@ -95,7 +96,6 @@ return (
             loading="lazy"
           />
 
-          Overlay
           {(banner.title || banner.description) &&
             banner._id !== "default-banner" && (
               <div className="absolute inset-0  flex items-end">
@@ -122,14 +122,14 @@ return (
       <>
         <button
           onClick={prevSlide}
-          className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-3 rounded-full"
+          className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-brand-text/55 text-secondary-200 shadow-md backdrop-blur transition hover:bg-secondary hover:text-brand-text"
         >
           <ChevronLeft />
         </button>
 
         <button
           onClick={nextSlide}
-          className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-3 rounded-full"
+          className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-brand-text/55 text-secondary-200 shadow-md backdrop-blur transition hover:bg-secondary hover:text-brand-text"
         >
           <ChevronRight />
         </button>
@@ -140,8 +140,8 @@ return (
             <button
               key={i}
               onClick={() => setCurrent(i)}
-              className={`w-3 h-3 rounded-full transition ${
-                i === current ? "bg-white scale-110" : "bg-white/50"
+              className={`h-2.5 rounded-full transition-all ${
+                i === current ? "w-8 bg-secondary" : "w-2.5 bg-white/50 hover:bg-secondary"
               }`}
             />
           ))}
@@ -149,6 +149,7 @@ return (
       </>
     )}
   </div>
+  </section>
 );
 
 }

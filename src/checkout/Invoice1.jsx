@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { Printer, Download, Truck } from "lucide-react";
-import logo from "../image/Logo.webp";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Axios from "../utils/Axios"; // Import Axios for fetching fallback
@@ -48,7 +47,7 @@ export default function Invoice() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-primary-50">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-primary-200 border-t-purple-500 rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-secondary-200 border-t-accent rounded-full animate-spin"></div>
           <p className="text-primary-600 font-bold animate-pulse">Generating Invoice...</p>
         </div>
       </div>
@@ -58,7 +57,7 @@ export default function Invoice() {
   if (error || !orderData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-primary-50 p-4">
-        <div className="bg-white p-8 rounded-2xl shadow-xl border border-red-100 text-center max-w-md">
+        <div className="bg-brand-bg p-8 rounded-2xl shadow-xl border border-red-100 text-center max-w-md">
           <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
             <Printer size={32} />
           </div>
@@ -147,22 +146,18 @@ export default function Invoice() {
   return (
     <div className="min-h-screen bg-primary-50 p-4 md:p-6 flex justify-center items-start relative">
       {/* WATERMARK */}
-      <img
-        src={logo}
-        alt="Watermark Logo"
-        className="absolute top-1/2 left-1/2 w-[90%] md:w-3/4 max-w-xl opacity-3 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-11 select-none"
-      />
+      <span aria-hidden="true" className="absolute top-1/2 left-1/2 font-serif text-[16rem] leading-none text-accent opacity-[0.04] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-11 select-none">ॐ</span>
 
       {/* INVOICE CONTAINER */}
       <div
         ref={invoiceRef}
-        className="bg-white shadow-xl rounded-2xl p-4 md:p-8 w-full max-w-4xl border border-primary-200 relative z-10"
+        className="bg-brand-bg shadow-xl rounded-2xl p-4 md:p-8 w-full max-w-4xl border border-primary-200 relative z-10"
       >
         {/* HEADER */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-8 gap-4">
           {/* Logo + Brand */}
           <div className="flex flex-col md:flex-row items-center gap-3 md:gap-6">
-            <img src={logo} alt="Logo" className="w-20 md:w-24" />
+            <span className="font-serif text-2xl font-bold text-accent">ॐ MantraVanni</span>
             <div className="text-center md:text-left">
               <h1 className="text-2xl md:text-3xl font-bold text-primary-600">
                 MantraVanni

@@ -66,7 +66,7 @@ export default function OrderDetails() {
     <div className="bg-gray-50 min-h-screen pb-10">
 
       {/* ── Sticky top bar ── */}
-      <div className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 py-3 flex items-center justify-between gap-3">
+      <div className="sticky top-0 z-30 bg-brand-bg/90 backdrop-blur-md border-b border-gray-100 px-4 py-3 flex items-center justify-between gap-3">
         <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-primary-500 font-bold text-sm active:opacity-70"
@@ -88,7 +88,7 @@ export default function OrderDetails() {
       <div className="max-w-2xl mx-auto px-4 pt-5 space-y-4">
 
         {/* ── Order summary header card ── */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        <div className="bg-brand-bg rounded-2xl border border-gray-100 shadow-sm p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Placed on</p>
@@ -106,7 +106,7 @@ export default function OrderDetails() {
         </div>
 
         {/* ── Items ── */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="bg-brand-bg rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-50 flex items-center justify-between">
             <h2 className="text-sm font-black text-brand-text uppercase tracking-wide">Items</h2>
             <span className="text-[10px] font-black text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full uppercase tracking-wider">
@@ -153,7 +153,7 @@ export default function OrderDetails() {
         <TrackingTimeline order={order} />
 
         {/* ── Payment summary ── */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="bg-brand-bg rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-50">
             <h2 className="text-sm font-black text-brand-text uppercase tracking-wide">Payment</h2>
           </div>
@@ -180,21 +180,21 @@ export default function OrderDetails() {
         <div className="grid grid-cols-3 gap-3">
           <button
             onClick={handleDownloadInvoice}
-            className="col-span-1 flex flex-col items-center gap-1.5 py-3.5 bg-white rounded-2xl border border-gray-100 shadow-sm text-brand-text hover:border-primary-200 transition-all active:scale-95"
+            className="col-span-1 flex flex-col items-center gap-1.5 py-3.5 bg-brand-bg rounded-2xl border border-gray-100 shadow-sm text-brand-text hover:border-primary-200 transition-all active:scale-95"
           >
             <Download size={18} className="text-primary-500" />
             <span className="text-[10px] font-black uppercase tracking-wide">Invoice</span>
           </button>
           <a
             href={`https://wa.me/918510879296?text=Hi, I need help with my order ${order.orderID || order._id}`}
-            className="col-span-1 flex flex-col items-center gap-1.5 py-3.5 bg-white rounded-2xl border border-gray-100 shadow-sm text-brand-text hover:border-emerald-200 transition-all active:scale-95"
+            className="col-span-1 flex flex-col items-center gap-1.5 py-3.5 bg-brand-bg rounded-2xl border border-gray-100 shadow-sm text-brand-text hover:border-emerald-200 transition-all active:scale-95"
           >
             <MessageCircle size={18} className="text-emerald-500" />
             <span className="text-[10px] font-black uppercase tracking-wide">Support</span>
           </a>
           <button
             onClick={() => navigate(`/`)}
-            className="col-span-1 flex flex-col items-center gap-1.5 py-3.5 bg-white rounded-2xl border border-gray-100 shadow-sm text-brand-text hover:border-blue-200 transition-all active:scale-95"
+            className="col-span-1 flex flex-col items-center gap-1.5 py-3.5 bg-brand-bg rounded-2xl border border-gray-100 shadow-sm text-brand-text hover:border-blue-200 transition-all active:scale-95"
           >
             <RefreshCcw size={18} className="text-blue-500" />
             <span className="text-[10px] font-black uppercase tracking-wide">Reorder</span>

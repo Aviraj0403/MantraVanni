@@ -50,11 +50,11 @@ export default function BestSellPC({ product, onProductClick }) {
     <motion.div
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="group relative bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col overflow-hidden"
+      className="group relative bg-brand-bg/95 backdrop-blur-sm border border-primary-100 rounded-2xl shadow-[0_4px_20px_rgba(255,165,0,0.05)] hover:shadow-[0_8px_30px_rgba(255,165,0,0.15)] hover:-translate-y-1 transition-all duration-300 h-full flex flex-col overflow-hidden"
     >
       {/* 🖼 Image Area */}
       <div 
-        className="relative aspect-square overflow-hidden bg-gray-50/20 cursor-pointer"
+        className="relative aspect-square overflow-hidden bg-secondary-50/40 cursor-pointer"
         onClick={handleProductClick}
       >
         <motion.img
@@ -73,7 +73,7 @@ export default function BestSellPC({ product, onProductClick }) {
             </div>
           )}
           {discount > 0 && (
-            <div className="bg-primary-600 text-white text-[9px] font-bold px-2 py-1 rounded shadow-sm">
+            <div className="bg-gradient-to-r from-accent to-primary-500 text-white text-[9px] font-bold px-2 py-1 rounded shadow-sm">
               {discount}% OFF
             </div>
           )}
@@ -104,7 +104,7 @@ export default function BestSellPC({ product, onProductClick }) {
             >
               <button
                 onClick={handleAddToCart}
-                className="w-full bg-white text-brand-text text-[10px] font-black py-2 rounded-lg flex items-center justify-center gap-2 shadow-lg hover:bg-primary-600 hover:text-white transition-all shadow-primary-50"
+                className="w-full bg-white text-brand-text text-[10px] font-black py-2 rounded-lg flex items-center justify-center gap-2 shadow-lg hover:bg-primary-500 hover:text-white transition-all shadow-primary-50"
               >
                 <FaShoppingCart size={10} /> QUICK ADD
               </button>
@@ -146,7 +146,7 @@ export default function BestSellPC({ product, onProductClick }) {
             ) : (
               <button
                 onClick={handleBuyNow}
-                className="w-9 h-9 rounded-lg bg-gray-900 text-white flex items-center justify-center hover:bg-primary-600 transition-colors shadow-sm"
+                className="w-9 h-9 rounded-lg bg-primary-500 text-white flex items-center justify-center hover:bg-secondary hover:text-brand-text transition-colors shadow-sm"
               >
                 <FaBolt size={12} />
               </button>
@@ -167,7 +167,7 @@ export default function BestSellPC({ product, onProductClick }) {
             <motion.div
               initial={{ scale: 0.9, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-white rounded-[2rem] p-10 shadow-2xl max-w-sm w-full text-center border border-primary-50"
+              className="bg-brand-bg rounded-[2rem] p-10 shadow-2xl max-w-sm w-full text-center border border-primary-50"
             >
               <div className="w-16 h-16 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center text-3xl mx-auto mb-6 shadow-inner">★</div>
               <h4 className="text-xl font-black text-brand-text mb-1 leading-none">High Demand!</h4>

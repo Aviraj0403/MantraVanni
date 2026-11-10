@@ -54,7 +54,7 @@ export default function CategorySubCategoryDetails() {
   };
 
   return (
-    <section className="py-10 bg-white">
+    <section className="py-10 bg-brand-bg">
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-2xl md:text-3xl font-bold text-primary-500 mb-8 text-center">
           {categoryName} : {subCategoryName }

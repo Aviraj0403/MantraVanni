@@ -119,7 +119,7 @@ export default function Addresses() {
               className={`relative p-6 border-2 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 ${
                 addr.isDefault
                   ? "border-primary-500 bg-primary-50"
-                  : "border-primary-100 bg-white"
+                  : "border-primary-100 bg-brand-bg"
               }`}
             >
               {/* Default Badge */}

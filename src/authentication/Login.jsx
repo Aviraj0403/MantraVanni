@@ -9,7 +9,7 @@ export default function Login() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6 }}
-        className="w-full sm:max-w-md md:max-w-2xl bg-white/80 backdrop-blur-xl rounded-none sm:rounded-3xl shadow-xl overflow-hidden border border-primary-100"
+        className="w-full sm:max-w-md md:max-w-2xl bg-brand-bg/80 backdrop-blur-xl rounded-none sm:rounded-3xl shadow-xl overflow-hidden border border-primary-100"
       >
         {/* Header */}
         <div className="text-center py-8 bg-gradient-to-r from-primary-500 to-primary-400 text-white">

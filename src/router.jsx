@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "./Layout.jsx";
+import SpiritualLoader from "./components/SpiritualLoader.jsx";
 import Home from "./pages/home/home.jsx";
 import NotFoundPage from "./pages/PNF/NotFoundPage.jsx";
 import ProfilePage from "./profile/ProfilePage";
@@ -37,7 +38,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <Suspense fallback={null}>
+      <Suspense fallback={<SpiritualLoader />}>
         <Layout />
       </Suspense>
     ),

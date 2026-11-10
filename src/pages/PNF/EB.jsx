@@ -25,20 +25,20 @@ class EB extends Component {
           <div style={styles.overlay}>
             <img
               src="/beauty.gif" // Background GIF
-              alt="Beauty Shop Error"
+              alt="MantraVanni Error"
               style={styles.backgroundImage}
             />
           </div>
           <div style={styles.content}>
             <h2 style={styles.title}>Oops! Something Went Wrong!</h2>
             <p style={styles.message}>
-              Looks like our beauty magic got interrupted. 🔥 We're fixing it as fast as we can!
+              Looks like something disturbed our peace. 🙏 We're fixing it as fast as we can!
             </p>
             <p style={styles.message}>
               Meanwhile, why not take a look at our other fabulous services? 💅
             </p>
             {/* Fallback: Use a standard <a> tag if Link is causing issues */}
-            <a href="/" style={styles.button}>Return to Beauty Home</a>
+            <a href="/" style={styles.button}>Return to MantraVanni Home</a>
           </div>
         </div>
       );
@@ -85,20 +85,20 @@ const styles = {
   title: {
     fontSize: "2rem", // Larger font size for emphasis
     fontWeight: "700",
-    color: "#6a2e9f", // Premium purple for the title
+    color: "#8B1E1E", // Sacred maroon for the title
     marginBottom: "15px",
-    fontFamily: "Segoe UI, sans-serif",
+    fontFamily: "'Playfair Display', serif",
   },
   message: {
     fontSize: "1.2rem", // Slightly larger text for better readability
-    color: "#7c3aed", // Violet/Purple for the text
+    color: "#5D1414", // Maroon/Purple for the text
     maxWidth: "750px",
     marginBottom: "25px",
   },
   button: {
     display: "inline-block",
     padding: "12px 24px",
-    background: "#6a2e9f", // Premium purple button color
+    background: "#8B1E1E", // Sacred maroon button color
     color: "#fff",
     textDecoration: "none",
     borderRadius: "8px",
@@ -109,7 +109,7 @@ const styles = {
 
 // Add hover effect manually to the button
 styles.button["&:hover"] = {
-  background: "#4c1d95", // Darker purple on hover
+  background: "#5D1414", // Darker purple on hover
 };
 
 export default EB;

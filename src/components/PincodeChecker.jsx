@@ -57,7 +57,7 @@ export default function PincodeChecker({ onPincodeValidated }) {
   };
 
   return (
-    <div className="bg-white rounded-lg border p-4 max-w-md mx-auto">
+    <div className="bg-brand-bg rounded-lg border border-secondary-200 p-4 max-w-md mx-auto">
       <h3 className="text-lg font-semibold mb-3 text-brand-text">Check Delivery Availability</h3>
       
       <div className="flex gap-2 mb-3">

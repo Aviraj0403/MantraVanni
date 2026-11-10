@@ -44,7 +44,7 @@ export default function FAQPage() {
         {faqs.map((item, i) => (
           <div
             key={i}
-            className="bg-white shadow-lg rounded-xl p-5 border border-primary-100 transition hover:shadow-xl hover:border-primary-300"
+            className="bg-brand-bg shadow-lg rounded-xl p-5 border border-primary-100 transition hover:shadow-xl hover:border-primary-300"
           >
             <button
               className="w-full flex justify-between items-center text-left"

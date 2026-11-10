@@ -159,7 +159,7 @@ const OrderTrackingCard = ({ order }) => {
     : null;
 
   return (
-    <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+    <div className="bg-brand-bg rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
 
       {/* ── Header ─────────────────────────────────────────── */}
       <div className="relative overflow-hidden bg-gray-900 px-4 py-5 sm:px-8 sm:py-8">
@@ -168,7 +168,7 @@ const OrderTrackingCard = ({ order }) => {
 
         <div className="relative z-10 flex flex-col gap-4">
           {/* Live tag */}
-          <div className="self-start inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 backdrop-blur-xl rounded-full text-[10px] font-bold uppercase tracking-widest text-primary-300 border border-white/10">
+          <div className="self-start inline-flex items-center gap-1.5 px-3 py-1 bg-brand-bg/10 backdrop-blur-xl rounded-full text-[10px] font-bold uppercase tracking-widest text-primary-300 border border-white/10">
             <Activity size={10} className="animate-pulse" />
             Live Tracking
           </div>
@@ -204,7 +204,7 @@ const OrderTrackingCard = ({ order }) => {
 
           {/* AWB / tracking code */}
           {shiprocket.awb_code && (
-            <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-4 py-3 gap-3">
+            <div className="flex items-center justify-between bg-brand-bg/5 border border-white/10 rounded-xl px-4 py-3 gap-3">
               <div className="min-w-0">
                 <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-0.5">
                   AWB / Tracking No.
@@ -217,7 +217,7 @@ const OrderTrackingCard = ({ order }) => {
                 onClick={copyToClipboard}
                 className={`flex-shrink-0 p-2.5 rounded-lg transition-all text-sm font-bold flex items-center gap-1.5 ${copied
                   ? "bg-emerald-500 text-white"
-                  : "bg-white/10 text-white hover:bg-white/20 active:scale-95"
+                  : "bg-brand-bg/10 text-white hover:bg-brand-bg/20 active:scale-95"
                   }`}
               >
                 {copied ? <CheckCircle size={15} /> : <Copy size={15} />}
@@ -262,7 +262,7 @@ const OrderTrackingCard = ({ order }) => {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
-                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-white rounded-full shadow border border-gray-100 flex items-center justify-center text-[9px] font-black text-brand-text">
+                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-brand-bg rounded-full shadow border border-gray-100 flex items-center justify-center text-[9px] font-black text-brand-text">
                     ×{item.quantity}
                   </div>
                 </div>

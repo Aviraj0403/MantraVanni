@@ -29,7 +29,7 @@ const OrderListItem = ({ order }) => {
   return (
     <div
       onClick={handleOrderClick}
-      className="bg-white p-4 rounded-2xl shadow border border-primary-100 hover:shadow-md transition-shadow cursor-pointer"
+      className="bg-brand-bg p-4 rounded-2xl shadow border border-primary-100 hover:shadow-md transition-shadow cursor-pointer"
     >
       <div className="flex items-center gap-4">
         {/* Product Image */}

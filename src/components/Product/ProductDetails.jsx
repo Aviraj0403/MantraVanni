@@ -156,10 +156,10 @@ export default function ProductDetails() {
 
   /* ═══════════════ RENDER ═══════════════ */
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-brand-bg">
 
       {/* ═══ Breadcrumb ═══ */}
-      <div className="bg-white border-b border-gray-50">
+      <div className="bg-brand-bg border-b border-secondary-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <nav className="flex items-center gap-2 text-[11px] font-semibold text-gray-500">
             <span className="hover:text-primary-600 cursor-pointer" onClick={() => navigate("/")}>Home</span>
@@ -188,7 +188,7 @@ export default function ProductDetails() {
                     className={`shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl border-2 overflow-hidden p-1 transition-all duration-300 ${
                       mainImg === img
                         ? "border-primary-600 shadow-md shadow-primary-100 scale-105"
-                        : "border-gray-100 hover:border-primary-200 bg-gray-50/50"
+                        : "border-secondary-200 hover:border-primary-200 bg-secondary-50/60"
                     }`}
                   >
                     <img src={img} alt="" className="w-full h-full object-contain" />
@@ -197,7 +197,7 @@ export default function ProductDetails() {
               </div>
 
               {/* Main image */}
-              <div className="relative flex-1 rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden flex items-center justify-center group order-1 sm:order-2" style={{ minHeight: 450 }}>
+              <div className="relative flex-1 rounded-2xl border border-secondary-200 bg-brand-bg shadow-sm overflow-hidden flex items-center justify-center group order-1 sm:order-2" style={{ minHeight: 450 }}>
                 {disc > 0 && (
                   <div className="absolute top-4 left-4 bg-primary-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-full z-10 shadow-lg shadow-primary-200 uppercase tracking-widest">
                     {disc}% OFF
@@ -205,10 +205,10 @@ export default function ProductDetails() {
                 )}
                 <button
                   onClick={() => setWished(w => !w)}
-                  className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md shadow-md flex items-center justify-center border border-gray-100 hover:border-primary-300 transition-all hover:scale-110"
+                  className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-brand-bg/80 backdrop-blur-md shadow-md flex items-center justify-center border border-secondary-200 hover:border-primary-300 transition-all hover:scale-110"
                 >
                   {wished
-                    ? <FaHeart    size={18} className="text-rose-500" />
+                    ? <FaHeart    size={18} className="text-accent" />
                     : <FaRegHeart size={18} className="text-gray-400" />}
                 </button>
                 <img
@@ -219,7 +219,7 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            <div className="hidden lg:flex flex-col gap-10 bg-gray-50/50 rounded-3xl p-8 border border-gray-100/50">
+            <div className="hidden lg:flex flex-col gap-10 bg-secondary-50/60 rounded-3xl p-8 border border-secondary-100">
               <div className="grid grid-cols-3 gap-6">
                 {[
                   { Icon: FaTruck,    label: "Free Delivery",   sub: "Ships today"       },
@@ -227,7 +227,7 @@ export default function ProductDetails() {
                   { Icon: FaShieldAlt,label: "100% Genuine",    sub: "Quality assured"   },
                 ].map(({ Icon, label, sub }) => (
                   <div key={label} className="flex flex-col items-center gap-3 group">
-                    <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-primary-100 flex items-center justify-center group-hover:bg-primary-600 group-hover:border-primary-600 transition-all duration-300">
+                    <div className="w-14 h-14 rounded-2xl bg-brand-bg shadow-sm border border-primary-100 flex items-center justify-center group-hover:bg-primary-600 group-hover:border-primary-600 transition-all duration-300">
                       <Icon size={24} className="text-primary-600 group-hover:text-white transition-colors" />
                     </div>
                     <div className="text-center">
@@ -239,11 +239,11 @@ export default function ProductDetails() {
               </div>
 
               <div className="space-y-6">
-                <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+                <div className="h-px bg-gradient-to-r from-transparent via-secondary-200 to-transparent" />
                 
                 <div className="flex flex-wrap gap-2.5">
                   {tags?.map(t => (
-                    <span key={t} className="text-[11px] bg-white text-primary-700 px-4 py-2 rounded-xl font-extrabold border border-primary-100 shadow-sm hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all cursor-default lowercase tracking-tight">
+                    <span key={t} className="text-[11px] bg-brand-bg text-primary-700 px-4 py-2 rounded-xl font-extrabold border border-primary-100 shadow-sm hover:bg-primary-600 hover:text-white hover:border-primary-600 transition-all cursor-default lowercase tracking-tight">
                       #{t}
                     </span>
                   ))}
@@ -265,7 +265,7 @@ export default function ProductDetails() {
                   </span>
                 )}
               </div>
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-brand-text leading-tight">{name}</h1>
+              <h1 className="font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-brand-text leading-tight">{name}</h1>
 
               <div className="flex flex-wrap items-center gap-3">
                 <div className="flex items-center gap-2 bg-primary-50 border border-primary-100 px-3 py-1.5 rounded-full">
@@ -308,7 +308,7 @@ export default function ProductDetails() {
                       className={`px-4 py-2 rounded-full text-sm font-semibold border-2 transition-all ${
                         variant?.size === v.size
                           ? "border-primary-500 bg-primary-50 text-primary-700 shadow-sm"
-                          : "border-gray-200 text-gray-600 hover:border-primary-300 hover:text-primary-600"
+                          : "border-secondary-200 text-gray-600 hover:border-primary-300 hover:text-primary-600"
                       }`}
                     >
                       {v.size}
@@ -339,7 +339,7 @@ export default function ProductDetails() {
                         }`}
                       >
                         <span className="block w-full h-full rounded-full border border-black/10" style={{ background: hex || "#d1d5db" }} />
-                        {sel && <FaCheckCircle size={12} className="absolute -bottom-0.5 -right-0.5 text-primary-600 bg-white rounded-full" />}
+                        {sel && <FaCheckCircle size={12} className="absolute -bottom-0.5 -right-0.5 text-primary-600 bg-brand-bg rounded-full" />}
                       </button>
                     );
                   })}
@@ -351,7 +351,7 @@ export default function ProductDetails() {
             <div className="flex gap-4">
               <button
                 onClick={doAdd}
-                className="flex-1 flex items-center justify-center gap-2 bg-white border-2 border-primary-500 text-primary-600 font-bold py-4 rounded-xl hover:bg-primary-50 active:scale-[0.98] transition-all shadow-sm text-sm sm:text-base"
+                className="flex-1 flex items-center justify-center gap-2 bg-brand-bg border-2 border-primary-500 text-primary-600 font-bold py-4 rounded-xl hover:bg-primary-50 active:scale-[0.98] transition-all shadow-sm text-sm sm:text-base"
               >
                 <FaShoppingCart size={16} /> Add to Cart
               </button>
@@ -380,7 +380,7 @@ export default function ProductDetails() {
               </div>
               <div className="flex flex-wrap gap-2">
                 {productCode && (
-                  <span className="text-[10px] bg-gray-100 text-gray-500 px-3 py-1 rounded-full font-medium">
+                  <span className="text-[10px] bg-secondary-100 text-gray-500 px-3 py-1 rounded-full font-medium">
                     SKU: {productCode}
                   </span>
                 )}
@@ -473,17 +473,17 @@ export default function ProductDetails() {
         <div className="mt-12 pt-8 border-t border-primary-50">
           <div className="flex items-center gap-3 mb-6">
             <span className="block w-1 h-6 bg-primary-500 rounded-full" />
-            <h2 className="text-xl font-bold text-brand-text">You May Also Like</h2>
+            <h2 className="font-serif text-xl font-bold text-brand-text">You May Also Like</h2>
           </div>
           <RelatedProduct categorySlug={category?.slug} />
         </div>
       </div>
 
       {/* ═══ Mobile sticky CTA ═══ */}
-      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 flex gap-0 border-t border-primary-100 bg-white shadow-[0_-4px_20px_rgba(107,46,159,0.1)]">
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 flex gap-0 border-t border-primary-100 bg-brand-bg shadow-[0_-4px_20px_rgba(107,46,159,0.1)]">
         <button
           onClick={doAdd}
-          className="flex-1 flex items-center justify-center gap-2 bg-white text-primary-600 font-bold py-4 text-sm border-r border-primary-100"
+          className="flex-1 flex items-center justify-center gap-2 bg-brand-bg text-primary-600 font-bold py-4 text-sm border-r border-primary-100"
         >
           <FaShoppingCart size={15} /> Add to Cart
         </button>
@@ -497,7 +497,7 @@ export default function ProductDetails() {
 
       {/* ═══ Toast ═══ */}
       {toastMsg && (
-        <div className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-gray-900 text-white px-6 py-3 rounded-full shadow-2xl text-sm font-medium whitespace-nowrap animate-fadeIn">
+        <div className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-accent-800 text-white px-6 py-3 rounded-full shadow-2xl text-sm font-medium whitespace-nowrap animate-fadeIn">
           <FaCheckCircle className="text-primary-400" size={15} />
           {toastMsg}
           <button onClick={() => navigate("/cart")} className="ml-1 font-bold text-primary-300 hover:text-white">

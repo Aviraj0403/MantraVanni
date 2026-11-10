@@ -90,7 +90,7 @@ const TrackOrder = () => {
 
         {/* Search Container */}
         <div className={`mb-12 transition-all duration-700 ${order ? 'scale-95 opacity-50 blur-sm' : 'scale-100'}`}>
-          <div className="bg-white/70 backdrop-blur-2xl p-8 sm:p-10 rounded-[3rem] shadow-2xl shadow-primary-200/20 border border-white/50 relative overflow-hidden">
+          <div className="bg-brand-bg/70 backdrop-blur-2xl p-8 sm:p-10 rounded-[3rem] shadow-2xl shadow-primary-200/20 border border-white/50 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary-50 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 opacity-50"></div>
 
             <form onSubmit={handleSearch} className="space-y-8 relative z-10">
@@ -99,7 +99,7 @@ const TrackOrder = () => {
                   type="button"
                   onClick={() => setSearchType("orderId")}
                   className={`px-8 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${searchType === "orderId"
-                    ? "bg-white text-brand-text shadow-xl shadow-primary-100"
+                    ? "bg-brand-bg text-brand-text shadow-xl shadow-primary-100"
                     : "text-gray-400 hover:text-gray-600"
                     }`}
                 >
@@ -109,7 +109,7 @@ const TrackOrder = () => {
                   type="button"
                   onClick={() => setSearchType("awb")}
                   className={`px-8 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${searchType === "awb"
-                    ? "bg-white text-brand-text shadow-xl shadow-primary-100"
+                    ? "bg-brand-bg text-brand-text shadow-xl shadow-primary-100"
                     : "text-gray-400 hover:text-gray-600"
                     }`}
                 >
@@ -127,7 +127,7 @@ const TrackOrder = () => {
                   }
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
-                  className="w-full bg-white/50 border-2 border-transparent focus:border-primary-200 focus:bg-white px-8 py-5 rounded-[2rem] text-lg font-bold text-brand-text placeholder:text-gray-300 outline-none transition-all shadow-inner"
+                  className="w-full bg-brand-bg/50 border-2 border-transparent focus:border-primary-200 focus:bg-brand-bg px-8 py-5 rounded-[2rem] text-lg font-bold text-brand-text placeholder:text-gray-300 outline-none transition-all shadow-inner"
                 />
                 <button
                   type="submit"
@@ -153,7 +153,7 @@ const TrackOrder = () => {
                         setSearchValue(h.id);
                         setSearchType(h.type);
                       }}
-                      className="px-4 py-2 bg-gray-50 hover:bg-white hover:shadow-lg rounded-xl text-[10px] font-bold text-gray-600 border border-gray-100 transition-all"
+                      className="px-4 py-2 bg-gray-50 hover:bg-brand-bg hover:shadow-lg rounded-xl text-[10px] font-bold text-gray-600 border border-gray-100 transition-all"
                     >
                       {h.id.slice(-8)}
                     </button>
@@ -202,7 +202,7 @@ const TrackOrder = () => {
           {loading && !order && !trackingData && (
             <div className="text-center py-20 animate-pulse">
               <div className="relative inline-block mb-6">
-                <div className="w-20 h-20 border-8 border-primary-50 border-t-purple-500 rounded-full animate-spin"></div>
+                <div className="w-20 h-20 border-8 border-primary-50 border-t-primary-500 rounded-full animate-spin"></div>
                 <Package className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-primary-200 w-8 h-8" />
               </div>
               <p className="text-gray-400 font-black text-sm uppercase tracking-[0.3em]">Decoding Telemetry...</p>
@@ -216,7 +216,7 @@ const TrackOrder = () => {
           )}
 
           {trackingData && !order && (
-            <div className="bg-white/80 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white p-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <div className="bg-brand-bg/80 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white p-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
               <div className="flex items-center gap-4 mb-10 pb-6 border-b border-gray-100">
                 <div className="p-4 bg-primary-50 rounded-2xl text-primary-600">
                   <Activity size={24} />
@@ -236,7 +236,7 @@ const TrackOrder = () => {
                         <div className="w-0.5 h-full bg-gray-100 group-last:hidden mt-2"></div>
                       </div>
                       <div className="flex-1 pb-10">
-                        <div className="bg-gray-50/50 rounded-3xl p-6 group-hover:bg-white transition-all group-hover:shadow-xl group-hover:shadow-primary-100/50 group-hover:-translate-y-1">
+                        <div className="bg-gray-50/50 rounded-3xl p-6 group-hover:bg-brand-bg transition-all group-hover:shadow-xl group-hover:shadow-primary-100/50 group-hover:-translate-y-1">
                           <p className="font-black text-brand-text text-lg mb-2">{track.activity || track.current_status}</p>
                           {track.location && (
                             <p className="text-sm font-bold text-gray-500 flex items-center gap-2 mb-3">
@@ -244,7 +244,7 @@ const TrackOrder = () => {
                               {track.location}
                             </p>
                           )}
-                          <div className="inline-block px-3 py-1 bg-white rounded-lg text-[10px] font-black text-gray-400 shadow-sm border border-gray-100">
+                          <div className="inline-block px-3 py-1 bg-brand-bg rounded-lg text-[10px] font-black text-gray-400 shadow-sm border border-gray-100">
                             {track.date ? new Date(track.date).toLocaleString("en-IN") : "LIVE UPDATING"}
                           </div>
                         </div>
@@ -264,7 +264,7 @@ const TrackOrder = () => {
 
         {/* Footer Help */}
         <div className="mt-20 p-1 bg-gradient-to-br from-primary-500/10 via-transparent to-red-500/10 rounded-[3rem]">
-          <div className="bg-white/90 backdrop-blur-xl rounded-[2.9rem] p-10 sm:p-14 border border-white shadow-sm">
+          <div className="bg-brand-bg/90 backdrop-blur-xl rounded-[2.9rem] p-10 sm:p-14 border border-white shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 sm:gap-20">
               <div className="space-y-4">
                 <div className="w-12 h-12 bg-primary-50 rounded-2xl flex items-center justify-center text-primary-600 mb-6">

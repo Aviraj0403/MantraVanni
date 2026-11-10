@@ -3,7 +3,7 @@ import { FaUndo, FaExchangeAlt, FaClock, FaCheckCircle } from "react-icons/fa";
 
 export default function ReturnExchange() {
   return (
-    <section className="bg-white min-h-screen py-5 px-4 md:px-16">
+    <section className="bg-brand-bg min-h-screen py-5 px-4 md:px-16">
       {/* Heading */}
       <div className="text-center mb-12">
         <h1 className="text-5xl font-bold text-primary-500 mb-4">Return & Exchange Policy</h1>
@@ -55,19 +55,19 @@ export default function ReturnExchange() {
       <div className="bg-primary-500 text-white py-16 text-center">
         <h2 className="text-4xl font-bold mb-6">How to Start a Return?</h2>
         <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8 px-4">
-          <div className="bg-white text-primary-600 p-6 rounded-xl shadow-lg">
+          <div className="bg-brand-bg text-primary-600 p-6 rounded-xl shadow-lg">
             <FaCheckCircle className="text-4xl mb-2 mx-auto" />
             <h3 className="font-bold text-xl mb-2">Step 1</h3>
             <p className="text-brand-text">Go to the Contact Us page and submit your issue with order details.</p>
           </div>
 
-          <div className="bg-white text-primary-600 p-6 rounded-xl shadow-lg">
+          <div className="bg-brand-bg text-primary-600 p-6 rounded-xl shadow-lg">
             <FaCheckCircle className="text-4xl mb-2 mx-auto" />
             <h3 className="font-bold text-xl mb-2">Step 2</h3>
             <p className="text-brand-text">Our team will review your request and approve it within 24–48 hours.</p>
           </div>
 
-          <div className="bg-white text-primary-600 p-6 rounded-xl shadow-lg">
+          <div className="bg-brand-bg text-primary-600 p-6 rounded-xl shadow-lg">
             <FaCheckCircle className="text-4xl mb-2 mx-auto" />
             <h3 className="font-bold text-xl mb-2">Step 3</h3>
             <p className="text-brand-text">Ship the product back & receive your refund or exchanged product.</p>

@@ -584,7 +584,7 @@ export default function CheckoutPage() {
           email: user.email,
           contact: selectedAddress.phoneNumber,
         },
-        theme: { color: "#ec4899" },
+        theme: { color: "#D35400" },
         retry: {
           enabled: false
         },
@@ -630,7 +630,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-primary-50 flex justify-center items-start p-4 sm:p-8">
+    <div className="min-h-screen bg-brand-bg flex justify-center items-start p-4 sm:p-8">
       <AddressSidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
@@ -640,8 +640,8 @@ export default function CheckoutPage() {
       />
 
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white shadow-md rounded-2xl p-6 sm:p-8">
-          <h2 className="text-xl font-semibold text-brand-text mb-6 text-center">
+        <div className="bg-brand-bg shadow-md border border-secondary-200 rounded-2xl p-6 sm:p-8">
+          <h2 className="font-serif text-xl font-bold text-brand-text mb-6 text-center">
             Shipping Information
           </h2>
 
@@ -652,7 +652,7 @@ export default function CheckoutPage() {
                   key={addr._id}
                   className={`block border-2 rounded-xl p-4 cursor-pointer transition ${selectedAddress?._id === addr._id
                     ? "border-primary-500 bg-primary-50"
-                    : "border-gray-300 hover:bg-gray-50"
+                    : "border-secondary-200 hover:bg-secondary-50"
                     }`}
                 >
                   <div className="flex items-start gap-3">
@@ -691,10 +691,10 @@ export default function CheckoutPage() {
             </button>
           </div>
 
-          <h3 className="text-center font-semibold mb-4">Payment Method</h3>
+          <h3 className="text-center font-serif font-bold text-lg mb-4 text-brand-text">Select Payment Method</h3>
 
           {/* ✅ NEW: Payment info alert */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-sm text-brand-text">
+          <div className="bg-secondary-50 border border-secondary-200 rounded-xl p-3 mb-4 text-sm text-brand-text">
             <p className="font-medium mb-1">⏰ Important:</p>
             <p>Complete payment within 10 minutes to avoid timeout.</p>
           </div>
@@ -704,7 +704,7 @@ export default function CheckoutPage() {
               {/* Online Payment Option */}
               <label 
                 className={`flex-1 border-2 rounded-xl p-4 cursor-pointer transition flex items-center gap-3 ${
-                  paymentMethod === "Razorpay" ? "border-primary-500 bg-primary-50" : "border-gray-200"
+                  paymentMethod === "Razorpay" ? "border-primary-500 bg-primary-50 shadow-sm" : "border-secondary-200 hover:bg-secondary-50"
                 }`}
               >
                 <input 
@@ -723,7 +723,7 @@ export default function CheckoutPage() {
               {/* Wallet Option */}
               <label 
                 className={`flex-1 border-2 rounded-xl p-4 cursor-pointer transition flex items-center gap-3 ${
-                  paymentMethod === "Wallet" ? "border-emerald-600 bg-emerald-50" : "border-gray-200"
+                  paymentMethod === "Wallet" ? "border-emerald-600 bg-emerald-50 shadow-sm" : "border-secondary-200 hover:bg-secondary-50"
                 }`}
               >
                 <input 
@@ -737,7 +737,7 @@ export default function CheckoutPage() {
                   <p className="font-semibold text-brand-text flex items-center gap-1.5">
                     💳 Retailer Wallet
                   </p>
-                  <p className="text-xs text-gray-500">Instant 1-Click Pay from your Bulko balance</p>
+                  <p className="text-xs text-gray-500">Instant 1-Click Pay from your MantraVanni balance</p>
                 </div>
               </label>
 
@@ -745,7 +745,7 @@ export default function CheckoutPage() {
               {isCODEnabled && (
                 <label 
                   className={`flex-1 border-2 rounded-xl p-4 cursor-pointer transition flex items-center gap-3 ${
-                    paymentMethod === "COD" ? "border-primary-500 bg-primary-50" : "border-gray-200"
+                    paymentMethod === "COD" ? "border-primary-500 bg-primary-50 shadow-sm" : "border-secondary-200 hover:bg-secondary-50"
                   }`}
                 >
                   <input 
@@ -767,7 +767,7 @@ export default function CheckoutPage() {
               <button
                 onClick={() => placeOrder(paymentMethod)}
                 disabled={isPlacingOrder || !shippingInfo.isServiceable || shippingInfo.isValidating}
-                className="w-full sm:w-auto bg-primary-500 text-white font-bold px-10 py-4 rounded-xl hover:bg-primary-600 disabled:opacity-60 disabled:cursor-not-allowed transition shadow-lg"
+                className="w-full sm:w-auto bg-primary-500 text-white font-extrabold px-10 py-3.5 rounded-xl hover:bg-primary-600 disabled:opacity-60 disabled:cursor-not-allowed transition shadow-md"
               >
                 {isPlacingOrder ? "Processing..." : paymentMethod === "Razorpay" ? "Complete Payment" : paymentMethod === "Wallet" ? "Pay with Business Wallet" : "Place Order (COD)"}
               </button>
@@ -775,8 +775,8 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        <div className="bg-white shadow-md rounded-2xl p-6 sm:p-8">
-          <h2 className="text-xl font-semibold text-brand-text mb-6 text-center">
+        <div className="bg-brand-bg shadow-md border border-secondary-200 rounded-2xl p-6 sm:p-8">
+          <h2 className="font-serif text-xl font-bold text-brand-text mb-6 text-center">
             Order Summary
           </h2>
           <div className="space-y-3">
@@ -790,7 +790,7 @@ export default function CheckoutPage() {
               </div>
             ))}
 
-            <div className="border-t pt-4">
+            <div className="border-t border-dashed border-secondary-200 pt-4">
               <div className="flex justify-between">
                 <span>Total Items:</span>
                 <span className="font-semibold">{totalQuantity}</span>
@@ -832,7 +832,7 @@ export default function CheckoutPage() {
                   <span>{appliedCoupon.discountPercentage}%</span>
                 </div>
               )}
-              <div className="flex justify-between text-xl font-bold text-brand-text mt-4 border-t pt-4">
+              <div className="flex justify-between text-xl font-bold text-brand-text mt-4 border-t border-dashed border-secondary-200 pt-4">
                 <span>Total Payable:</span>
                 <span className="text-primary-600">
                   ₹{(Number(grandTotal) - displayShipping + shippingInfo.charges).toFixed(2)}

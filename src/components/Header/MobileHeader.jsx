@@ -1,45 +1,43 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  User,
-  ShoppingBag,
-  Home,
-  List,
-  Tag,
-  Percent,
-  Menu,
-  X,
-  Search,
   ChevronDown,
-  ChevronUp,
-  LogOut,
-  Wallet,
+  CircleUserRound,
+  Grid2X2,
   Heart,
+  Home,
+  LogOut,
+  Menu,
+  PackageSearch,
+  Search,
+  ShoppingBasket,
+  Sparkles,
+  Store,
+  Tag,
+  Wallet,
+  X,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
 import { getMenuCategories } from "../../services/categoryApi";
 import { useAuth } from "../../context/AuthContext";
-import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
 import { getPublicSettings } from "../../services/settingsApi";
-
+import BrandMark from "../BrandMark";
 
 export default function MobileHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuth();
-const location = useLocation();
- const hideSearch = location.pathname === "/search";
-  // Redux Cart
   const { items: cartItems } = useSelector((state) => state.cart);
+
   const totalQuantity = cartItems.reduce(
     (total, item) => total + item.quantity,
-    0
+    0,
   );
 
-  // Categories
-  const { data: menuItems = [], isLoading } = useQuery({
+  const { data: menuItems = [], isLoading, isError } = useQuery({
     queryKey: ["categories"],
     queryFn: getMenuCategories,
   });
@@ -53,6 +51,18 @@ const location = useLocation();
   const isWalletEnabled = storeSettings?.walletEnabled !== false && storeSettings?.modules?.wallet !== false;
   const isWishlistEnabled = storeSettings?.wishlistEnabled !== false && storeSettings?.modules?.wishlist !== false;
 
+  useEffect(() => {
+    setIsMenuOpen(false);
+    setOpenSubMenu(null);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = isMenuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
+
   const handleLogout = async () => {
     await logout();
     setIsMenuOpen(false);
@@ -65,316 +75,292 @@ const location = useLocation();
     else navigate("/signin?redirect=/profile");
   };
 
-  const toggleSubMenu = (index) => {
-    setOpenSubMenu(openSubMenu === index ? null : index);
+  const isActive = (tab) => {
+    const path = location.pathname;
+    if (tab === "home") return path === "/";
+    if (tab === "search") return path === "/search";
+    if (tab === "shop") return path.startsWith("/new-product");
+    if (tab === "account") return path.startsWith("/profile") || path.startsWith("/signin");
+    return false;
   };
 
-  // Active tab: click-settable and route-synced
-  const [activeTab, setActiveTab] = useState(() => {
-    const p = location.pathname || "";
-    if (p === "/" || p === "") return "home";
-    if (p.startsWith("/new-product") || p.startsWith("/new-products")) return "brands";
-    if (p.startsWith("/profile")) return "account";
-    return "";
-  });
+  const bottomItemClass = (active) =>
+    `flex min-w-[52px] flex-col items-center justify-center gap-1 text-[10px] font-semibold transition ${
+      active ? "text-primary-600" : "text-[#736b60]"
+    }`;
 
-  useEffect(() => {
-    const p = location.pathname || "";
-    if (p === "/" || p === "") setActiveTab("home");
-    else if (p.startsWith("/new-product") || p.startsWith("/new-products")) setActiveTab("brands");
-    else if (p.startsWith("/profile")) setActiveTab("account");
-    else setActiveTab("");
-  }, [location.pathname]);
+  const quickLinkClass =
+    "flex flex-col items-center gap-2 rounded-2xl border border-secondary-200 bg-brand-bg px-2 py-3 text-center text-[10px] font-semibold text-[#463d32] shadow-sm";
+  const quickIconClass = "grid h-9 w-9 place-items-center rounded-full bg-secondary-50 text-accent";
 
   return (
-    <div className="w-full bg-white flex flex-col md:hidden">
-      {/* 🔝 Sticky Header */}
-      <div className="fixed top-0 left-0 w-full z-[90] bg-white shadow-md">
-        <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
-          {/* Menu Button */}
+    <div className="w-full bg-brand-bg md:hidden">
+      <header className="fixed inset-x-0 top-0 z-[90] border-b border-secondary-200/70 bg-brand-bg/95 shadow-[0_5px_20px_rgba(139,30,30,0.09)] backdrop-blur-xl">
+        <div className="grid h-[72px] grid-cols-[44px_1fr_auto] items-center gap-2 px-3">
           <button
-            className={`text-primary-500 hover:text-primary-600 transition ${activeTab === "menu" ? "text-primary-500" : "text-primary-500"}`}
-            onClick={() => {
-              setActiveTab("menu");
-              setIsMenuOpen(true);
-            }}
+            type="button"
+            onClick={() => setIsMenuOpen(true)}
+            className="grid h-10 w-10 place-items-center rounded-full border border-secondary-200 bg-secondary-50 text-accent transition active:scale-95"
+            aria-label="Open menu"
           >
-            <Menu size={28} />
+            <Menu size={22} strokeWidth={1.8} />
           </button>
 
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 justify-center">
-            <span className="grid place-items-center w-9 h-9 rounded-full bg-[#a94217] text-[#fff1da] text-xl">ॐ</span>
-            <span className="text-xl font-semibold text-[#63251a]">MantraVanni</span>
-          </Link>
+          <BrandMark size="sm" className="mx-auto min-w-0 justify-center gap-2" />
 
-          {/* Profile + Cart */}
-          <div className="flex items-center gap-4 text-brand-text">
-            {/* Wallet Quick Button */}
+          <div className="flex items-center gap-1.5">
             {isWalletEnabled && (
               <Link
                 to="/wallet"
-                className="relative flex flex-col items-center text-xs text-emerald-600 font-semibold hover:text-emerald-700 transition bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-200"
+                className="grid h-10 w-10 place-items-center rounded-full text-brand-text transition hover:bg-secondary-50 hover:text-accent active:scale-95"
+                aria-label="Open wallet"
               >
-                <Wallet size={18} />
-                <span>Wallet</span>
+                <Wallet size={22} strokeWidth={1.7} />
               </Link>
             )}
 
-            {/* Profile */}
-            <button
-              onClick={handleProfileClick}
-              className="relative flex flex-col items-center text-xs hover:text-primary-500 transition"
-            >
-              <User size={22} />
-              <span>Profile</span>
-            </button>
-
-            {/* Cart */}
             <Link
               to="/cart"
-              className="relative flex flex-col items-center text-xs hover:text-primary-500 transition"
+              className="relative grid h-10 w-10 place-items-center rounded-full text-brand-text transition hover:bg-secondary-50 hover:text-accent active:scale-95"
+              aria-label="Open cart"
             >
-              <ShoppingBag size={22} />
+              <ShoppingBasket size={24} strokeWidth={1.7} />
               {totalQuantity > 0 && (
-                <span className="absolute -top-1 -right-2 text-[10px] bg-primary-600 text-white rounded-full px-1.5 py-0.5">
-                  {totalQuantity}
+                <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-primary-600 px-1 text-[9px] font-bold text-white ring-2 ring-white">
+                  {totalQuantity > 99 ? "99+" : totalQuantity}
                 </span>
               )}
-              <span>Cart</span>
             </Link>
           </div>
         </div>
+      </header>
 
-        {/* Search Bar */}
-       {/* Search Bar (Hide on /search page) */}
-{!hideSearch && (
-  <div className="px-4 py-2 border-b border-gray-200 bg-white">
-    <div className="flex items-center gap-2 bg-primary-50 rounded-full px-3 py-2 border border-primary-200">
-      <Search className="text-primary-300" size={18} />
-      <div
-        className="w-full bg-transparent outline-none text-sm text-brand-text placeholder-purple-300"
-        onClick={() => navigate("/search")}
-      >
-        <span className="text-gray-500">Search sacred essentials...</span>
-      </div>
-    </div>
-  </div>
-)}
+      <div className="h-[72px]" />
 
-     
-      
-      </div>
-
-      {/* Spacer for sticky header */}
-     {!hideSearch && <div className="pt-[130px]"></div>}
-
-      {/* 📱 Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around items-center py-2 z-50">
-        <Link
-          to="/"
-          onClick={() => setActiveTab("home")}
-          className={`flex flex-col items-center ${activeTab === "home" ? "text-primary-500" : "text-brand-text"}`}
-        >
-          <Home size={22} />
-          <span className="text-xs">Home</span>
-        </Link>
-
-        <button
-          onClick={() => {
-            setActiveTab("menu");
-            setIsMenuOpen(true);
-          }}
-          className={`flex flex-col items-center ${activeTab === "menu" ? "text-primary-500" : "text-brand-text"}`}
-        >
-          <List size={22} />
-          <span className="text-xs">Menu</span>
-        </button>
-
-        <Link
-          to="/new-products"
-          onClick={() => setActiveTab("brands")}
-          className={`flex flex-col items-center ${activeTab === "brands" ? "text-primary-500" : "text-brand-text"}`}
-        >
-          <Tag size={22} />
-          <span className="text-xs">Brands</span>
-        </Link>
-
-        {/* <Link to="/offers" className="flex flex-col items-center text-brand-text">
-          <Percent size={22} />
-          <span className="text-xs">Offers</span>
-        </Link> */}
-
-        {isWalletEnabled && (
-          <Link
-            to="/wallet"
-            onClick={() => setActiveTab("wallet")}
-            className={`flex flex-col items-center ${activeTab === "wallet" ? "text-emerald-600 font-bold" : "text-brand-text"}`}
-          >
-            <Wallet size={22} />
-            <span className="text-xs">Wallet</span>
+      <nav className="fixed inset-x-0 bottom-0 z-[80] border-t border-secondary-200/80 bg-brand-bg/95 px-2 pb-[max(8px,env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_24px_rgba(139,30,30,0.11)] backdrop-blur-xl">
+        <div className="mx-auto grid max-w-md grid-cols-5 items-end">
+          <Link to="/" className={bottomItemClass(isActive("home"))}>
+            <Home size={21} strokeWidth={isActive("home") ? 2.3 : 1.8} />
+            <span>Home</span>
           </Link>
-        )}
 
-        <button
-          onClick={() => {
-            setActiveTab("account");
-            handleProfileClick();
-          }}
-          className={`flex flex-col items-center ${activeTab === "account" ? "text-primary-500" : "text-brand-text"}`}
-        >
-          <User size={22} />
-          <span className="text-xs">Account</span>
-        </button>
-      </div>
+          <button
+            type="button"
+            onClick={() => setIsMenuOpen(true)}
+            className={bottomItemClass(isMenuOpen)}
+          >
+            <Grid2X2 size={21} strokeWidth={isMenuOpen ? 2.3 : 1.8} />
+            <span>Menu</span>
+          </button>
 
-      {/* ⭐ Sidebar Menu */}
-      <div
-        className={`fixed top-0 left-0 h-screen w-72 bg-white shadow-xl transform transition-transform duration-300 z-[100] rounded-r-2xl ${
+          <Link
+            to="/search"
+            className="group -mt-7 flex flex-col items-center gap-1 text-[10px] font-bold text-primary-600"
+            aria-label="Search products"
+          >
+            <span
+              className={`grid h-12 w-12 place-items-center rounded-full border-[3px] border-white shadow-[0_5px_16px_rgba(139,30,30,0.28)] transition active:scale-95 ${
+                isActive("search") ? "bg-accent text-white" : "bg-primary-500 text-white"
+              }`}
+            >
+              <Search size={22} strokeWidth={2.1} />
+            </span>
+            <span>Search</span>
+          </Link>
+
+          <Link to="/new-products" className={bottomItemClass(isActive("shop"))}>
+            <Store size={21} strokeWidth={isActive("shop") ? 2.3 : 1.8} />
+            <span>Shop</span>
+          </Link>
+
+          <button
+            type="button"
+            onClick={handleProfileClick}
+            className={bottomItemClass(isActive("account"))}
+          >
+            <CircleUserRound size={21} strokeWidth={isActive("account") ? 2.3 : 1.8} />
+            <span>Account</span>
+          </button>
+        </div>
+      </nav>
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-[110] flex w-[88%] max-w-[350px] flex-col overflow-hidden rounded-r-[28px] bg-brand-bg shadow-[18px_0_50px_rgba(28,18,8,0.2)] transition-transform duration-300 ease-out ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
+        aria-hidden={!isMenuOpen}
       >
-        {/* Header */}
-        <div className="flex justify-between items-center px-6 py-4 bg-primary-100 sticky top-0 z-10">
-          <h2 className="text-xl font-bold text-primary-600">Menu</h2>
-          <button onClick={() => setIsMenuOpen(false)}>
-            <X size={26} className="text-primary-600" />
+        <div className="relative overflow-hidden bg-gradient-to-br from-accent via-primary-700 to-brand-text px-5 pb-5 pt-4 text-white">
+          <span className="absolute -right-8 -top-10 h-32 w-32 rounded-full border border-white/10" />
+          <span className="absolute -right-2 top-8 h-20 w-20 rounded-full border border-secondary-300/35" />
+
+          <div className="relative flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="grid h-10 w-10 place-items-center rounded-full border border-secondary-300/50 bg-brand-bg/10 text-xl text-secondary-200">
+                ॐ
+              </span>
+              <div>
+                <p className="font-serif text-lg font-semibold leading-5">MantraVanni</p>
+                <p className="mt-1 text-[9px] tracking-[0.12em] text-secondary-100">SACRED LIVING</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen(false)}
+              className="grid h-9 w-9 place-items-center rounded-full bg-brand-bg/10 transition hover:bg-brand-bg/20"
+              aria-label="Close menu"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleProfileClick}
+            className="relative mt-5 flex w-full items-center gap-3 rounded-2xl border border-white/15 bg-brand-bg/10 p-3 text-left backdrop-blur-sm"
+          >
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-primary-50 text-primary-700">
+              <CircleUserRound size={25} strokeWidth={1.7} />
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-semibold">
+                {user?.name || user?.userName || user?.displayName || (user ? "My Account" : "Welcome")}
+              </span>
+              <span className="mt-0.5 block text-[11px] text-white/70">
+                {user ? "View profile and orders" : "Sign in to your account"}
+              </span>
+            </span>
           </button>
         </div>
 
-        {/* Scrollable Menu */}
-        <div className="h-[calc(100vh-64px)] overflow-y-auto pb-20">
-          {/* Static Links */}
-          <div className="flex flex-col px-6 py-4 border-b border-primary-200 gap-4">
-            <button
-              onClick={handleProfileClick}
-              className="flex items-center gap-3 text-brand-text hover:text-primary-600 transition"
-            >
-              <User size={22} />
-              <span>My Profile</span>
-            </button>
-
-            {isWalletEnabled && (
-              <Link
-                to="/wallet"
-                onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-3 text-emerald-700 font-semibold hover:text-emerald-800 transition bg-emerald-50 p-2 rounded-lg"
-              >
-                <Wallet size={22} />
-                <span>My Wallet & E-Ledger</span>
-              </Link>
-            )}
-
+        <div className="flex-1 overflow-y-auto overscroll-contain pb-24">
+          <div className="grid grid-cols-3 gap-2 px-4 py-4">
+            <Link to="/new-products" className={quickLinkClass}>
+              <span className={quickIconClass}>
+                <Sparkles size={18} />
+              </span>
+              Products
+            </Link>
+            <Link to="/#combo-products" className={quickLinkClass}>
+              <span className={quickIconClass}>
+                <Tag size={18} />
+              </span>
+              Combo
+            </Link>
+            <Link to="/#best-sellers" className={quickLinkClass}>
+              <span className={quickIconClass}>
+                <PackageSearch size={18} />
+              </span>
+              Best Sellers
+            </Link>
             {isWishlistEnabled && (
-              <Link
-                to="/wishlist"
-                onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-3 text-brand-text hover:text-primary-600 transition"
-              >
-                <Heart size={22} />
-                <span>My Wishlist</span>
+              <Link to="/wishlist" className={quickLinkClass}>
+                <span className={quickIconClass}>
+                  <Heart size={18} />
+                </span>
+                Wishlist
               </Link>
             )}
-
-            <Link
-              to="/cart"
-              onClick={() => setIsMenuOpen(false)}
-              className="flex items-center gap-3 text-brand-text hover:text-primary-600 transition relative"
-            >
-              <ShoppingBag size={22} />
-              {totalQuantity > 0 && (
-                <span className="absolute -top-1 -right-2 text-[10px] bg-primary-600 text-white rounded-full px-1.5 py-0.5">
-                  {totalQuantity}
+            {isWalletEnabled && (
+              <Link to="/wallet" className={quickLinkClass}>
+                <span className={quickIconClass}>
+                  <Wallet size={18} />
                 </span>
-              )}
-              <span>My Cart</span>
-            </Link>
-
-            <Link
-              to="/new-products"
-              onClick={() => setIsMenuOpen(false)}
-              className="flex items-center gap-3 text-brand-text hover:text-primary-600 transition"
-            >
-              <Tag size={22} />
-              <span>New Arrival</span>
-            </Link>
-
-            <Link
-              to="/collections"
-              onClick={() => setIsMenuOpen(false)}
-              className="flex items-center gap-3 text-brand-text hover:text-primary-600 transition"
-            >
-              <List size={22} />
-              <span>Collections</span>
-            </Link>
+                Wallet
+              </Link>
+            )}
           </div>
 
-          {/* Categories */}
-          <ul className="flex flex-col mt-2 text-brand-text font-semibold">
-            {isLoading && (
-              <p className="px-6 py-4 text-gray-500">Loading categories...</p>
-            )}
-            {menuItems.map((item, index) => (
-              <li key={item._id} className="border-b border-primary-100">
-                <div
-                  className="flex justify-between items-center px-5 py-3 hover:bg-primary-500 hover:text-white transition cursor-pointer"
-                  onClick={() => {
-                    if (item.subcategories.length > 0) toggleSubMenu(index);
-                    else {
-                      navigate(`/${item.slug}`);
-                      setIsMenuOpen(false);
-                    }
-                  }}
-                >
-                  {item.name}
-                  {item.subcategories.length > 0 &&
-                    (openSubMenu === index ? (
-                      <ChevronUp size={18} />
-                    ) : (
-                      <ChevronDown size={18} />
-                    ))}
-                </div>
+          <div className="px-5 pb-2 pt-1">
+            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-accent">Shop by category</p>
+          </div>
 
-                {openSubMenu === index && item.subcategories.length > 0 && (
-                  <ul className="bg-primary-50 text-sm font-normal">
-                    {item.subcategories.map((sub) => (
-                      <li key={sub._id}>
+          <ul className="mx-3 overflow-hidden rounded-2xl border border-secondary-200 bg-brand-bg shadow-sm">
+            {isLoading && (
+              <li className="px-4 py-5 text-center text-xs text-[#8a8177]">Loading categories...</li>
+            )}
+            {isError && (
+              <li className="px-4 py-5 text-center text-xs text-primary-700">Unable to load categories</li>
+            )}
+            {!isLoading && !isError && menuItems.length === 0 && (
+              <li className="px-4 py-5 text-center text-xs text-[#8a8177]">No categories available</li>
+            )}
+
+            {menuItems.map((item, index) => {
+              const hasSubcategories = item.subcategories?.length > 0;
+              const isOpen = openSubMenu === index;
+
+              return (
+                <li key={item._id || item.slug} className="border-b border-secondary-200 last:border-b-0">
+                  <button
+                    type="button"
+                    className={`flex w-full items-center justify-between px-4 py-3.5 text-left text-[13px] font-semibold transition ${
+                      isOpen ? "bg-secondary-50 text-accent" : "text-[#443b31] hover:bg-secondary-50"
+                    }`}
+                    onClick={() => {
+                      if (hasSubcategories) setOpenSubMenu(isOpen ? null : index);
+                      else navigate(`/${item.slug}`);
+                    }}
+                  >
+                    <span>{item.name}</span>
+                    {hasSubcategories && (
+                      <ChevronDown
+                        size={17}
+                        className={`text-primary-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                      />
+                    )}
+                  </button>
+
+                  {isOpen && hasSubcategories && (
+                    <ul className="border-t border-secondary-200 bg-secondary-50/70 py-1.5">
+                      <li>
                         <Link
-                          to={`/${item.slug}/${sub.slug}`}
-                          onClick={() => setIsMenuOpen(false)}
-                          className="block px-8 py-2 hover:bg-primary-100 hover:text-primary-600"
+                          to={`/${item.slug}`}
+                          className="block px-6 py-2.5 text-xs font-semibold text-accent"
                         >
-                          {sub.name}
+                          View all {item.name}
                         </Link>
                       </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
+                      {item.subcategories.map((sub) => (
+                        <li key={sub._id || sub.slug}>
+                          <Link
+                            to={`/${item.slug}/${sub.slug}`}
+                            className="block px-6 py-2.5 text-xs text-[#665d52] transition hover:bg-secondary-100 hover:text-accent"
+                          >
+                            {sub.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              );
+            })}
           </ul>
 
-          {/* Logout */}
           {user && (
-            <div className="w-full px-6 py-6">
+            <div className="px-4 py-5">
               <button
+                type="button"
                 onClick={handleLogout}
-                className="flex items-center gap-3 w-full justify-center bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3 rounded-xl"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary-500/20 bg-primary-50 py-3 text-sm font-semibold text-primary-700 transition hover:bg-primary-600 hover:text-white"
               >
-                <LogOut size={20} /> Logout
+                <LogOut size={18} />
+                Logout
               </button>
             </div>
           )}
         </div>
-      </div>
+      </aside>
 
-      {/* Overlay */}
-      {isMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black opacity-30 z-[95]"
-          onClick={() => setIsMenuOpen(false)}
-        ></div>
-      )}
+      <button
+        type="button"
+        aria-label="Close menu overlay"
+        onClick={() => setIsMenuOpen(false)}
+        className={`fixed inset-0 z-[100] bg-black/50 backdrop-blur-[2px] transition-opacity duration-300 ${
+          isMenuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      />
     </div>
   );
 }

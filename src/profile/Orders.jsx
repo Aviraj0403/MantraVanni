@@ -36,7 +36,7 @@ export default function Orders() {
     return (
       <div className="flex flex-col gap-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-white rounded-2xl border border-gray-100 p-4 animate-pulse h-28" />
+          <div key={i} className="bg-brand-bg rounded-2xl border border-gray-100 p-4 animate-pulse h-28" />
         ))}
       </div>
     );
@@ -82,7 +82,7 @@ export default function Orders() {
         return (
           <div
             key={order._id}
-            className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-all"
+            className="bg-brand-bg rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-all"
           >
             {/* Order header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">

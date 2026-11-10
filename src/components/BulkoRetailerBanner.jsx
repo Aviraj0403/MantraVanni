@@ -2,39 +2,45 @@ import React from 'react';
 import { ShieldCheck, Truck, Percent, Award, BadgePercent, Store } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+const features = [
+  { icon: Percent, title: "Wholesale Margins", text: "Get up to 60-70% retail profit margin on SKUs." },
+  { icon: ShieldCheck, title: "GST Invoice", text: "Claim 18% GST input credit on all purchases." },
+  { icon: Award, title: "Direct Factory Imports", text: "Sourced straight from verified manufacturers." },
+  { icon: Truck, title: "Fast Dispatch", text: "Priority dispatch to pan-India PIN codes." },
+];
+
 export default function BulkoRetailerBanner() {
   return (
-    <div className="max-w-7xl mx-auto px-4 my-6">
-      <div className="bg-gradient-to-r from-zinc-950 via-zinc-900 to-red-950 text-white rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden border border-red-900/40">
-        
+    <section className="bg-brand-bg px-3 py-5 sm:px-6 lg:px-5">
+      <div className="relative mx-auto overflow-hidden rounded-3xl border border-secondary/40 bg-gradient-to-r from-brand-text via-accent to-brand-text p-6 text-white shadow-[0_14px_40px_rgba(139,30,30,0.18)] sm:p-10">
         {/* Background glow */}
-        <div className="absolute top-0 right-0 -translate-y-12 translate-x-12 w-96 h-96 bg-red-600/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="pointer-events-none absolute right-0 top-0 h-96 w-96 translate-x-12 -translate-y-12 rounded-full bg-secondary/20 blur-3xl"></div>
 
-        <div className="grid md:grid-cols-2 gap-8 items-center relative z-10">
+        <div className="relative z-10 grid items-center gap-8 md:grid-cols-2">
           <div>
-            <div className="inline-flex items-center gap-2 bg-red-500/20 text-red-400 text-xs font-bold px-3 py-1.5 rounded-full mb-4 border border-red-500/30">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-secondary-300/40 bg-brand-text/55 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-secondary-200 backdrop-blur sm:text-xs">
               <Store size={14} /> INDIA'S #1 TECH & MOBILE WHOLESALE MARKETPLACE
             </div>
-            
-            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">
-              Built for India's Retailers, Resellers & Dukandars
+
+            <h2 className="text-2xl font-bold leading-tight tracking-tight sm:text-4xl">
+              Built for India's Retailers, Resellers & <span className="text-secondary-300">Dukandars</span>
             </h2>
 
-            <p className="text-gray-300 text-sm sm:text-base mt-3 leading-relaxed">
+            <p className="mt-3 text-sm leading-relaxed text-white/80 sm:text-base">
               Bulko cuts out 4–5 layers of middlemen between the factory and your shop shelf. Direct factory import pricing, 100% GST Invoice on every order, and 1-click business wallet restock.
             </p>
 
-            <div className="flex flex-wrap gap-4 mt-6">
+            <div className="mt-6 flex flex-wrap gap-4">
               <Link
                 to="/wallet"
-                className="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition flex items-center gap-2 text-sm"
+                className="inline-flex h-12 items-center gap-2 rounded-lg bg-primary-500 px-6 text-sm font-semibold text-white shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-secondary hover:text-brand-text"
               >
                 <BadgePercent size={18} /> Open Business Wallet
               </Link>
-              
+
               <Link
                 to="/wishlist"
-                className="bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3 rounded-xl backdrop-blur-md transition border border-white/20 text-sm"
+                className="inline-flex h-12 items-center rounded-lg border border-secondary-300/50 bg-white/10 px-6 text-sm font-semibold text-white backdrop-blur-md transition hover:border-secondary hover:bg-secondary/20"
               >
                 Saved Inventory
               </Link>
@@ -42,41 +48,21 @@ export default function BulkoRetailerBanner() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10">
-              <div className="w-10 h-10 rounded-xl bg-red-600/20 text-red-400 flex items-center justify-center mb-3">
-                <Percent size={20} />
+            {features.map(({ icon: Icon, title, text }) => (
+              <div
+                key={title}
+                className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md transition hover:-translate-y-1 hover:border-secondary/60"
+              >
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/20 text-secondary-300">
+                  <Icon size={20} />
+                </div>
+                <h4 className="text-sm font-bold text-white">{title}</h4>
+                <p className="mt-1 text-xs text-white/65">{text}</p>
               </div>
-              <h4 className="font-bold text-white text-sm">Wholesale Margins</h4>
-              <p className="text-xs text-gray-400 mt-1">Get up to 60-70% retail profit margin on SKUs.</p>
-            </div>
-
-            <div className="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10">
-              <div className="w-10 h-10 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center mb-3">
-                <ShieldCheck size={20} />
-              </div>
-              <h4 className="font-bold text-white text-sm">GST Invoice</h4>
-              <p className="text-xs text-gray-400 mt-1">Claim 18% GST input credit on all purchases.</p>
-            </div>
-
-            <div className="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10">
-              <div className="w-10 h-10 rounded-xl bg-amber-600/20 text-amber-400 flex items-center justify-center mb-3">
-                <Award size={20} />
-              </div>
-              <h4 className="font-bold text-white text-sm">Direct Factory Imports</h4>
-              <p className="text-xs text-gray-400 mt-1">Sourced straight from verified manufacturers.</p>
-            </div>
-
-            <div className="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10">
-              <div className="w-10 h-10 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center mb-3">
-                <Truck size={20} />
-              </div>
-              <h4 className="font-bold text-white text-sm">Fast Dispatch</h4>
-              <p className="text-xs text-gray-400 mt-1">Priority dispatch to pan-India PIN codes.</p>
-            </div>
+            ))}
           </div>
         </div>
-
       </div>
-    </div>
+    </section>
   );
 }

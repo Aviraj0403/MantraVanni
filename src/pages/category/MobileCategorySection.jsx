@@ -30,7 +30,7 @@
 //   };
 
 //   return (
-//     <div className="block md:hidden bg-white py-3 border-t border-b border-gray-200">
+//     <div className="block md:hidden bg-brand-bg py-3 border-t border-b border-secondary-200">
 //       <div className="flex items-center justify-start gap-4 overflow-x-auto px-4 scrollbar-hide">
 //         {categories.map((cat) => (
 //           <div
@@ -73,7 +73,7 @@ export default function MobileCategorySection() {
   };
 
   return (
-    <div className="block md:hidden bg-white py-3 border-t border-b border-gray-200">
+    <div className="block md:hidden bg-brand-bg py-3 border-t border-b border-secondary-200">
       <div className="flex items-center justify-start gap-4 overflow-x-auto px-4 scrollbar-hide">
         {/* Loading State */}
         {isLoading && <div className="w-full text-center text-primary-600">Loading...</div>}

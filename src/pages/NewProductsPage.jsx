@@ -161,7 +161,7 @@ export default function NewProductsPage() {
   const navigate = useNavigate();
 
   return (
-    <section className="py-10 bg-white">
+    <section className="py-10 bg-brand-bg">
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-2xl md:text-3xl font-bold text-primary-500 mb-8 text-center">
           New Arrivals
@@ -177,7 +177,7 @@ export default function NewProductsPage() {
             return (
               <div
                 key={product.id}
-                className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 relative group p-3 flex flex-col justify-between"
+                className="bg-brand-bg border border-secondary-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 relative group p-3 flex flex-col justify-between"
               >
                 <div className="absolute -top-3 right-3 z-30 bg-primary-500 text-white px-3 py-1 rounded-tl-xl rounded-bl-xl text-xs font-bold shadow">
                   New

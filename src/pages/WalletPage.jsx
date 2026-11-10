@@ -150,8 +150,8 @@ export default function WalletPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-28 pb-12 flex justify-center items-center bg-gray-50">
-        <div className="flex items-center gap-3 text-red-600 font-semibold">
+      <div className="min-h-screen pt-28 pb-12 flex justify-center items-center bg-brand-bg">
+        <div className="flex items-center gap-3 text-primary-600 font-semibold">
           <RefreshCw className="animate-spin" size={24} />
           Loading Business Wallet...
         </div>
@@ -160,20 +160,20 @@ export default function WalletPage() {
   }
 
   return (
-    <div className="min-h-screen pt-28 pb-16 bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="min-h-screen pt-28 pb-16 bg-brand-bg">
       <div className="max-w-5xl mx-auto px-4">
         
         {/* Banner */}
-        <div className="bg-gradient-to-r from-gray-950 via-zinc-900 to-red-950 text-white rounded-3xl p-8 shadow-xl mb-8 border border-red-900/30 relative overflow-hidden">
-          <div className="absolute top-0 right-0 -translate-y-8 translate-x-8 w-64 h-64 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="bg-gradient-to-r from-accent-800 via-accent-700 to-accent-600 text-white rounded-3xl p-8 shadow-xl mb-8 border border-accent-300/30 relative overflow-hidden">
+          <div className="absolute top-0 right-0 -translate-y-8 translate-x-8 w-64 h-64 bg-primary-500/20 rounded-full blur-3xl pointer-events-none"></div>
           
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
             <div>
-              <div className="inline-flex items-center gap-2 bg-red-500/20 text-red-400 text-xs font-semibold px-3 py-1 rounded-full mb-3 border border-red-500/30">
+              <div className="inline-flex items-center gap-2 bg-primary-500/20 text-secondary-200 text-xs font-semibold px-3 py-1 rounded-full mb-3 border border-primary-500/30">
                 <ShieldCheck size={14} /> BULKO BUSINESS WALLET
               </div>
               <h1 className="text-3xl font-extrabold tracking-tight">My Wallet & Referral Earnings</h1>
-              <p className="text-gray-400 text-sm mt-1">Instant Razorpay Top-Up & ₹250 Fixed Reward per Friend Referral.</p>
+              <p className="text-white/70 text-sm mt-1">Instant Razorpay Top-Up & ₹250 Fixed Reward per Friend Referral.</p>
             </div>
 
             <div className="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/15 min-w-[220px]">
@@ -197,22 +197,22 @@ export default function WalletPage() {
           <div className="space-y-6">
             
             {/* Razorpay Top-up Form */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-              <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <PlusCircle className="text-red-600" size={18} /> Top-Up via Razorpay
+            <div className="bg-brand-bg p-6 rounded-2xl shadow-sm border border-secondary-200">
+              <h2 className="text-base font-bold text-brand-text mb-3 flex items-center gap-2">
+                <PlusCircle className="text-primary-600" size={18} /> Top-Up via Razorpay
               </h2>
               <form onSubmit={handleTopUp} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Enter Amount (₹)</label>
+                  <label className="block text-xs font-semibold text-brand-text/70 mb-1.5">Enter Amount (₹)</label>
                   <div className="relative">
-                    <span className="absolute left-3.5 top-2.5 text-gray-500 font-semibold text-sm">₹</span>
+                    <span className="absolute left-3.5 top-2.5 text-brand-text/60 font-semibold text-sm">₹</span>
                     <input
                       type="number"
                       min="1"
                       placeholder="e.g. 2000"
                       value={topUpAmount}
                       onChange={(e) => setTopUpAmount(e.target.value)}
-                      className="w-full pl-8 pr-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-600 font-semibold text-gray-800 text-sm"
+                      className="w-full pl-8 pr-4 py-2 rounded-xl border border-secondary-200 focus:outline-none focus:ring-2 focus:ring-primary-500 font-semibold text-brand-text text-sm"
                     />
                   </div>
                 </div>
@@ -223,7 +223,7 @@ export default function WalletPage() {
                       key={amt}
                       type="button"
                       onClick={() => setTopUpAmount(amt.toString())}
-                      className="flex-1 py-1 bg-gray-100 hover:bg-red-50 text-gray-700 hover:text-red-700 rounded-lg text-xs font-semibold border border-gray-200 transition"
+                      className="flex-1 py-1 bg-secondary-50 hover:bg-primary-50 text-brand-text hover:text-primary-700 rounded-lg text-xs font-semibold border border-secondary-200 transition"
                     >
                       +₹{amt}
                     </button>
@@ -233,7 +233,7 @@ export default function WalletPage() {
                 <button
                   type="submit"
                   disabled={topUpLoading}
-                  className="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-xl shadow transition flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-2.5 bg-primary-500 hover:bg-primary-600 text-white font-bold text-sm rounded-xl shadow transition flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {topUpLoading ? <RefreshCw className="animate-spin" size={16} /> : <CreditCard size={16} />}
                   Pay via Razorpay
@@ -242,19 +242,19 @@ export default function WalletPage() {
             </div>
 
             {/* Refer & Earn Widget */}
-            <div className="bg-gradient-to-br from-zinc-900 to-zinc-800 text-white p-6 rounded-2xl shadow-sm border border-zinc-700">
-              <h2 className="text-base font-bold mb-1 flex items-center gap-2 text-amber-400">
+            <div className="bg-gradient-to-br from-accent-800 to-accent-700 text-white p-6 rounded-2xl shadow-sm border border-accent-600">
+              <h2 className="text-base font-bold mb-1 flex items-center gap-2 text-secondary-300">
                 <Share2 size={18} /> Refer & Earn ₹250
               </h2>
               <p className="text-xs text-gray-300 mb-4">Share your code. When a friend signs up & claims it, both get ₹250 wallet credit!</p>
 
-              <div className="bg-zinc-950 p-3 rounded-xl border border-zinc-700 flex items-center justify-between mb-4">
-                <span className="font-mono font-bold tracking-wider text-amber-400 text-sm">
+              <div className="bg-accent-800 p-3 rounded-xl border border-accent-600 flex items-center justify-between mb-4">
+                <span className="font-mono font-bold tracking-wider text-secondary-300 text-sm">
                   {walletData?.referralCode || 'BULKO...'}
                 </span>
                 <button
                   onClick={copyReferralCode}
-                  className="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition"
+                  className="p-1.5 bg-accent-700 hover:bg-accent-600 text-white rounded-lg transition"
                   title="Copy Referral Code"
                 >
                   {copied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
@@ -263,19 +263,19 @@ export default function WalletPage() {
 
               {/* Redeem Friend's Code */}
               <form onSubmit={handleClaimReferral} className="space-y-2">
-                <label className="block text-[11px] text-gray-400 uppercase font-semibold">Have a Referral Code?</label>
+                <label className="block text-[11px] text-brand-text/50 uppercase font-semibold">Have a Referral Code?</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     placeholder="Enter Code"
                     value={referralInput}
                     onChange={(e) => setReferralInput(e.target.value)}
-                    className="flex-1 px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-white text-xs uppercase focus:outline-none focus:border-amber-400 font-mono"
+                    className="flex-1 px-3 py-1.5 rounded-lg bg-accent-800 border border-accent-600 text-white text-xs uppercase focus:outline-none focus:border-secondary-400 font-mono"
                   />
                   <button
                     type="submit"
                     disabled={referralLoading}
-                    className="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold text-xs rounded-lg transition disabled:opacity-50"
+                    className="px-4 py-1.5 bg-secondary-400 hover:bg-secondary-500 text-accent-800 font-bold text-xs rounded-lg transition disabled:opacity-50"
                   >
                     Claim
                   </button>
@@ -286,17 +286,17 @@ export default function WalletPage() {
           </div>
 
           {/* Right Column: Detailed Transactions Ledger */}
-          <div className="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <Wallet className="text-zinc-700" size={20} /> Detailed Payment & Deduction Ledger
+          <div className="md:col-span-2 bg-brand-bg p-6 rounded-2xl shadow-sm border border-secondary-200">
+            <h2 className="text-lg font-bold text-brand-text mb-4 flex items-center gap-2">
+              <Wallet className="text-accent-600" size={20} /> Detailed Payment & Deduction Ledger
             </h2>
 
             {walletData?.transactions?.length === 0 ? (
-              <div className="text-center py-12 text-gray-500">
+              <div className="text-center py-12 text-brand-text/60">
                 No wallet transactions recorded yet.
               </div>
             ) : (
-              <div className="divide-y divide-gray-100 max-h-[460px] overflow-y-auto pr-1">
+              <div className="divide-y divide-secondary-100 max-h-[460px] overflow-y-auto pr-1">
                 {walletData?.transactions?.map((tx, idx) => (
                   <div key={idx} className="py-3.5 flex items-start justify-between gap-4">
                     <div className="flex items-start gap-3">
@@ -304,26 +304,26 @@ export default function WalletPage() {
                         {tx.type === 'CREDIT' ? <ArrowDownLeft size={18} /> : <ArrowUpRight size={18} />}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-gray-900">{tx.description}</p>
+                        <p className="text-sm font-semibold text-brand-text">{tx.description}</p>
                         
                         <div className="flex flex-wrap items-center gap-2 mt-1">
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
                             tx.source === 'RAZORPAY' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
                             tx.source === 'REFERRAL' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
                             tx.source === 'ORDER_PAYMENT' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
-                            'bg-gray-100 text-gray-700'
+                            'bg-gray-100 text-brand-text'
                           }`}>
                             {tx.source}
                           </span>
 
                           {tx.paymentId && (
-                            <span className="text-[11px] font-mono text-gray-400">
+                            <span className="text-[11px] font-mono text-brand-text/50">
                               Ref: {tx.paymentId}
                             </span>
                           )}
                         </div>
 
-                        <p className="text-[11px] text-gray-400 mt-1">
+                        <p className="text-[11px] text-brand-text/50 mt-1">
                           {new Date(tx.createdAt || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                         </p>
                       </div>

@@ -1,74 +1,79 @@
 import React from "react";
+import { ArrowRight, BadgeCheck, Flame, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
+
+const highlights = [
+  { icon: BadgeCheck, text: "Authentic, carefully selected essentials" },
+  { icon: Flame, text: "Crafted for peaceful everyday rituals" },
+  { icon: Sparkles, text: "Sacred gifts for every meaningful moment" },
+];
 
 export default function BeautyHighlightSection() {
   return (
-    <section className="w-full bg-gradient-to-r from-[#fff1da] via-[#fffaf2] to-[#f6dfc2] py-14 px-4 md:px-6 border-y border-primary-100">
-      <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 items-center">
-        
-        {/* Left Content */}
-        <div className="space-y-4">
-          <span className="inline-block bg-primary-100 text-primary-600 text-xs font-semibold px-3 py-1 rounded-full">
-            A sacred ritual, beautifully prepared
-          </span>
+    <section className="overflow-hidden bg-brand-bg px-3 py-10 sm:px-6 sm:py-14 lg:px-5">
+      <div className="mx-auto grid items-center gap-10 rounded-3xl border border-secondary-200 bg-brand-bg p-5 shadow-[0_14px_40px_rgba(139,30,30,0.08)] sm:p-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14 lg:p-10">
+        <div className="px-1 sm:px-3 lg:pl-7">
+          <p className="inline-flex items-center gap-2 rounded-full bg-secondary-50 px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.17em] text-accent sm:text-[11px]">
+            <Sparkles size={14} /> Sacred Living
+          </p>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-brand-text leading-snug">
-            Make every prayer feel more divine
+          <h2 className="mt-5 text-[36px] font-bold leading-[1.08] text-brand-text sm:text-[45px] lg:text-[52px]">
+            Make Every Prayer
+            <br />
+            <span className="text-accent">Feel Divine</span>
           </h2>
 
-          <p className="text-gray-600 text-base leading-relaxed max-w-md">
+          <p className="mt-5 max-w-[540px] text-sm leading-6 text-brand-text/65 sm:text-base sm:leading-7">
             From the first diya at dawn to festive celebrations, discover pure,
             authentic essentials that honour tradition and elevate your home altar.
           </p>
 
-          <div className="grid grid-cols-2 gap-3 pt-2">
-            <div className="bg-white shadow-sm rounded-xl p-3 border border-primary-100">
-              <h3 className="text-sm font-semibold text-brand-text">
-                Authentic & Pure
-              </h3>
-              <p className="text-gray-500 text-xs mt-1">
-                Chosen with devotion and care.
-              </p>
-            </div>
-
-            <div className="bg-white shadow-sm rounded-xl p-3 border border-primary-100">
-              <h3 className="text-sm font-semibold text-brand-text">
-                Delivered with Blessings
-              </h3>
-              <p className="text-gray-500 text-xs mt-1">
-                Beautifully packed for every ritual.
-              </p>
-            </div>
+          <div className="mt-7 space-y-4">
+            {highlights.map(({ icon: Icon, text }) => (
+              <div key={text} className="flex items-center gap-3 text-sm font-medium text-brand-text/75">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-secondary-50 text-primary-600">
+                  <Icon size={16} />
+                </span>
+                {text}
+              </div>
+            ))}
           </div>
 
-          <div className="pt-2">
-            <button className="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-full text-sm font-medium shadow transition">
-              Explore the collection
-            </button>
-          </div>
+          <Link
+            to="/new-products"
+            className="mt-8 inline-flex h-12 items-center gap-6 rounded-lg bg-primary-500 px-7 text-sm font-semibold text-white shadow-lg shadow-primary-500/15 transition hover:-translate-y-0.5 hover:bg-accent"
+          >
+            Explore the Collection <ArrowRight size={17} />
+          </Link>
         </div>
 
-        {/* Right Video */}
-        <div className="relative">
-          <div className="rounded-2xl overflow-hidden shadow-lg border border-primary-100">
+        <div className="relative overflow-hidden rounded-2xl bg-accent shadow-[0_18px_45px_rgba(139,30,30,0.25)]">
+          <div className="aspect-video overflow-hidden">
             <video
-              className="w-full h-[240px] md:h-[320px] object-cover"
+              className="h-full w-full object-cover motion-safe:animate-[spiritualZoom_8s_ease-in-out_infinite_alternate]"
               src="https://videos.pexels.com/video-files/3195394/3195394-hd_1920_1080_25fps.mp4"
               autoPlay
               muted
               loop
               playsInline
+              preload="metadata"
+              aria-label="Spiritual products and sacred home ritual"
             />
           </div>
 
-          {/* Small Badge */}
-          <div className="absolute -bottom-3 -left-3 bg-white shadow-md rounded-xl px-3 py-2 border border-primary-100">
-            <p className="text-xs text-gray-500">For every prayer</p>
-            <h4 className="text-sm font-semibold text-[#a94217]">
-              A little more divine
-            </h4>
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+          <div className="absolute bottom-4 left-4 rounded-full border border-white/20 bg-black/35 px-4 py-2 text-[11px] font-semibold text-white backdrop-blur-md sm:bottom-5 sm:left-5 sm:text-xs">
+            A moment of peace, every day
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes spiritualZoom {
+          from { transform: scale(1.01); }
+          to { transform: scale(1.07); }
+        }
+      `}</style>
     </section>
   );
 }

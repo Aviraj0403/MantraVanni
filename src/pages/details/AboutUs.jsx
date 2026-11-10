@@ -41,22 +41,22 @@ export default function AboutUs() {
       <div className="bg-primary-50 py-16 text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-primary-500 mb-8">Our Achievements</h2>
         <div className="grid md:grid-cols-4 gap-8 max-w-5xl mx-auto">
-          <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
+          <div className="bg-brand-bg p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
             <FaHeart className="text-primary-500 text-4xl mb-2 mx-auto" />
             <h3 className="text-3xl font-bold mb-2">10K+</h3>
             <p className="text-gray-600">Happy Customers</p>
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
+          <div className="bg-brand-bg p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
             <FaShoppingBag className="text-yellow-500 text-4xl mb-2 mx-auto" />
             <h3 className="text-3xl font-bold mb-2">500+</h3>
             <p className="text-gray-600">Products Curated</p>
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
+          <div className="bg-brand-bg p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
             <FaStar className="text-green-500 text-4xl mb-2 mx-auto" />
             <h3 className="text-3xl font-bold mb-2">5K+</h3>
             <p className="text-gray-600">Positive Reviews</p>
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
+          <div className="bg-brand-bg p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
             <FaGift className="text-primary-500 text-4xl mb-2 mx-auto" />
             <h3 className="text-3xl font-bold mb-2">50+</h3>
             <p className="text-gray-600">Awards & Recognitions</p>
@@ -86,21 +86,21 @@ export default function AboutUs() {
       <div className="text-center py-16 px-4 md:px-16 bg-primary-50">
         <h2 className="text-4xl font-bold text-primary-500 mb-12">Why Choose Us</h2>
         <div className="grid md:grid-cols-3 gap-10 max-w-5xl mx-auto">
-          <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition text-center">
+          <div className="bg-brand-bg rounded-xl shadow-lg p-8 hover:shadow-2xl transition text-center">
             <FaHeart className="text-primary-500 text-5xl mb-4 mx-auto" />
             <h3 className="font-bold text-2xl mb-2">Customer Love</h3>
             <p className="text-gray-600">
               Personalized care and amazing shopping experience for every customer.
             </p>
           </div>
-          <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition text-center">
+          <div className="bg-brand-bg rounded-xl shadow-lg p-8 hover:shadow-2xl transition text-center">
             <FaLeaf className="text-green-500 text-5xl mb-4 mx-auto" />
             <h3 className="font-bold text-2xl mb-2">Quality Products</h3>
             <p className="text-gray-600">
               Only the best makes it to our store. Quality and authenticity guaranteed.
             </p>
           </div>
-          <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition text-center">
+          <div className="bg-brand-bg rounded-xl shadow-lg p-8 hover:shadow-2xl transition text-center">
             <FaGift className="text-yellow-500 text-5xl mb-4 mx-auto" />
             <h3 className="font-bold text-2xl mb-2">Thoughtful Selection</h3>
             <p className="text-gray-600">
@@ -114,19 +114,19 @@ export default function AboutUs() {
       <div className="py-16 px-4 md:px-16">
         <h2 className="text-4xl font-bold text-primary-500 mb-12 text-center">What Our Customers Say</h2>
         <div className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-          <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
+          <div className="bg-brand-bg p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
             <p className="text-brand-text mb-4">
               "Absolutely love the curated products! The quality and service are exceptional."
             </p>
             <h4 className="font-semibold text-primary-500">– Anjali Sharma</h4>
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
+          <div className="bg-brand-bg p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
             <p className="text-brand-text mb-4">
               "Fast delivery and beautiful packing. MantraVanni made our festival shopping so easy!"
             </p>
             <h4 className="font-semibold text-primary-500">– Priya Singh</h4>
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
+          <div className="bg-brand-bg p-6 rounded-xl shadow-lg hover:shadow-2xl transition">
             <p className="text-brand-text mb-4">
               "The selection is amazing! Every product feels thoughtfully chosen."
             </p>

@@ -13,13 +13,14 @@ import WindowContextProvider from './context/windowContext.jsx';
 import { toast, ToastContainer } from 'react-toastify'; // Import both toast and ToastContainer
 import 'react-toastify/dist/ReactToastify.css'; // Import the Toastify styles
 import { queryClient } from './utils/ReactQueryClient';
+import SpiritualLoader from './components/SpiritualLoader.jsx';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     {/* ✅ Wrap App inside AuthProvider */}
     <EB>
        <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
+        <PersistGate loading={<SpiritualLoader />} persistor={persistor}>
           <AuthProvider>
             <WindowContextProvider>
               <App />

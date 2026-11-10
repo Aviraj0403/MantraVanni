@@ -19,9 +19,9 @@ const NotFoundPage = () => {
       <div style={styles.content}>
         <h1 style={styles.title}>404 - Page Not Found</h1>
         <p style={styles.message}>
-          Oops! Looks like we don't offer this beauty service right now 💅
+          Oops! This path is not part of our sacred journey 🙏
           <br />
-          Don't worry, we'll take you back to our fabulous homepage in a few seconds!
+          Don't worry, we'll take you back to MantraVanni in a few seconds!
         </p>
         <Link to="/" style={styles.button}>
           Back to Home
@@ -61,7 +61,7 @@ const styles = {
     padding: "20px",
     maxWidth: "500px",
     textAlign: "center",
-    backgroundColor: "#006a6a", // Marine blue-green background for the content
+    backgroundColor: "#8B1E1E", // Marine blue-green background for the content
     borderRadius: "10px", // Rounded corners for content box
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)", // Shadow for better separation
   },
@@ -69,7 +69,7 @@ const styles = {
     fontSize: "2.4rem",
     fontWeight: "700", // Bold title for visibility
     marginBottom: "15px",
-    fontFamily: "Segoe UI, sans-serif",
+    fontFamily: "'Playfair Display', serif",
   },
   message: {
     fontSize: "1.2rem",
@@ -80,7 +80,7 @@ const styles = {
   button: {
     display: "inline-block",
     padding: "12px 24px",
-    background: "#ff7043", // Button color for consistency
+    background: "#E67E22", // Button color for consistency
     color: "#fff",
     textDecoration: "none",
     borderRadius: "8px",
@@ -91,7 +91,7 @@ const styles = {
 
 // Hover effect for the button
 styles.button["&:hover"] = {
-  background: "#d84315", // Darker orange shade for hover effect
+  background: "#C96217", // Darker orange shade for hover effect
 };
 
 export default NotFoundPage;

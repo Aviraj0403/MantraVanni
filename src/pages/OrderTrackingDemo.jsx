@@ -110,7 +110,7 @@ const OrderTrackingDemo = () => {
         </div>
 
         {/* Status Badges Demo */}
-        <div className="bg-white rounded-2xl shadow-lg border border-primary-100 p-6 mb-8">
+        <div className="bg-brand-bg rounded-2xl shadow-lg border border-primary-100 p-6 mb-8">
           <h2 className="text-xl font-semibold text-brand-text mb-4">Order Status Badges</h2>
           <div className="flex flex-wrap gap-4">
             <OrderStatusBadge status="Pending" size="sm" />
@@ -122,7 +122,7 @@ const OrderTrackingDemo = () => {
         </div>
 
         {/* Quick Status Demo */}
-        <div className="bg-white rounded-2xl shadow-lg border border-primary-100 p-6 mb-8">
+        <div className="bg-brand-bg rounded-2xl shadow-lg border border-primary-100 p-6 mb-8">
           <h2 className="text-xl font-semibold text-brand-text mb-4">Quick Order Status</h2>
           <div className="space-y-4">
             <QuickOrderStatus order={sampleOrder} showDetails={true} />
@@ -132,7 +132,7 @@ const OrderTrackingDemo = () => {
         </div>
 
         {/* Order List Item Demo */}
-        <div className="bg-white rounded-2xl shadow-lg border border-primary-100 p-6 mb-8">
+        <div className="bg-brand-bg rounded-2xl shadow-lg border border-primary-100 p-6 mb-8">
           <h2 className="text-xl font-semibold text-brand-text mb-4">Order List Item</h2>
           <div className="space-y-4">
             <OrderListItem order={sampleOrder} />
@@ -163,7 +163,7 @@ const OrderTrackingDemo = () => {
         </div>
 
         {/* Usage Instructions */}
-        <div className="bg-white rounded-2xl shadow-lg border border-primary-100 p-6">
+        <div className="bg-brand-bg rounded-2xl shadow-lg border border-primary-100 p-6">
           <h2 className="text-xl font-semibold text-brand-text mb-4">How to Use</h2>
           <div className="space-y-4 text-sm text-brand-text">
             <div>

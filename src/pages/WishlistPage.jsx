@@ -94,28 +94,28 @@ export default function WishlistPage() {
       <div className="max-w-6xl mx-auto px-4">
         
         {/* Header */}
-        <div className="flex justify-between items-center mb-8 border-b pb-4 border-amber-200/60">
+        <div className="flex justify-between items-center mb-8 border-b pb-4 border-secondary-200/60">
           <div>
             <h1 className="text-2xl md:text-3xl font-serif font-bold text-brand-text gold-emboss-3d flex items-center gap-2.5">
-              <Heart className="text-rose-600 fill-rose-600" size={26} /> My Sacred Wishlist
+              <Heart className="text-accent fill-accent" size={26} /> My Sacred Wishlist
             </h1>
-            <p className="text-stone-600 text-sm mt-1">Saved divine essentials for daily prayers and upcoming festivals.</p>
+            <p className="text-brand-text/70 text-sm mt-1">Saved divine essentials for daily prayers and upcoming festivals.</p>
           </div>
-          <span className="bg-amber-100 text-amber-900 px-4 py-1.5 rounded-full text-xs font-bold border border-amber-300 shadow-sm">
+          <span className="bg-secondary-100 text-brand-text px-4 py-1.5 rounded-full text-xs font-bold border border-secondary-300 shadow-sm">
             {wishlist.length} Saved Items
           </span>
         </div>
 
         {wishlist.length === 0 ? (
-          <div className="bg-white/90 rounded-3xl p-12 text-center shadow-lg border border-amber-200/70 max-w-xl mx-auto">
-            <div className="w-16 h-16 bg-amber-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200 shadow-inner">
+          <div className="bg-brand-bg/90 rounded-3xl p-12 text-center shadow-lg border border-secondary-200/70 max-w-xl mx-auto">
+            <div className="w-16 h-16 bg-secondary-50 text-accent rounded-full flex items-center justify-center mx-auto mb-4 border border-secondary-200 shadow-inner">
               <Heart size={32} />
             </div>
             <h2 className="text-2xl font-serif font-bold text-brand-text">Your Wishlist is Empty</h2>
-            <p className="text-stone-600 text-sm max-w-md mx-auto mt-2 mb-6">Explore our pure puja samagri, brass idols, and divine products to save them for later.</p>
+            <p className="text-brand-text/70 text-sm max-w-md mx-auto mt-2 mb-6">Explore our pure puja samagri, brass idols, and divine products to save them for later.</p>
             <Link
               to="/"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-600 to-amber-700 text-white font-bold px-6 py-3 rounded-2xl shadow-md hover:scale-105 transition-all"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold px-6 py-3 rounded-2xl shadow-md hover:scale-105 transition-all"
             >
               Explore Sacred Essentials <ArrowRight size={18} />
             </Link>
@@ -130,9 +130,9 @@ export default function WishlistPage() {
               const imageUrl = item.pimage || item.image?.[0] || item.thumbnail || 'https://via.placeholder.com/200';
 
               return (
-                <div key={item._id} className="bg-white rounded-3xl border border-amber-200/80 overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col justify-between group card-3d">
+                <div key={item._id} className="bg-brand-bg rounded-3xl border border-secondary-200/80 overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col justify-between group card-3d">
                   <div>
-                    <div className="relative h-48 bg-amber-50/30 p-4 flex items-center justify-center">
+                    <div className="relative h-48 bg-secondary-50/30 p-4 flex items-center justify-center">
                       <img
                         src={imageUrl}
                         alt={item.name}
@@ -140,13 +140,13 @@ export default function WishlistPage() {
                       />
                       <button
                         onClick={() => handleRemove(item)}
-                        className="absolute top-3 right-3 p-2 bg-white/90 text-stone-400 hover:text-rose-600 rounded-full shadow-sm border border-amber-100 transition"
+                        className="absolute top-3 right-3 p-2 bg-brand-bg/90 text-brand-text/40 hover:text-accent rounded-full shadow-sm border border-secondary-100 transition"
                         title="Remove from wishlist"
                       >
                         <Trash2 size={16} />
                       </button>
-                      <span className="absolute bottom-3 left-3 bg-amber-900/90 backdrop-blur-md text-amber-200 text-[10px] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1">
-                        <Sparkles size={10} className="text-amber-400" /> Vedic Pure
+                      <span className="absolute bottom-3 left-3 bg-accent-800/90 backdrop-blur-md text-secondary-200 text-[10px] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1">
+                        <Sparkles size={10} className="text-secondary-400" /> Vedic Pure
                       </span>
                     </div>
 
@@ -154,7 +154,7 @@ export default function WishlistPage() {
                       <h3 className="font-bold text-brand-text text-sm line-clamp-2 mb-2">{item.name || item.title}</h3>
                       <div className="flex items-baseline gap-2 mb-1">
                         <span className="text-lg font-black text-brand-text">₹{price}</span>
-                        {realPrice > price && <span className="text-xs text-stone-400 line-through">₹{realPrice}</span>}
+                        {realPrice > price && <span className="text-xs text-brand-text/40 line-through">₹{realPrice}</span>}
                       </div>
                     </div>
                   </div>
@@ -162,7 +162,7 @@ export default function WishlistPage() {
                   <div className="p-4 pt-0">
                     <button
                       onClick={() => handleAddToCart(item)}
-                      className="w-full py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2"
+                      className="w-full py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2"
                     >
                       <ShoppingBag size={14} /> Add to Cart
                     </button>

@@ -52,7 +52,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
 
       {/* ── Desktop Sidebar ─────────────────────────────── */}
-      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-100 min-h-screen sticky top-0 h-screen">
+      <aside className="hidden md:flex flex-col w-64 bg-brand-bg border-r border-gray-100 min-h-screen sticky top-0 h-screen">
         {/* User info */}
         <div className="p-6 border-b border-gray-50">
           <div className="flex items-center gap-4">
@@ -111,7 +111,7 @@ export default function ProfilePage() {
       </aside>
 
       {/* ── Mobile Header ───────────────────────────────── */}
-      <div className="md:hidden bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between sticky top-0 z-20">
+      <div className="md:hidden bg-brand-bg border-b border-gray-100 px-4 py-3 flex items-center justify-between sticky top-0 z-20">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-black text-sm">
             {(user.name || user.username || "U")[0].toUpperCase()}
@@ -135,7 +135,7 @@ export default function ProfilePage() {
       </main>
 
       {/* ── Mobile bottom tab bar ───────────────────────── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 flex items-stretch safe-area-inset-bottom shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-brand-bg border-t border-gray-100 flex items-stretch safe-area-inset-bottom shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
         {TABS.filter(t => t.key !== "delete").map((tab) => {
           const Icon = tab.icon;
           const isActive = activeKey === tab.key;

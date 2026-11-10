@@ -17,7 +17,7 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
   }
   if (!user) {
     return (
-      <div className="mt-8 text-center py-12 bg-gradient-to-br from-primary-50 to-primary-50 rounded-2xl border-2 border-dashed border-primary-200">
+      <div className="mt-8 text-center py-12 bg-gradient-to-br from-brand-bg to-secondary-50 rounded-2xl border-2 border-dashed border-secondary-200">
         <div className="max-w-md mx-auto px-4">
           <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <FaStar className="text-3xl text-primary-500" />
@@ -159,8 +159,8 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
 
   // Form state
   return (
-    <div className="mt-8 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-      <div className="bg-gradient-to-r from-primary-500 to-primary-500 px-6 py-4">
+    <div className="mt-8 bg-brand-bg rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+      <div className="bg-gradient-to-r from-primary-500 to-accent px-6 py-4">
         <h3 className="text-xl font-bold text-white">Write Your Review</h3>
         <p className="text-primary-100 text-sm mt-1">Share your thoughts with other customers</p>
       </div>
@@ -229,7 +229,7 @@ const ReviewForm = ({ productId, reviews , setReviews }) => {
           <button
             onClick={handleSubmitReview}
             disabled={isSubmitting || rating === 0 || comment.trim().length < 20}
-            className="bg-gradient-to-r from-primary-500 to-primary-500 text-white py-3 px-8 rounded-xl font-semibold hover:from-primary-600 hover:to-primary-600 focus:ring-4 focus:ring-primary-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg hover:shadow-xl"
+            className="bg-gradient-to-r from-primary-500 to-accent text-white py-3 px-8 rounded-xl font-semibold hover:from-primary-600 hover:to-accent-600 focus:ring-4 focus:ring-secondary-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg hover:shadow-xl"
           >
             {isSubmitting ? (
               <>
@@ -288,11 +288,11 @@ const ReviewList = ({ reviews }) => {
         {safeReviews.map((review) => (
           <div
             key={review._id}
-            className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all duration-200 hover:border-primary-200"
+            className="bg-brand-bg border border-secondary-200 rounded-xl p-5 hover:shadow-lg transition-all duration-200 hover:border-primary-200"
           >
             <div className="flex items-start gap-3 mb-3">
               <img
-                src={review.user.avatar || "/Logo.webp"}
+                src={review.user.avatar || "/favicon.svg"}
                 alt={review.user.userName}
                 className="w-12 h-12 rounded-full object-cover border-2 border-primary-100"
               />

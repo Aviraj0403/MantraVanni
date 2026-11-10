@@ -33,7 +33,7 @@ const products = [
 
 export default function PromoSection() {
   return (
-    <section className="bg-white py-12">
+    <section className="bg-brand-bg py-12">
       <div className="max-w-7xl mx-auto px-4 md:px-6"> 
         {/* px-4 / px-6 = Left and Right Margin */}
         
@@ -48,7 +48,7 @@ export default function PromoSection() {
                 alt={product.brand}
                 className="w-full h-60 object-fit rounded-lg"
               />
-              <div className="bg-white w-full py-3">
+              <div className="bg-brand-bg w-full py-3">
                 <h3 className="font-bold text-lg text-brand-text">
                   {product.offer}
                 </h3>

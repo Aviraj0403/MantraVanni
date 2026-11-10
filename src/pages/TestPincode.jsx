@@ -17,7 +17,7 @@ export default function TestPincode() {
           <PincodeChecker onPincodeValidated={handlePincodeValidated} />
         </div>
 
-        <div className="mt-8 max-w-2xl mx-auto bg-white rounded-lg p-6 shadow-md">
+        <div className="mt-8 max-w-2xl mx-auto bg-brand-bg rounded-lg p-6 shadow-md">
           <h2 className="text-xl font-semibold mb-4">Test Instructions:</h2>
           <ol className="list-decimal list-inside space-y-2 text-brand-text">
             <li>Enter a 6-digit pincode (e.g., 110001 for Delhi)</li>

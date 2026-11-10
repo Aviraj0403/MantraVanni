@@ -21,8 +21,8 @@ const ReviewTab = ({ productId, reviews, setReviews }) => {
 
       {/* If the user has reviewed, you could show a message */}
       {userHasReviewed && (
-        <div className="text-center text-gray-500 mt-6">
-          <p>You have already submitted a review for this product.</p>
+        <div className="text-center text-gray-500 mt-6 bg-brand-bg p-4 rounded-xl border border-secondary-200">
+          <p className="font-medium">You have already submitted a review for this product.</p>
         </div>
       )}
     </div>

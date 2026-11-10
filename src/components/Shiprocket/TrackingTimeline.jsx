@@ -143,7 +143,7 @@ const TrackingTimeline = ({ order }) => {
   const pct = getProgressPct(shiprocket.current_status || order.orderStatus);
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div className="bg-brand-bg rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
       {/* Header */}
       <button

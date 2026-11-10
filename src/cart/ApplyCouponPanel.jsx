@@ -3,11 +3,10 @@ import { X, Check, AlertCircle } from "lucide-react";
 import { getActiveOffers, applyDiscount } from "../services/offerApi";
 
 export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoupon, totalAmount }) {
-  const [coupon, setCoupon] = useState(""); // Coupon code input
+  const [coupon, setCoupon] = useState("");    
   const [error, setError] = useState(null); // Error handling
   const [offers, setOffers] = useState([]); // List of active offers
   const [loading, setLoading] = useState(true); // Loading state for fetching offers
-
   useEffect(() => {
     const fetchOffers = async () => {
       try {
@@ -52,23 +51,26 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
 
   return (
     <div
-      className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-xl z-[200] transform transition-transform duration-300 ${
+      className={`fixed right-0 top-0 z-[200] h-full w-full bg-[#fcfbf9] shadow-[-15px_0_45px_rgba(25,18,10,0.22)] sm:w-96 transform transition-transform duration-300 ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
       {/* Header */}
-      <div className="flex justify-between items-center p-4 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-brand-text">Apply Coupon</h2>
+      <div className="flex items-center justify-between bg-[#D35400] p-5 text-white">
+        <div>
+          <h2 className="text-lg font-bold">Coupons & Offers</h2>
+          <p className="mt-0.5 text-[11px] text-white/65">Save more on your order</p>
+        </div>
         <button
           onClick={onClose}
-          className="text-gray-600 hover:text-primary-600 transition"
+          className="grid h-9 w-9 place-items-center rounded-full bg-brand-bg/10 transition hover:bg-brand-bg/20"
         >
           <X size={20} />
         </button>
       </div>
 
       {/* Content */}
-      <div className="p-6 flex flex-col gap-4">
+      <div className="flex flex-col gap-4 overflow-y-auto p-5">
         {appliedCoupon ? (
           <div className="flex flex-col items-center gap-2">
             <Check className="text-green-500" size={32} />
@@ -77,7 +79,7 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
             </p>
             <button
               onClick={onClose}
-              className="mt-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition"
+              className="mt-2 rounded-xl bg-[#D35400] px-5 py-2.5 text-white transition hover:bg-[#C45509]"
             >
               Close
             </button>
@@ -85,13 +87,13 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
         ) : (
           <>
             {error && (
-              <div className="flex items-center gap-2 text-red-600 bg-red-100 p-4 rounded-lg">
+              <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
                 <AlertCircle size={20} />
                 <span>{error}</span>
               </div>
             )}
 
-            <p className="text-gray-600 mb-2">
+            <p className="mb-1 text-sm leading-5 text-[#71675c]">
               Enter your coupon code or choose one of our amazing offers:
             </p>
 
@@ -102,11 +104,11 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
                 value={coupon}
                 onChange={(e) => setCoupon(e.target.value)}
                 placeholder="Enter coupon code"
-                className="flex-1 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary-500 transition"
+                className="min-w-0 flex-1 rounded-xl border border-[#dcd3c7] bg-brand-bg p-3 text-sm outline-none transition focus:border-[#E67E22] focus:ring-2 focus:ring-[#E67E22]/15"
               />
               <button
                 onClick={() => handleApply(coupon)}
-                className="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-4 rounded-lg transition"
+                className="rounded-xl bg-[#D35400] px-4 font-semibold text-white transition hover:bg-[#C45509]"
               >
                 Apply
               </button>
@@ -123,18 +125,18 @@ export default function ApplyCouponPanel({ isOpen, onClose, onApply, appliedCoup
                 offers.map((offer) => (
                   <div
                     key={offer._id}
-                    className="relative bg-gradient-to-r from-primary-50 via-primary-100 to-primary-50 border-l-4 border-primary-500 rounded-xl p-4 flex justify-between items-center shadow-md hover:shadow-lg transition cursor-pointer"
+                    className="relative flex cursor-pointer items-center justify-between rounded-xl border border-[#e2d4bd] bg-brand-bg p-4 shadow-sm transition hover:border-[#c4a66f] hover:shadow-md"
                     onClick={() => handleApply(offer.code, offer.name)}
                   >
                     <div className="flex flex-col">
-                      <span className="font-semibold text-primary-600 text-sm sm:text-base">
+                      <span className="text-sm font-bold tracking-wide text-[#D35400] sm:text-base">
                         {offer.code}
                       </span>
                       <span className="text-gray-600 text-xs sm:text-sm">
                         {offer.name} - {offer.discountPercentage}% off
                       </span>
                     </div>
-                    <button className="bg-primary-500 text-white px-3 py-1 rounded-lg text-xs sm:text-sm hover:bg-primary-600 transition">
+                    <button className="rounded-lg bg-[#f3e5cd] px-3 py-1.5 text-xs font-semibold text-[#7b5b22] transition hover:bg-[#ead7b5] sm:text-sm">
                       Apply
                     </button>
                   </div>

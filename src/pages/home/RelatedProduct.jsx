@@ -23,7 +23,7 @@ export default function RelatedProduct({ categorySlug }) {
   }
 
   return (
-    <section className="py-10 bg-white w-full overflow-hidden">
+    <section className="py-10 bg-brand-bg w-full overflow-hidden">
       <div className="w-full max-w-[100vw]">
         <h2 className="text-2xl md:text-3xl font-bold text-primary-500 mb-6 text-center">
           Related Products

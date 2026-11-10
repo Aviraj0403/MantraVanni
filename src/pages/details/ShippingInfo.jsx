@@ -31,7 +31,7 @@ export default function ShippingInfo() {
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="bg-white shadow-xl rounded-3xl border border-primary-200 p-6 md:p-10 mb-16 flex flex-col md:flex-row items-center gap-6 justify-between"
+        className="bg-brand-bg shadow-xl rounded-3xl border border-primary-200 p-6 md:p-10 mb-16 flex flex-col md:flex-row items-center gap-6 justify-between"
       >
         <div className="flex items-center gap-4">
           <ShieldCheck size={45} className="text-primary-600" />
@@ -57,7 +57,7 @@ export default function ShippingInfo() {
         {/* Shipping Policy */}
         <motion.div
           whileHover={{ scale: 1.03 }}
-          className="bg-white shadow-lg rounded-2xl p-7 border border-primary-100 hover:shadow-primary-200 transition"
+          className="bg-brand-bg shadow-lg rounded-2xl p-7 border border-primary-100 hover:shadow-primary-200 transition"
         >
           <div className="flex items-center gap-3 mb-4">
             <Truck className="text-primary-600" size={28} />
@@ -71,7 +71,7 @@ export default function ShippingInfo() {
         {/* Delivery Timeframes */}
         <motion.div
           whileHover={{ scale: 1.03 }}
-          className="bg-white shadow-lg rounded-2xl p-7 border border-primary-100 hover:shadow-primary-200 transition"
+          className="bg-brand-bg shadow-lg rounded-2xl p-7 border border-primary-100 hover:shadow-primary-200 transition"
         >
           <div className="flex items-center gap-3 mb-4">
             <Clock className="text-primary-600" size={28} />
@@ -89,7 +89,7 @@ export default function ShippingInfo() {
         {/* Shipping Charges */}
         <motion.div
           whileHover={{ scale: 1.03 }}
-          className="bg-white shadow-lg rounded-2xl p-7 border border-primary-100 hover:shadow-primary-200 transition"
+          className="bg-brand-bg shadow-lg rounded-2xl p-7 border border-primary-100 hover:shadow-primary-200 transition"
         >
           <div className="flex items-center gap-3 mb-4">
             <Globe className="text-primary-600" size={28} />
@@ -103,7 +103,7 @@ export default function ShippingInfo() {
         {/* Order Processing */}
         <motion.div
           whileHover={{ scale: 1.03 }}
-          className="bg-white shadow-lg rounded-2xl p-7 border border-primary-100 hover:shadow-primary-200 transition"
+          className="bg-brand-bg shadow-lg rounded-2xl p-7 border border-primary-100 hover:shadow-primary-200 transition"
         >
           <div className="flex items-center gap-3 mb-4">
             <Clock className="text-primary-600" size={28} />
@@ -117,7 +117,7 @@ export default function ShippingInfo() {
         {/* Tracking Info */}
         <motion.div
           whileHover={{ scale: 1.03 }}
-          className="bg-white shadow-lg rounded-2xl p-7 border border-primary-100 hover:shadow-primary-200 transition"
+          className="bg-brand-bg shadow-lg rounded-2xl p-7 border border-primary-100 hover:shadow-primary-200 transition"
         >
           <div className="flex items-center gap-3 mb-4">
             <MapPin className="text-primary-600" size={28} />
@@ -131,7 +131,7 @@ export default function ShippingInfo() {
         {/* Easy Returns */}
         <motion.div
           whileHover={{ scale: 1.03 }}
-          className="bg-white shadow-lg rounded-2xl p-7 border border-primary-100 hover:shadow-primary-200 transition"
+          className="bg-brand-bg shadow-lg rounded-2xl p-7 border border-primary-100 hover:shadow-primary-200 transition"
         >
           <div className="flex items-center gap-3 mb-4">
             <RefreshCcw className="text-primary-600" size={28} />
@@ -145,7 +145,7 @@ export default function ShippingInfo() {
         {/* Support */}
         <motion.div
           whileHover={{ scale: 1.03 }}
-          className="bg-white shadow-lg rounded-2xl p-7 border border-primary-100 hover:shadow-primary-200 transition"
+          className="bg-brand-bg shadow-lg rounded-2xl p-7 border border-primary-100 hover:shadow-primary-200 transition"
         >
           <div className="flex items-center gap-3 mb-4">
             <Phone className="text-primary-600" size={28} />

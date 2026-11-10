@@ -3,7 +3,7 @@ import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaClock } from "react-icons/fa"
 
 export default function ContactUs() {
   return (
-    <section className="bg-white min-h-screen">
+    <section className="bg-brand-bg min-h-screen">
       {/* Hero Section */}
       <div className="text-center py-5 px-4">
         <h1 className="text-5xl font-bold text-primary-500 mb-4">Contact Us</h1>
@@ -33,7 +33,7 @@ export default function ContactUs() {
         </div>
 
         <div className="bg-primary-50 shadow-lg hover:shadow-2xl transition rounded-xl p-6 text-center">
-          <FaClock className="text-blue-500 text-4xl mx-auto mb-4" />
+          <FaClock className="text-primary-500 text-4xl mx-auto mb-4" />
           <h3 className="text-xl font-semibold mb-2">Working Hours</h3>
           <p className="text-gray-600">Mon – Sat: 9 AM – 7 PM</p>
         </div>
@@ -49,7 +49,7 @@ export default function ContactUs() {
             <div className="relative group">
               <input
                 type="text"
-                className="w-full p-3 rounded-lg bg-primary-50/40 border border-gray-200 focus:border-primary-500 focus:bg-white transition outline-none"
+                className="w-full p-3 rounded-lg bg-primary-50/40 border border-gray-200 focus:border-primary-500 focus:bg-brand-bg transition outline-none"
                 required
               />
               <label className="absolute left-3 top-3 text-gray-500 text-sm pointer-events-none group-focus-within:text-primary-500 transition">
@@ -60,7 +60,7 @@ export default function ContactUs() {
             <div className="relative group">
               <input
                 type="email"
-                className="w-full p-3 rounded-lg bg-primary-50/40 border border-gray-200 focus:border-primary-500 focus:bg-white transition outline-none"
+                className="w-full p-3 rounded-lg bg-primary-50/40 border border-gray-200 focus:border-primary-500 focus:bg-brand-bg transition outline-none"
                 required
               />
               <label className="absolute left-3 top-3 text-gray-500 text-sm pointer-events-none group-focus-within:text-primary-500 transition">
@@ -71,7 +71,7 @@ export default function ContactUs() {
             <div className="relative group">
               <input
                 type="text"
-                className="w-full p-3 rounded-lg bg-primary-50/40 border border-gray-200 focus:border-primary-500 focus:bg-white transition outline-none"
+                className="w-full p-3 rounded-lg bg-primary-50/40 border border-gray-200 focus:border-primary-500 focus:bg-brand-bg transition outline-none"
                 required
               />
               <label className="absolute left-3 top-3 text-gray-500 text-sm pointer-events-none group-focus-within:text-primary-500 transition">
@@ -82,7 +82,7 @@ export default function ContactUs() {
             <div className="relative group">
               <textarea
                 rows="4"
-                className="w-full p-3 rounded-lg bg-primary-50/40 border border-gray-200 focus:border-primary-500 focus:bg-white transition outline-none"
+                className="w-full p-3 rounded-lg bg-primary-50/40 border border-gray-200 focus:border-primary-500 focus:bg-brand-bg transition outline-none"
                 required
               ></textarea>
               <label className="absolute left-3 top-3 text-gray-500 text-sm pointer-events-none group-focus-within:text-primary-500 transition">
@@ -111,7 +111,7 @@ export default function ContactUs() {
 
       {/* Extra Contact Details Section */}
       <div className="max-w-6xl mx-auto px-4 pb-20">
-        <div className="bg-white rounded-2xl shadow-xl p-10 grid md:grid-cols-3 gap-10 border border-primary-100">
+        <div className="bg-brand-bg rounded-2xl shadow-xl p-10 grid md:grid-cols-3 gap-10 border border-primary-100">
           <div>
             <h3 className="text-xl font-bold text-primary-500 mb-2">Customer Support</h3>
             <p className="text-gray-600 leading-relaxed">Our team is available 24/7 to assist you with product inquiries, delivery issues, returns, or any store-related support.</p>
@@ -135,7 +135,7 @@ export default function ContactUs() {
         <p className="max-w-2xl mx-auto text-lg mb-6">
           Have suggestions or special requests? We're always looking to improve and would love to hear your thoughts.
         </p>
-        <button className="bg-white text-primary-600 font-semibold px-8 py-3 rounded-full shadow-lg hover:bg-primary-50 transition">
+        <button className="bg-brand-bg text-primary-600 font-semibold px-8 py-3 rounded-full shadow-lg hover:bg-primary-50 transition">
           Share Feedback
         </button>
       </div>

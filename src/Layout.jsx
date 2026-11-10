@@ -13,7 +13,7 @@ const Layout = () => {
   const { divRef, progressWidth } = useWindowContext();
 
   return (
-    <div className="flex flex-col min-h-screen bg-white-100/100">
+    <div className="flex flex-col min-h-screen bg-brand-bg">
       {/* Toast container for notifications */}
       <ToastContainer position="top-center" autoClose={3000} hideProgressBar={false} newestOnTop closeButton={true} />
 
@@ -21,7 +21,7 @@ const Layout = () => {
       <Header />
 
       {/* Main content area */}
-      <div ref={divRef} className="flex-1 overflow-auto bg-white">
+      <div ref={divRef} className="flex-1 overflow-auto bg-brand-bg">
         {/* Progress Bar (conditionally displayed based on the loading state or some condition) */}
         <ProgressBar progressWidth={progressWidth} />
 

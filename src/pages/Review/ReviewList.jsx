@@ -29,11 +29,11 @@ const ReviewList = ({ reviews }) => {
         {safeReviews.map((review) => (
           <div
             key={review._id}
-            className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all duration-200 hover:border-primary-200"
+            className="bg-brand-bg border border-secondary-200 rounded-xl p-5 hover:shadow-lg transition-all duration-200 hover:border-primary-200"
           >
             <div className="flex items-start gap-3 mb-3">
               <img
-                src={review.user.avatar || "/Logo.webp"}
+                src={review.user.avatar || "/favicon.svg"}
                 alt={review.user.userName}
                 className="w-12 h-12 rounded-full object-cover border-2 border-primary-100"
               />

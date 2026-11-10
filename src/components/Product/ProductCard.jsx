@@ -77,11 +77,11 @@ export default function ProductCard({ product, onProductClick }) {
     <motion.div
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="group relative bg-white/95 rounded-2xl border border-amber-100/80 card-3d h-full flex flex-col overflow-hidden"
+      className="group relative bg-brand-bg/95 backdrop-blur-sm border border-primary-100 rounded-2xl shadow-[0_4px_20px_rgba(255,165,0,0.05)] hover:shadow-[0_8px_30px_rgba(255,165,0,0.15)] hover:-translate-y-1 transition-all duration-300 h-full flex flex-col overflow-hidden"
     >
       {/* 🖼 Image Area */}
       <div 
-        className="relative aspect-square overflow-hidden bg-gray-50/20 cursor-pointer"
+        className="relative aspect-square overflow-hidden bg-secondary-50/40 cursor-pointer"
         onClick={handleProductClick}
       >
         <motion.img
@@ -94,7 +94,7 @@ export default function ProductCard({ product, onProductClick }) {
 
         {/* 🏷 Discount Badge */}
         {discount > 0 && (
-          <div className="absolute top-3 left-3 z-10 bg-primary-600 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm">
+          <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-accent to-primary-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm">
             {discount}% OFF
           </div>
         )}
@@ -128,7 +128,7 @@ export default function ProductCard({ product, onProductClick }) {
             >
               <button
                 onClick={handleAddToCart}
-                className="w-full bg-white text-brand-text text-[11px] font-black py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-lg hover:bg-primary-600 hover:text-white transition-colors"
+                className="w-full bg-white text-brand-text text-[11px] font-black py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-lg hover:bg-primary-500 hover:text-white transition-colors"
               >
                 <FaShoppingCart size={11} /> ADD TO BAG
               </button>
@@ -170,7 +170,7 @@ export default function ProductCard({ product, onProductClick }) {
             ) : (
               <button
                 onClick={handleBuyNow}
-                className="w-9 h-9 rounded-lg bg-gray-900 text-white flex items-center justify-center hover:bg-primary-600 transition-colors shadow-sm"
+                className="w-9 h-9 rounded-lg bg-primary-500 text-white flex items-center justify-center hover:bg-secondary hover:text-brand-text transition-colors shadow-sm"
                 title="Instant Checkout"
               >
                 <FaBolt size={12} />
@@ -189,7 +189,7 @@ export default function ProductCard({ product, onProductClick }) {
             exit={{ opacity: 0, scale: 0.9 }}
             className="fixed inset-0 z-[9999] flex items-center justify-center p-4 backdrop-blur-sm bg-black/40"
           >
-            <div className="bg-white rounded-[2rem] p-8 shadow-2xl max-w-sm w-full text-center border border-primary-50">
+            <div className="bg-brand-bg rounded-[2rem] p-8 shadow-2xl max-w-sm w-full text-center border border-primary-50">
               <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl mx-auto mb-5">✓</div>
               <h4 className="text-xl font-bold text-brand-text mb-1 leading-none">Added to Bag</h4>
               <p className="text-sm text-gray-500 mb-6 px-4">"{product.name}" is now in your collection bag.</p>

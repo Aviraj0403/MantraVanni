@@ -54,12 +54,14 @@ export default function CategoryDetails() {
   };
 
   return (
-    <section className="py-10 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="py-12 bg-brand-bg min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
-        <h2 className="text-2xl md:text-3xl font-bold text-primary-500 mb-8 text-center">
-          {categoryName || categorySlug}
-        </h2>
+        <div className="flex justify-center mb-10">
+          <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary-500 pb-2 border-b-2 border-secondary-200 inline-block text-center">
+            {categoryName || categorySlug}
+          </h2>
+        </div>
 
         {/* Product Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -78,19 +80,19 @@ export default function CategoryDetails() {
 
         {/* Pagination */}
         {pagination.totalPages > 1 && (
-          <div className="mt-8 flex justify-center">
+          <div className="mt-12 flex justify-center items-center gap-4">
             <button
               onClick={() => fetchProducts(currentPage - 1)}
               disabled={currentPage <= 1}
-              className="px-4 py-2 bg-primary-500 text-white rounded-md disabled:opacity-50"
+              className="px-6 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-medium shadow-md hover:from-primary-600 hover:to-primary-700 disabled:opacity-50 transition-all active:scale-95"
             >
               Previous
             </button>
-            <span className="mx-4">{currentPage} / {pagination.totalPages}</span>
+            <span className="px-4 py-2 bg-secondary-50 text-brand-text rounded-lg font-semibold shadow-inner">{currentPage} / {pagination.totalPages}</span>
             <button
               onClick={() => fetchProducts(currentPage + 1)}
               disabled={currentPage >= pagination.totalPages}
-              className="px-4 py-2 bg-primary-500 text-white rounded-md disabled:opacity-50"
+              className="px-6 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-medium shadow-md hover:from-primary-600 hover:to-primary-700 disabled:opacity-50 transition-all active:scale-95"
             >
               Next
             </button>
