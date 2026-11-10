@@ -8,6 +8,7 @@ import Footer from "./components/Footer/footer.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 import ProgressBar from "./components/progressbar/ProgressBar.jsx";
 import { useWindowContext } from "./context/windowContext.jsx";
+import StoreBotWidget from "./components/bots/StoreBotWidget.jsx";
 
 const Layout = () => {
   const { divRef, progressWidth } = useWindowContext();
@@ -37,6 +38,9 @@ const Layout = () => {
 
       {/* Footer Component */}
       <Footer />
+
+      {/* JD Bot store support widget (renders only if enabled for this tenant) */}
+      <StoreBotWidget />
     </div>
   );
 };

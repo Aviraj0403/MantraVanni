@@ -37,6 +37,50 @@ export const storeToken = (token) => {
 export const getStoredToken = () => localStorage.getItem(TOKEN_KEY);
 export const clearStoredToken = () => localStorage.removeItem(TOKEN_KEY);
 
+// 🛡️ Account / store security codes from the API. None of them can be fixed by a token refresh.
+const SESSION_CODES = ['TENANT_SUSPENDED', 'ACCOUNT_BLOCKED', 'ACCOUNT_LOCKED', 'SESSION_REVOKED'];
+const AUTH_FORM_ROUTES = ['/auth/signIn', '/auth/googleSignIn', '/auth/customRegister', '/auth/register', '/auth/phone', '/auth/user/forgotPassword', '/auth/user/resetPassword', '/auth/user/verifyOtp'];
+let sessionRedirecting = false;
+
+const clearLocalSession = () => {
+  try {
+    clearStoredToken();
+    localStorage.removeItem("user");
+    localStorage.removeItem("user_data");
+    sessionStorage.clear();
+  } catch { /* storage unavailable */ }
+};
+
+/** Returns true when the error carries a security code (caller must not refresh/retry). */
+const handleSessionCode = (error) => {
+  const code = error?.response?.data?.code;
+  if (!SESSION_CODES.includes(code)) return false;
+
+  const url = error?.config?.url || '';
+  const here = window.location.pathname;
+
+  if (code === 'TENANT_SUSPENDED') {
+    try { window.dispatchEvent(new CustomEvent('store:suspended')); } catch { /* old browsers */ }
+    if (here !== '/store-unavailable' && !sessionRedirecting) {
+      sessionRedirecting = true;
+      window.location.replace('/store-unavailable');
+    }
+    return true;
+  }
+
+  // Sign-in / OTP forms render the server message themselves (e.g. "account locked").
+  if (!url.includes('refresh') && AUTH_FORM_ROUTES.some((r) => url.includes(r))) return true;
+
+  // ACCOUNT_BLOCKED / SESSION_REVOKED (/ ACCOUNT_LOCKED outside a form): drop the session, ask to sign in.
+  clearLocalSession();
+  if (here !== '/signin' && here !== '/signup' && !sessionRedirecting) {
+    sessionRedirecting = true;
+    const reason = code === 'ACCOUNT_BLOCKED' ? 'account_blocked' : code === 'ACCOUNT_LOCKED' ? 'account_locked' : 'session_revoked';
+    window.location.replace(`/signin?reason=${reason}&redirect=${encodeURIComponent(here)}`);
+  }
+  return true;
+};
+
 // Request interceptor
 Axios.interceptors.request.use(
   (config) => {
@@ -64,7 +108,10 @@ Axios.interceptors.request.use(
 Axios.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
+    const originalRequest = error.config || {};
+
+    // Suspended store / blocked / locked / revoked session → never refresh.
+    if (handleSessionCode(error)) return Promise.reject(error);
 
     // Don't retry on these endpoints to avoid infinite loops
     const skipRefreshRoutes = [
@@ -123,6 +170,8 @@ Axios.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError, null);
         isRefreshing = false;
+
+        if (handleSessionCode(refreshError)) return Promise.reject(refreshError);
 
         // Clear all auth-related storage
         clearStoredToken();

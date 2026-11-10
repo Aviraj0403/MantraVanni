@@ -33,6 +33,7 @@ import RequireAuth from "./components/RequireAuth.jsx";
 
 import WishlistPage from "./pages/WishlistPage.jsx";
 import WalletPage from "./pages/WalletPage.jsx";
+import StoreUnavailable from "./pages/StoreUnavailable.jsx";
 
 const router = createBrowserRouter([
   {
@@ -81,6 +82,11 @@ const router = createBrowserRouter([
       // {path: "/auth", element: < Login/>},
       { path: "/auth", element: < AuthPage /> },
     ],
+  },
+  {
+    // Outside <Layout> so no store API calls run while the store is suspended.
+    path: "/store-unavailable",
+    element: <StoreUnavailable />,
   },
   {
     path: "*",
