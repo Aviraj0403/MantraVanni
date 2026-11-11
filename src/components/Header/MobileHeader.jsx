@@ -1,21 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-  ChevronDown,
-  CircleUserRound,
-  Grid2X2,
-  Heart,
-  Home,
-  LogOut,
-  Menu,
-  PackageSearch,
-  Search,
-  ShoppingBasket,
-  Sparkles,
-  Store,
-  Tag,
-  Wallet,
-  X,
-} from "lucide-react";
+import React, { useCallback, useEffect, useState } from "react";
+import { CircleUserRound, Grid2X2, Home, Menu, Search, ShoppingBasket, Store } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
@@ -24,10 +8,11 @@ import { useAuth } from "../../context/AuthContext";
 import useCombosEnabled from "../../hooks/useCombosEnabled";
 import { getPublicSettings } from "../../services/settingsApi";
 import BrandMark from "../BrandMark";
+import MobileMenuDrawer from "./MobileMenuDrawer";
 
 export default function MobileHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [openSubMenu, setOpenSubMenu] = useState(null);
+  const closeMenu = useCallback(() => setIsMenuOpen(false), []);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
@@ -55,15 +40,8 @@ export default function MobileHeader() {
 
   useEffect(() => {
     setIsMenuOpen(false);
-    setOpenSubMenu(null);
-  }, [location.pathname]);
+  }, [location.key]);
 
-  useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isMenuOpen]);
 
   const handleLogout = async () => {
     await logout();
@@ -91,10 +69,6 @@ export default function MobileHeader() {
       active ? "text-primary-600" : "text-[#736b60]"
     }`;
 
-  const quickLinkClass =
-    "flex flex-col items-center gap-2 rounded-2xl border border-secondary-200 bg-brand-bg px-2 py-3 text-center text-[10px] font-semibold text-[#463d32] shadow-sm";
-  const quickIconClass = "grid h-9 w-9 place-items-center rounded-full bg-secondary-50 text-accent";
-
   return (
     <div className="w-full bg-brand-bg md:hidden">
       <header className="fixed inset-x-0 top-0 z-[90] border-b border-secondary-200/70 bg-brand-bg/95 shadow-[0_5px_20px_rgba(139,30,30,0.09)] backdrop-blur-xl">
@@ -102,6 +76,9 @@ export default function MobileHeader() {
           <button
             type="button"
             onClick={() => setIsMenuOpen(true)}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-navigation-drawer"
+            aria-haspopup="dialog"
             className="grid h-10 w-10 place-items-center rounded-full border border-secondary-200 bg-secondary-50 text-accent transition active:scale-95"
             aria-label="Open menu"
           >
@@ -139,6 +116,9 @@ export default function MobileHeader() {
           <button
             type="button"
             onClick={() => setIsMenuOpen(true)}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-navigation-drawer"
+            aria-haspopup="dialog"
             className={bottomItemClass(isMenuOpen)}
           >
             <Grid2X2 size={21} strokeWidth={isMenuOpen ? 2.3 : 1.8} />
@@ -176,176 +156,18 @@ export default function MobileHeader() {
         </div>
       </nav>
 
-      <aside
-        className={`fixed inset-y-0 left-0 z-[110] flex w-[88%] max-w-[350px] flex-col overflow-hidden rounded-r-[28px] bg-brand-bg shadow-[18px_0_50px_rgba(28,18,8,0.2)] transition-transform duration-300 ease-out ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-        aria-hidden={!isMenuOpen}
-      >
-        <div className="relative overflow-hidden bg-gradient-to-br from-accent via-primary-700 to-brand-text px-5 pb-5 pt-4 text-white">
-          <span className="absolute -right-8 -top-10 h-32 w-32 rounded-full border border-white/10" />
-          <span className="absolute -right-2 top-8 h-20 w-20 rounded-full border border-secondary-300/35" />
-
-          <div className="relative flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="grid h-10 w-10 place-items-center rounded-full border border-secondary-300/50 bg-brand-bg/10 text-xl text-secondary-200">
-                ॐ
-              </span>
-              <div>
-                <p className="font-serif text-lg font-semibold leading-5">MantraVanni</p>
-                <p className="mt-1 text-[9px] tracking-[0.12em] text-secondary-100">SACRED LIVING</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsMenuOpen(false)}
-              className="grid h-9 w-9 place-items-center rounded-full bg-brand-bg/10 transition hover:bg-brand-bg/20"
-              aria-label="Close menu"
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleProfileClick}
-            className="relative mt-5 flex w-full items-center gap-3 rounded-2xl border border-white/15 bg-brand-bg/10 p-3 text-left backdrop-blur-sm"
-          >
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-primary-50 text-primary-700">
-              <CircleUserRound size={25} strokeWidth={1.7} />
-            </span>
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold">
-                {user?.name || user?.userName || user?.displayName || (user ? "My Account" : "Welcome")}
-              </span>
-              <span className="mt-0.5 block text-[11px] text-white/70">
-                {user ? "View profile and orders" : "Sign in to your account"}
-              </span>
-            </span>
-          </button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto overscroll-contain pb-24">
-          <div className="grid grid-cols-3 gap-2 px-4 py-4">
-            <Link to="/new-products" className={quickLinkClass}>
-              <span className={quickIconClass}>
-                <Sparkles size={18} />
-              </span>
-              Products
-            </Link>
-            {combosOn && (
-              <Link to="/combos" className={quickLinkClass}>
-                <span className={quickIconClass}>
-                  <Tag size={18} />
-                </span>
-                Combos
-              </Link>
-            )}
-            <Link to="/#best-sellers" className={quickLinkClass}>
-              <span className={quickIconClass}>
-                <PackageSearch size={18} />
-              </span>
-              Best Sellers
-            </Link>
-            {isWishlistEnabled && (
-              <Link to="/wishlist" className={quickLinkClass}>
-                <span className={quickIconClass}>
-                  <Heart size={18} />
-                </span>
-                Wishlist
-              </Link>
-            )}
-          </div>
-
-          <div className="px-5 pb-2 pt-1">
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-accent">Shop by category</p>
-          </div>
-
-          <ul className="mx-3 overflow-hidden rounded-2xl border border-secondary-200 bg-brand-bg shadow-sm">
-            {isLoading && (
-              <li className="px-4 py-5 text-center text-xs text-[#8a8177]">Loading categories...</li>
-            )}
-            {isError && (
-              <li className="px-4 py-5 text-center text-xs text-primary-700">Unable to load categories</li>
-            )}
-            {!isLoading && !isError && menuItems.length === 0 && (
-              <li className="px-4 py-5 text-center text-xs text-[#8a8177]">No categories available</li>
-            )}
-
-            {menuItems.map((item, index) => {
-              const hasSubcategories = item.subcategories?.length > 0;
-              const isOpen = openSubMenu === index;
-
-              return (
-                <li key={item._id || item.slug} className="border-b border-secondary-200 last:border-b-0">
-                  <button
-                    type="button"
-                    className={`flex w-full items-center justify-between px-4 py-3.5 text-left text-[13px] font-semibold transition ${
-                      isOpen ? "bg-secondary-50 text-accent" : "text-[#443b31] hover:bg-secondary-50"
-                    }`}
-                    onClick={() => {
-                      if (hasSubcategories) setOpenSubMenu(isOpen ? null : index);
-                      else navigate(`/${item.slug}`);
-                    }}
-                  >
-                    <span>{item.name}</span>
-                    {hasSubcategories && (
-                      <ChevronDown
-                        size={17}
-                        className={`text-primary-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-                      />
-                    )}
-                  </button>
-
-                  {isOpen && hasSubcategories && (
-                    <ul className="border-t border-secondary-200 bg-secondary-50/70 py-1.5">
-                      <li>
-                        <Link
-                          to={`/${item.slug}`}
-                          className="block px-6 py-2.5 text-xs font-semibold text-accent"
-                        >
-                          View all {item.name}
-                        </Link>
-                      </li>
-                      {item.subcategories.map((sub) => (
-                        <li key={sub._id || sub.slug}>
-                          <Link
-                            to={`/${item.slug}/${sub.slug}`}
-                            className="block px-6 py-2.5 text-xs text-[#665d52] transition hover:bg-secondary-100 hover:text-accent"
-                          >
-                            {sub.name}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-
-          {user && (
-            <div className="px-4 py-5">
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary-500/20 bg-primary-50 py-3 text-sm font-semibold text-primary-700 transition hover:bg-primary-600 hover:text-white"
-              >
-                <LogOut size={18} />
-                Logout
-              </button>
-            </div>
-          )}
-        </div>
-      </aside>
-
-      <button
-        type="button"
-        aria-label="Close menu overlay"
-        onClick={() => setIsMenuOpen(false)}
-        className={`fixed inset-0 z-[100] bg-black/50 backdrop-blur-[2px] transition-opacity duration-300 ${
-          isMenuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
-        }`}
+      <MobileMenuDrawer
+        open={isMenuOpen}
+        onClose={closeMenu}
+        onProfileClick={handleProfileClick}
+        onLogout={handleLogout}
+        user={user}
+        categories={menuItems}
+        loading={isLoading}
+        error={isError}
+        combosOn={combosOn}
+        wishlistOn={isWishlistEnabled}
+        walletOn={isWalletEnabled}
       />
     </div>
   );

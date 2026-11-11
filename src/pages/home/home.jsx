@@ -5,13 +5,13 @@ import CategorySlider from "./CategorySlider";
 import BestsellerSection from "./BestsellerSection";
 import PromoBanner from "./PromoBanner";
 import HomeNewArrivals from "../HomeNewArrivals";
+
 import MobileCategorySection from "../category/MobileCategorySection";
 import ComboSection from "./ComboSection";
 import BeautyHighlightSection from "./BeautyHighlightSection";
 import FloatingNewArrival from "./FloatingNewArrival";
 import WhyChooseUs from "./WhyChooseUs";
-import SacredSlokaStrip from "./SacredSlokaStrip";
-import BeautyBanner from "./BeautyDiscountBanner";
+// import BeautyBanner from "./BeautyDiscountBanner";
 import CosmeticTestimonials from "./CosmeticTestimonials";
 
 
@@ -35,7 +35,6 @@ function Home() {
   return (
     <div className="bg-brand-bg min-h-screen">
       <FloatingNewArrival />
-      <SacredSlokaStrip />
       <MobileCategorySection />
       <div className="max-w-[1920px] mx-auto shadow-sm">
         <BannerSlider />
@@ -46,7 +45,7 @@ function Home() {
         <BestsellerSection />
         <HomeNewArrivals />
         <PromoBanner />
-        <BeautyBanner />
+        {/* <BeautyBanner /> */}
         <WhyChooseUs />
         <BeautyHighlightSection />
         <CosmeticTestimonials />

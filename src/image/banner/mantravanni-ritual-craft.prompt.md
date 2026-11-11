@@ -1,0 +1,7 @@
+# Ritual craft editorial image
+
+Asset: `mantravanni-ritual-craft.png`. Generated with the built-in imagegen tool.
+
+## Prompt
+
+Use case: photorealistic-natural. Create an original premium editorial photograph for an Indian spiritual homewares brand website, portrait 4:5 composition. Close intimate overhead-oblique view of a pair of adult Indian artisan hands gently arranging beautiful unlit handmade terracotta diyas on a warm sandstone worktable. Hands enter from upper right edge, only hands and forearms with natural cream cotton sleeves visible, no faces or bodies. Several organic clay oil lamps, one subtle cotton wick, a small shallow ceramic bowl of loose white cotton wicks, a few fresh orange marigold petals and a folded earthy rust cotton textile in the corner. Main subject is tactile clay diyas and the caring gesture, not pottery wheel manufacturing. Background pale warm ivory stone wall with soft sunlight and botanical shadows, natural handcrafted textures. Rich terracotta, warm sand, muted saffron, cream palette. Beautiful large irregular empty light wall area in top third, objects in central and bottom two-thirds. Restrained contemporary Indian lifestyle magazine photography, serene honest human warmth, soft natural daylight, realistic hands and material detail. No gods, no deities, no statues, no temple, no text, no logos, no watermark, no ornate gold props, no collaged panels, no borders.

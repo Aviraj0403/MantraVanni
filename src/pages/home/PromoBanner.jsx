@@ -1,155 +1,88 @@
-import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import React from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Wind } from "lucide-react";
 import { getPromoBanners } from "../../services/promoBannerApi";
-import banner1 from "../../image/banner/banner2.png";
+import ritualBanner from "../../image/banner/mantravanni-quiet-rituals.png";
+
+const featuredBanner = {
+  _id: "mantravanni-quiet-rituals",
+  bannerImage: ritualBanner,
+  title: "A little stillness. A deeper connection.",
+  featured: true,
+};
 
 export default function PromoBanner() {
-  const [promoBanners, setPromoBanners] = useState([]);
+  const [promoBanners, setPromoBanners] = useState([featuredBanner]);
   const [current, setCurrent] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [interacting, setInteracting] = useState(false);
 
   useEffect(() => {
-    const fetchPromoBanners = async () => {
+    let active = true;
+    const fetchBanners = async () => {
       try {
-        setLoading(true);
         const data = await getPromoBanners();
-        
-        // Extract banners array from response
-        const banners = data?.promoBanners || data || [];
-        
-        // If no banners from backend, use default banner
-        if (!banners || banners.length === 0) {
-          setPromoBanners([{
-            _id: 'default-banner',
-            bannerImage: banner1,
-            title: 'Special Offers',
-            description: 'Discover amazing deals on beauty products'
-          }]);
-        } else {
-          // Use banners directly - API already returns only active banners with images
-          setPromoBanners(banners);
+        const banners = data?.promoBanners || data;
+        if (active && Array.isArray(banners)) {
+          setPromoBanners([featuredBanner, ...banners.filter((banner) => banner?.bannerImage && banner._id !== featuredBanner._id)]);
         }
-      } catch (error) {
-        console.error('Error fetching promo banners:', error);
-        // On error, show default banner
-        setPromoBanners([{
-          _id: 'default-banner',
-          bannerImage: banner1,
-          title: 'Special Offers',
-          description: 'Discover amazing deals on beauty products'
-        }]);
-      } finally {
-        setLoading(false);
+      } catch {
+        // The featured collection remains available when promotions cannot load.
       }
     };
-
-    fetchPromoBanners();
+    fetchBanners();
+    return () => { active = false; };
   }, []);
 
   useEffect(() => {
-    if (promoBanners.length > 1) {
-      const interval = setInterval(() => {
-        setCurrent((prev) => (prev + 1) % promoBanners.length);
-      }, 5000); // Change slide every 5 seconds
-      return () => clearInterval(interval);
-    }
-  }, [promoBanners.length]);
+    if (promoBanners.length < 2 || interacting || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const interval = setInterval(() => setCurrent((previous) => (previous + 1) % promoBanners.length), 6500);
+    return () => clearInterval(interval);
+  }, [promoBanners.length, interacting]);
 
-  const prevSlide = () => {
-    setCurrent((prev) => (prev === 0 ? promoBanners.length - 1 : prev - 1));
-  };
+  const moveSlide = (direction) => setCurrent((previous) => (previous + direction + promoBanners.length) % promoBanners.length);
 
-  const nextSlide = () => {
-    setCurrent((prev) => (prev + 1) % promoBanners.length);
-  };
-
-  if (loading) {
-    return (
-      <div className="mx-3 my-5 h-64 animate-pulse rounded-xl bg-secondary-50 flex items-center justify-center sm:mx-6 lg:mx-5">
-        <div className="text-brand-text/50">Loading promo banners...</div>
-      </div>
-    );
-  }
-
-return (
-  <section id="promo-banner" className="bg-brand-bg px-3 py-5 sm:px-6 lg:px-5">
-  <div className="relative mx-auto w-full overflow-hidden rounded-xl">
-    {/* Slider Container with Responsive Height */}
-    <div
-      className="flex transition-transform duration-700 ease-in-out"
-      style={{ transform: `translateX(-${current * 100}%)` }}
-    >
-      {promoBanners.map((banner, index) => (
-        <div
-          key={banner._id || index}
-          className="
-            relative w-full flex-shrink-0
-         h-[200px] sm:h-[240px] md:h-[280px] lg:h-[320px] xl:h-[340px]
-
-          "
-        >
-          {/* Banner Image */}
-          <img
-            src={banner.bannerImage}
-            alt={banner.title || `Promo Banner ${index + 1}`}
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-
-          {(banner.title || banner.description) &&
-            banner._id !== "default-banner" && (
-              <div className="absolute inset-0  flex items-end">
-                {/* <div className="p-4 md:p-8 text-white max-w-2xl">
-                  {banner.title && (
-                    <h3 className="text-xl md:text-3xl lg:text-4xl font-bold mb-2">
-                      {banner.title}
-                    </h3>
-                  )}
-                  {banner.description && (
-                    <p className="text-sm md:text-lg opacity-90">
-                      {banner.description}
-                    </p>
-                  )}
-                </div> */}
-              </div>
-            )}
-        </div>
-      ))}
-    </div>
-
-    {/* Navigation Arrows */}
-    {promoBanners.length > 1 && (
-      <>
-        <button
-          onClick={prevSlide}
-          className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-brand-text/55 text-secondary-200 shadow-md backdrop-blur transition hover:bg-secondary hover:text-brand-text"
-        >
-          <ChevronLeft />
-        </button>
-
-        <button
-          onClick={nextSlide}
-          className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-brand-text/55 text-secondary-200 shadow-md backdrop-blur transition hover:bg-secondary hover:text-brand-text"
-        >
-          <ChevronRight />
-        </button>
-
-        {/* Dots */}
-        <div className="absolute bottom-4 w-full flex justify-center gap-2">
-          {promoBanners.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`h-2.5 rounded-full transition-all ${
-                i === current ? "w-8 bg-secondary" : "w-2.5 bg-white/50 hover:bg-secondary"
-              }`}
-            />
+  return (
+    <section id="promo-banner" className="bg-brand-bg px-3 py-5 sm:px-6 lg:px-5" aria-label="MantraVanni ritual collections">
+      <div className="relative mx-auto w-full overflow-hidden rounded-xl border border-[#b8976233] bg-[#102c2a] [&_button:focus-visible]:outline-2 [&_button:focus-visible]:outline-offset-2 [&_button:focus-visible]:outline-[#e8c48d]"
+        role="region" aria-roledescription="carousel" aria-label="Featured promotions"
+        onMouseEnter={() => setInteracting(true)} onMouseLeave={() => setInteracting(false)}
+        onFocusCapture={() => setInteracting(true)}
+        onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setInteracting(false); }}>
+        <div className="flex transition-transform duration-700 ease-in-out motion-reduce:transition-none" style={{ transform: `translateX(-${current * 100}%)` }}>
+          {promoBanners.map((banner, index) => (
+            <div key={banner._id || index} className="relative h-[200px] w-full shrink-0 sm:h-[240px] md:h-[280px] lg:h-[320px] xl:h-[340px]"
+              role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${promoBanners.length}`} aria-hidden={index !== current} inert={index !== current ? true : undefined}>
+              <img src={banner.bannerImage} alt={banner.featured ? "Bronze singing bowl, incense smoke and a glowing clay diya in a serene teal setting" : banner.title || `Promotion ${index + 1}`} className="h-full w-full object-cover object-[65%_center] sm:object-center" loading="lazy" />
+              {banner.featured && (
+                <>
+                  <div className="absolute inset-0 bg-[linear-gradient(90deg,#0b2525ed_0%,#0b2525c9_36%,#0b252540_64%,transparent_100%)]" />
+                  <div className="absolute inset-y-0 left-[6%] flex w-[72%] flex-col justify-center py-5 sm:w-[56%] lg:left-[7%] lg:w-[48%]">
+                    <p className="mb-2 flex items-center gap-2 text-[8px] font-medium tracking-[.2em] text-[#d7bb8d] sm:mb-3 sm:text-[10px]"><Wind className="size-3 sm:size-4" aria-hidden="true" />THE ART OF EVERYDAY RITUALS</p>
+                    <h2 className="font-serif text-[25px] font-normal leading-[1.08] tracking-tight text-[#fbf1de] sm:text-4xl lg:text-[48px]">A little stillness.<br /><em className="font-normal text-[#e6bc7a]">A deeper connection.</em></h2>
+                    <p className="mt-2 max-w-[290px] text-[10px] leading-relaxed text-[#e3e6d9cc] sm:mt-3 sm:max-w-[370px] sm:text-xs lg:text-sm">Bring warmth, fragrance and intention to your sacred everyday moments.</p>
+                    <Link to="/#categories" className="mt-3 inline-flex w-fit items-center gap-4 border-b border-[#dab77b99] pb-1 text-[10px] font-medium text-[#f1d19e] transition-colors hover:border-[#fff1cf] hover:text-[#fff1cf] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#e8c48d] sm:mt-4 sm:text-xs lg:mt-5">Find your ritual<ArrowUpRight className="size-3.5" aria-hidden="true" /></Link>
+                  </div>
+                  <span className="absolute right-5 top-4 hidden text-[9px] tracking-[.22em] text-[#ead5b199] sm:block">MANTRAVANNI / MOMENTS OF CALM</span>
+                </>
+              )}
+            </div>
           ))}
         </div>
-      </>
-    )}
-  </div>
-  </section>
-);
-
+        {promoBanners.length > 1 && (
+          <>
+            <button type="button" onClick={() => moveSlide(-1)} aria-label="Previous promotion" className="absolute left-2 top-1/2 hidden size-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/25 text-[#f1d19e] backdrop-blur transition hover:bg-black/50 md:flex"><ChevronLeft size={18} /></button>
+            <button type="button" onClick={() => moveSlide(1)} aria-label="Next promotion" className="absolute right-2 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/25 text-[#f1d19e] backdrop-blur transition hover:bg-black/50"><ChevronRight size={18} /></button>
+            <div className="absolute bottom-1.5 right-4 flex items-center gap-1.5 sm:bottom-3">
+              {promoBanners.map((banner, index) => (
+                <button key={banner._id || index} type="button" onClick={() => setCurrent(index)} aria-label={`Show promotion ${index + 1}`} aria-current={index === current ? "true" : undefined} className="grid h-5 min-w-5 cursor-pointer place-items-center">
+                  <span className={`h-1.5 rounded-full transition-all motion-reduce:transition-none ${index === current ? "w-6 bg-[#e6bc7a]" : "w-1.5 bg-white/50"}`} />
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </section>
+  );
 }

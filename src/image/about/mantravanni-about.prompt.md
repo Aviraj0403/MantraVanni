@@ -1,0 +1,11 @@
+# About Us photography
+
+Generated with the built-in imagegen tool for the About Us page.
+
+## Hero — mantravanni-about-hero.png
+
+Use case: ads-marketing. Create a premium editorial panoramic website About Us hero background for MantraVanni, Indian spiritual essentials and meaningful gifting. Wide landscape 2.7:1 composition. Deep muted oxblood and terracotta plaster backdrop with soft warm grazing sunlight. Left 50 percent empty dark burgundy negative space for website headline overlay. On RIGHT HALF a sculptural low red sandstone plinth holds one beautiful antique brass diya with a small warm flame, a fine rudraksha mala draped naturally, a small unbranded folded ivory cotton pouch, brass incense bowl and two incense sticks with delicate soft smoke. A few restrained marigold petals. Editorial still life, refined museum-like arrangement with negative space, realistic brass patina and stone texture, quiet sacred mood, cinematic warm amber light and deep rich shadows. Main objects fully visible in right center, keep within middle 75 percent vertical area for website crop. No deities, no statues, no humans, no written text, no labels, no logos, no watermark, no collage.
+
+## Story — mantravanni-about-story.png
+
+Use case: photorealistic-natural. Generate a premium original lifestyle editorial photograph for MantraVanni spiritual gifting About Us page. Portrait 4:5 composition. Overhead-oblique intimate close-up of adult Indian hands lovingly folding natural ivory muslin wrapping around a thoughtful spiritual gift on a warm pale oak table. Inside the open muslin, a small unlit handmade terracotta diya and a brown rudraksha mala, with a few fresh orange marigold petals next to it. Natural cotton ribbon coils on tabletop and folded muted rust textile in one lower corner. Hands visible only from wrists, anatomically realistic, no faces. Soft morning window light from left with beautiful organic shadows, calm unhurried human feeling, pale warm sand, ivory, honey oak, terracotta palette. Physical everyday materials, realistic craftsmanship, contemporary Indian lifestyle magazine photography, tactile detailed fabric. Balanced composition all principal objects central, some negative space top. No gods, no statues, no brand packaging, no letters, no logo, no watermark, no collage, no picture frame.
