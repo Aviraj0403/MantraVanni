@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaStar, FaHeart, FaRegHeart, FaBolt, FaShoppingCart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useCartActions } from "../../hooks/useCartActions";
+import useCombosEnabled from "../../hooks/useCombosEnabled";
 import { useAuth } from "../../context/AuthContext";
 import { toggleWishlistHelper, isProductInWishlist } from "../../utils/wishlistHelper";
 
 export default function ProductCard({ product, onProductClick }) {
   const navigate = useNavigate();
+  const combosOn = useCombosEnabled();
   const { user } = useAuth();
   const { cartItems, addToCart, updateQuantity, removeFromCart } = useCartActions();
   const [isHovered, setIsHovered] = useState(false);
@@ -96,6 +98,12 @@ export default function ProductCard({ product, onProductClick }) {
         {discount > 0 && (
           <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-accent to-primary-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm">
             {discount}% OFF
+          </div>
+        )}
+
+        {combosOn && product?.isCombo && (
+          <div className="absolute bottom-3 right-3 z-20 rounded-md bg-primary-700 px-2 py-1 text-[9px] font-black uppercase tracking-widest text-white shadow-sm ring-1 ring-secondary/60">
+            Combo
           </div>
         )}
 

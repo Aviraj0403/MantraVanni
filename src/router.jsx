@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "./Layout.jsx";
 import SpiritualLoader from "./components/SpiritualLoader.jsx";
@@ -35,6 +35,8 @@ import WishlistPage from "./pages/WishlistPage.jsx";
 import WalletPage from "./pages/WalletPage.jsx";
 import StoreUnavailable from "./pages/StoreUnavailable.jsx";
 
+const CombosPage = lazy(() => import("./pages/CombosPage.jsx"));
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -61,6 +63,7 @@ const router = createBrowserRouter([
             <CheckoutPage />
           </RequireAuth>
       ) },
+      { path: "/combos", element: <CombosPage /> },
       { path: "/new-product", element: <NewProductsPage /> },
       { path: "/product/:slug", element: <ProductDetails /> },
       { path: "/:categorySlug", element: <CategoryDetails /> },

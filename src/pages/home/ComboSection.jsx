@@ -4,9 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import BestSellPC from "../../components/Product/ProductCard";
 import { getMiniProducts } from "../../services/productApi";
+import useCombosEnabled from "../../hooks/useCombosEnabled";
 
 export default function ComboSection({ categorySlug }) {
   const navigate = useNavigate();
+  const combosOn = useCombosEnabled();
   const carouselRef = useRef(null);
   const isCarouselPaused = useRef(false);
 
@@ -14,6 +16,7 @@ export default function ComboSection({ categorySlug }) {
     queryKey: ["isCombo", categorySlug],
     queryFn: () =>
       getMiniProducts(1, 100, "", categorySlug, "", "", "", "true"),
+    enabled: combosOn,
   });
 
   const scroll = (direction) => {
@@ -40,6 +43,8 @@ export default function ComboSection({ categorySlug }) {
 
   const products = data?.products || [];
 
+  if (!combosOn) return null;
+
   return (
     <section
       id="combo-products"
@@ -57,7 +62,7 @@ export default function ComboSection({ categorySlug }) {
           </div>
 
           <Link
-            to="/new-products"
+            to="/combos"
             className="mt-1 inline-flex shrink-0 items-center gap-2 text-[10px] font-bold text-primary-600 transition hover:text-brand-text sm:text-[11px]"
           >
             <span className="sm:hidden">View All</span>

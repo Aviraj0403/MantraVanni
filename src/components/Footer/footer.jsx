@@ -10,6 +10,7 @@ import { SiRazorpay } from "react-icons/si";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import useCombosEnabled from "../../hooks/useCombosEnabled";
 import { getPublicSettings } from "../../services/settingsApi";
 import BrandMark from "../BrandMark";
 
@@ -24,6 +25,7 @@ export default function Footer() {
     staleTime: 5 * 60 * 1000,
   });
 
+  const combosOn = useCombosEnabled();
   const isWalletEnabled = storeSettings?.walletEnabled !== false && storeSettings?.modules?.wallet !== false;
   const isWishlistEnabled = storeSettings?.wishlistEnabled !== false && storeSettings?.modules?.wishlist !== false;
 
@@ -90,7 +92,7 @@ export default function Footer() {
           <ul className="space-y-2.5 text-sm">
             <li><Link to="/new-products" className={linkClass}>New Arrivals</Link></li>
             <li><Link to="/#best-sellers" className={linkClass}>Best Sellers</Link></li>
-            <li><Link to="/#combo-products" className={linkClass}>Combo Offers</Link></li>
+            {combosOn && <li><Link to="/combos" className={linkClass}>Combos</Link></li>}
             <li><Link to="/new-products" className={linkClass}>Idols & Murtis</Link></li>
             <li><Link to="/new-products" className={linkClass}>Puja Essentials</Link></li>
             <li><Link to="/new-products" className={linkClass}>Festive Gifts</Link></li>

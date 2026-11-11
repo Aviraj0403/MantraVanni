@@ -21,6 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { getMenuCategories } from "../../services/categoryApi";
 import { useAuth } from "../../context/AuthContext";
+import useCombosEnabled from "../../hooks/useCombosEnabled";
 import { getPublicSettings } from "../../services/settingsApi";
 import BrandMark from "../BrandMark";
 
@@ -48,6 +49,7 @@ export default function MobileHeader() {
     staleTime: 5 * 60 * 1000,
   });
 
+  const combosOn = useCombosEnabled();
   const isWalletEnabled = storeSettings?.walletEnabled !== false && storeSettings?.modules?.wallet !== false;
   const isWishlistEnabled = storeSettings?.wishlistEnabled !== false && storeSettings?.modules?.wishlist !== false;
 
@@ -231,12 +233,14 @@ export default function MobileHeader() {
               </span>
               Products
             </Link>
-            <Link to="/#combo-products" className={quickLinkClass}>
-              <span className={quickIconClass}>
-                <Tag size={18} />
-              </span>
-              Combo
-            </Link>
+            {combosOn && (
+              <Link to="/combos" className={quickLinkClass}>
+                <span className={quickIconClass}>
+                  <Tag size={18} />
+                </span>
+                Combos
+              </Link>
+            )}
             <Link to="/#best-sellers" className={quickLinkClass}>
               <span className={quickIconClass}>
                 <PackageSearch size={18} />

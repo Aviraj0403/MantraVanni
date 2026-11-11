@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import { getMenuCategories } from "../../services/categoryApi";
 import { useAuth } from "../../context/AuthContext";
 import { getLocalWishlist } from "../../utils/wishlistHelper";
+import useCombosEnabled from "../../hooks/useCombosEnabled";
 import { getPublicSettings } from "../../services/settingsApi";
 import BrandMark from "../BrandMark";
 
@@ -22,7 +23,6 @@ const shopLinks = [
   { label: "All Products", to: "/new-products" },
   { label: "Divine Arrivals", to: "/new-products" },
   { label: "Popular Products", to: "/new-products" },
-  { label: "Combo Products", to: "/#combo-products" },
 ];
 
 export default function DesktopHeader() {
@@ -46,6 +46,7 @@ export default function DesktopHeader() {
     staleTime: 5 * 60 * 1000,
   });
 
+  const combosOn = useCombosEnabled();
   const isWalletEnabled = storeSettings?.walletEnabled !== false && storeSettings?.modules?.wallet !== false;
   const isWishlistEnabled = storeSettings?.wishlistEnabled !== false && storeSettings?.modules?.wishlist !== false;
 
@@ -174,7 +175,7 @@ export default function DesktopHeader() {
               )}
             </li>
 
-            <li><Link to="/#combo-products" className="transition hover:text-primary-600">Combo Offers</Link></li>
+            {combosOn && <li><Link to="/combos" className="transition hover:text-primary-600">Combos</Link></li>}
             <li><Link to="/#best-sellers" className="transition hover:text-primary-600">Best Sellers</Link></li>
             <li><Link to="/about-us" className="transition hover:text-primary-600">About</Link></li>
             <li><Link to="/contact-us" className="transition hover:text-primary-600">Contact</Link></li>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   FaStar, FaRegStar, FaStarHalfAlt,
   FaHeart, FaRegHeart,
@@ -13,6 +13,7 @@ import { getProductBySlug } from "../../services/productApi";
 import RelatedProduct from "../../pages/home/RelatedProduct";
 import { useCartActions } from "../../hooks/useCartActions";
 import ReviewTab from "../../pages/Review/ReviewTab";
+import useCombosEnabled, { formatINR } from "../../hooks/useCombosEnabled";
 
 /* ── color util ── */
 const COLOR_MAP = {
@@ -69,6 +70,7 @@ export default function ProductDetails() {
   const [toastMsg,    setToastMsg]    = useState("");
 
   const { addToCart } = useCartActions();
+  const combosOn = useCombosEnabled();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["product", slug],
@@ -134,6 +136,13 @@ export default function ProductDetails() {
   const price = variant?.price    ?? 0;
   const mrp   = variant?.realPrice ?? 0;
   const disc  = mrp > price ? Math.round(((mrp - price) / mrp) * 100) : 0;
+
+  const comboItems = Array.isArray(product.comboItems) ? product.comboItems.filter((ci) => ci?.product) : [];
+  const showCombo = combosOn && product.isCombo && comboItems.length > 0;
+  const comboRegular = Number(product.comboRegularTotal) || 0;
+  const comboSave = comboRegular > price ? comboRegular - price : 0;
+  const comboSavePct = comboSave > 0 ? Math.round((comboSave / comboRegular) * 100) : 0;
+  const outOfStockItems = comboItems.filter((ci) => ci.product.inStock === false);
 
   const doAdd = async () => {
     if (!variant || !color) return alert("Please select a size and shade.");
@@ -265,6 +274,11 @@ export default function ProductDetails() {
                   </span>
                 )}
               </div>
+              {combosOn && product.isCombo && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-700 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white ring-1 ring-secondary/60">
+                  <FaTag size={9} aria-hidden="true" /> Combo
+                </span>
+              )}
               <h1 className="font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-brand-text leading-tight">{name}</h1>
 
               <div className="flex flex-wrap items-center gap-3">
@@ -289,6 +303,63 @@ export default function ProductDetails() {
               )}
               <span className="text-xs text-gray-400 w-full -mt-1">Inclusive of all taxes · Free delivery</span>
             </div>
+
+            {/* Combo contents */}
+            {showCombo && (
+              <section aria-labelledby="combo-contents" className="rounded-2xl border border-primary-100 bg-secondary-50/50 p-4 sm:p-5">
+                <h2 id="combo-contents" className="font-serif text-lg font-bold text-brand-text">What&apos;s in this combo</h2>
+                <ul className="mt-3 divide-y divide-primary-100">
+                  {comboItems.map((ci, i) => {
+                    const p = ci.product;
+                    const qtyN = Number(ci.quantity) || 1;
+                    const img = Array.isArray(p.image) ? p.image[0] : p.image;
+                    return (
+                      <li key={p._id || i} className="flex items-center gap-3 py-2.5">
+                        <Link to={`/product/${p.slug || p._id}`} className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-secondary-200 bg-brand-bg">
+                          {img && <img src={img} alt={p.name} className="h-full w-full object-contain p-1" />}
+                        </Link>
+                        <div className="min-w-0 flex-1">
+                          <Link to={`/product/${p.slug || p._id}`} className="line-clamp-2 text-sm font-semibold text-brand-text hover:text-primary-600">
+                            {p.name}
+                          </Link>
+                          <p className="mt-0.5 text-xs text-gray-500">
+                            {(ci.variantSize || p.size) && <span>{ci.variantSize || p.size} · </span>}
+                            <span className="font-bold text-brand-text">× {qtyN}</span>
+                            {p.inStock === false && <span className="ml-2 font-bold text-rose-600">Out of stock</span>}
+                          </p>
+                        </div>
+                        <span className="shrink-0 text-sm font-bold text-brand-text">{formatINR(p.price)}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+
+                <dl className="mt-3 space-y-1.5 border-t border-primary-100 pt-3 text-sm">
+                  {comboRegular > 0 && (
+                    <div className="flex justify-between text-gray-600">
+                      <dt>Regular price</dt>
+                      <dd className="line-through">{formatINR(comboRegular)}</dd>
+                    </div>
+                  )}
+                  <div className="flex justify-between font-bold text-brand-text">
+                    <dt>Combo price</dt>
+                    <dd className="text-base">{formatINR(price)}</dd>
+                  </div>
+                </dl>
+
+                {comboSave > 0 && (
+                  <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-1.5 text-sm font-extrabold text-white shadow-sm">
+                    <FaTag size={11} aria-hidden="true" /> You save {formatINR(comboSave)} ({comboSavePct}%)
+                  </p>
+                )}
+
+                {outOfStockItems.length > 0 && (
+                  <p role="status" className="mt-3 text-xs font-semibold text-rose-600">
+                    Currently unavailable: {outOfStockItems.map((ci) => ci.product.name).join(", ")} is out of stock.
+                  </p>
+                )}
+              </section>
+            )}
 
             {/* Size selector */}
             {variants?.length > 0 && (

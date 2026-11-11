@@ -3,9 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaStar, FaHeart, FaRegHeart, FaBolt, FaShoppingCart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useCartActions } from "../../hooks/useCartActions";
+import useCombosEnabled from "../../hooks/useCombosEnabled";
 
 export default function BestSellPC({ product, onProductClick }) {
   const navigate = useNavigate();
+  const combosOn = useCombosEnabled();
   const { cartItems, addToCart, updateQuantity, removeFromCart } = useCartActions();
   const [isHovered, setIsHovered] = useState(false);
   const [wished, setWished] = useState(false);
@@ -78,6 +80,12 @@ export default function BestSellPC({ product, onProductClick }) {
             </div>
           )}
         </div>
+
+        {combosOn && product?.isCombo && (
+          <div className="absolute bottom-3 right-3 z-20 rounded-md bg-primary-700 px-2 py-1 text-[9px] font-black uppercase tracking-widest text-white shadow-sm ring-1 ring-secondary/60">
+            Combo
+          </div>
+        )}
 
         {/* ⭐️ Compact Rating Badge on Image */}
         <div className="absolute bottom-3 left-3 z-10 flex items-center gap-1 bg-white/90 backdrop-blur-md px-1.5 py-0.5 rounded-lg text-amber-500 shadow-sm border border-gray-100/50">
