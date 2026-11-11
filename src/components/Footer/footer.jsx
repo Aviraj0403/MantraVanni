@@ -10,6 +10,7 @@ import { getMenuCategories } from "../../services/categoryApi";
 import useStoreProfile from "../../hooks/useStoreProfile";
 import { FaInstagram, FaFacebookF, FaYoutube, FaWhatsapp } from "react-icons/fa";
 import BrandMark from "../BrandMark";
+import { openConsentPreferences } from "../../marketing/api";
 
 const footerLinkClass = "inline-flex py-1 text-[13px] text-[#c5b5a1] transition-colors hover:text-[#f4dfba]";
 const accountLinkClass = "inline-flex items-center gap-2 rounded-full border border-[#d7b88b]/20 px-3.5 py-2 text-[10px] text-[#cfbda5] transition-colors hover:border-[#d7b88b]/60 hover:bg-[#d7b88b]/5 hover:text-[#f4dfba]";
@@ -78,6 +79,9 @@ export default function Footer() {
               <li><Link to="/shipping-policy" className={footerLinkClass}>Shipping policy</Link></li>
               <li><Link to="/privacy-policy" className={footerLinkClass}>Privacy policy</Link></li>
               <li><Link to="/terms-and-conditions" className={footerLinkClass}>Terms & conditions</Link></li>
+              {storeSettings?.marketing?.enabled === true && storeSettings?.marketing?.consentRequired === true && (
+                <li><button type="button" onClick={openConsentPreferences} className={footerLinkClass}>Cookie & ad preferences</button></li>
+              )}
               <li><Link to="/faq" className={footerLinkClass}>Common questions</Link></li>
               <li><Link to="/contact-us" className={footerLinkClass}>Contact us</Link></li>
             </ul>

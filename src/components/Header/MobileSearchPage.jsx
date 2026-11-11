@@ -16,6 +16,7 @@ import {
 } from "../../services/categoryApi";
 import { getMiniProducts } from "../../services/productApi";
 import usePageMeta from "../../hooks/usePageMeta";
+import { track } from "../../marketing/api";
 
 const readRecentSearches = () => {
   try {
@@ -94,6 +95,7 @@ export default function MobileSearchPage() {
   const saveSearch = (searchTerm) => {
     const cleanTerm = searchTerm.trim();
     if (!cleanTerm) return;
+    track("Search", { search_string: cleanTerm.slice(0, 100) });
 
     const updated = [
       cleanTerm,

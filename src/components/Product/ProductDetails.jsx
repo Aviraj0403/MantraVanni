@@ -16,6 +16,7 @@ import { useCartActions } from "../../hooks/useCartActions";
 import ReviewTab from "../../pages/Review/ReviewTab";
 import useCombosEnabled, { formatINR } from "../../hooks/useCombosEnabled";
 import usePageMeta from "../../hooks/usePageMeta";
+import { track } from "../../marketing/api";
 import { isOutOfStock, getStockQty } from "../../utils/stock";
 
 /* ── color util ── */
@@ -129,6 +130,19 @@ export default function ProductDetails() {
       setMainImg(initialImg);
     }
   }, [product]);
+
+  /* Meta Pixel ViewContent (no-op unless marketing is enabled) */
+  useEffect(() => {
+    if (!product?._id) return;
+    track("ViewContent", {
+      content_ids: [String(product._id)],
+      content_type: "product",
+      content_name: product.name,
+      value: Number(product.variants?.[0]?.price) || 0,
+      currency: "INR",
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product?._id]);
 
   const handleVariantChange = (v) => {
     setVariant(v);

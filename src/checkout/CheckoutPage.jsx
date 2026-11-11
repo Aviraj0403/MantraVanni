@@ -18,6 +18,19 @@ import {
   markPaymentCaptured,
 } from "../utils/paymentStorage";
 import usePageMeta from "../hooks/usePageMeta";
+import { track, trackPurchase, getOrderMarketing } from "../marketing/api";
+
+// Browser-side Purchase (once per order); the server sends the Conversions API twin with the same event id.
+const firePurchase = (order, cart, quote) => {
+  try {
+    const id = order?.id || order?._id;
+    if (!id) return;
+    trackPurchase(String(id), {
+      value: order?.totalAmount ?? order?.total ?? quote?.total,
+      items: (cart || []).map((i) => ({ id: i.id, quantity: i.quantity, price: i.price })),
+    });
+  } catch { /* marketing must never block checkout */ }
+};
 
 const asRupees = (n) => Math.round(Number(n || 0) * 100) / 100;
 
@@ -56,6 +69,34 @@ export default function CheckoutPage() {
   const [stockConflict, setStockConflict] = useState(null); // [{productId,name,available}] from a 409
   const [priceNotice, setPriceNotice] = useState(null);
   const quoteSeq = useRef(0);
+  const cartRef = useRef(cartItems);
+  cartRef.current = cartItems;
+  const quoteRef = useRef(null);
+  quoteRef.current = quote;
+  const initiatedCheckout = useRef(false);
+  useEffect(() => {
+    if (initiatedCheckout.current || cartItems.length === 0) return;
+    initiatedCheckout.current = true;
+    try {
+      track("InitiateCheckout", {
+        value: cartItems.reduce((a, i) => a + (Number(i.price) || 0) * (Number(i.quantity) || 0), 0),
+        currency: "INR",
+        content_ids: cartItems.map((i) => String(i.id)),
+        contents: cartItems.map((i) => ({ id: String(i.id), quantity: Number(i.quantity) || 1, item_price: Number(i.price) || 0 })),
+        content_type: "product",
+        num_items: cartItems.reduce((a, i) => a + (Number(i.quantity) || 0), 0),
+      });
+    } catch { /* ignore */ }
+  }, [cartItems]);
+  const choosePayment = (method) => {
+    setPaymentMethod(method);
+    track("AddPaymentInfo", {
+      value: Number(quoteRef.current?.total) || 0,
+      currency: "INR",
+      content_ids: cartRef.current.map((i) => String(i.id)),
+      content_type: "product",
+    });
+  };
 
   const orderItems = useMemo(() => toOrderItems(cartItems), [cartItems]);
 
@@ -178,6 +219,7 @@ export default function CheckoutPage() {
   const finishWithOrder = useCallback(
     (order) => {
       clearPendingPayment();
+      firePurchase(order, cartRef.current, quoteRef.current);
       dispatch(clearCartThunk());
       const orderId = order?.id || order?._id;
       if (!orderId) {
@@ -285,6 +327,7 @@ export default function CheckoutPage() {
     items: orderItems,
     shippingAddress: shippingAddressPayload,
     discountCode: discountCode || null,
+    ...getOrderMarketing(),
   });
 
   const handleOrderError = (err, fallback) => {
@@ -342,6 +385,7 @@ export default function CheckoutPage() {
       );
       if (data.success) {
         toast.success("Order placed successfully using your wallet!");
+        firePurchase(data.order, cartRef.current, quoteRef.current);
         dispatch(clearCartThunk());
         const orderId = data.order.id || data.order._id;
         navigate(`/invoice/${orderId}`, { state: { order: data.order } });
@@ -371,6 +415,7 @@ export default function CheckoutPage() {
       );
       if (data.success) {
         toast.success("Order placed successfully (COD)!");
+        firePurchase(data.order, cartRef.current, quoteRef.current);
         dispatch(clearCartThunk());
         const orderId = data.order.id || data.order._id;
         navigate(`/invoice/${orderId}`, { state: { order: data.order } });
@@ -671,7 +716,7 @@ export default function CheckoutPage() {
                   type="radio"
                   name="payment_method"
                   checked={paymentMethod === "Razorpay"}
-                  onChange={() => setPaymentMethod("Razorpay")}
+                  onChange={() => choosePayment("Razorpay")}
                   className="text-primary-500"
                 />
                 <div>
@@ -686,7 +731,7 @@ export default function CheckoutPage() {
                     type="radio"
                     name="payment_method"
                     checked={paymentMethod === "Wallet"}
-                    onChange={() => setPaymentMethod("Wallet")}
+                    onChange={() => choosePayment("Wallet")}
                     className="text-primary-500"
                   />
                   <div>
@@ -702,7 +747,7 @@ export default function CheckoutPage() {
                     type="radio"
                     name="payment_method"
                     checked={paymentMethod === "COD"}
-                    onChange={() => setPaymentMethod("COD")}
+                    onChange={() => choosePayment("COD")}
                     className="text-primary-500"
                   />
                   <div>

@@ -8,6 +8,7 @@ import ProgressBar from "./components/progressbar/ProgressBar.jsx";
 import { useWindowContext } from "./context/windowContext.jsx";
 import StoreBotWidget from "./components/bots/StoreBotWidget.jsx";
 import SpiritualLoader from "./components/SpiritualLoader.jsx";
+import MarketingProvider from "./marketing/MarketingProvider.jsx";
 
 const Layout = () => {
   const { divRef, progressWidth } = useWindowContext();
@@ -39,6 +40,9 @@ const Layout = () => {
 
       {/* JD Bot store support widget (renders only if enabled for this tenant) */}
       <StoreBotWidget />
+
+      {/* Meta Pixel + consent banner (renders nothing unless marketing is enabled for this tenant) */}
+      <MarketingProvider />
     </div>
   );
 };

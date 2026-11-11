@@ -1,5 +1,7 @@
 import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import PolicyLayout from "./PolicyLayout";
+import { getPublicSettings } from "../../services/settingsApi";
 
 // Generic template - see the legal note in PolicyLayout.jsx (needs legal review before go-live).
 const sections = [
@@ -40,14 +42,25 @@ const sections = [
   ]},
 ];
 
+const marketingSection = {
+  id: "marketing", title: "Advertising, Meta Pixel and Conversions API", body: [
+    "With your consent where required, we use the Meta (Facebook / Instagram) Pixel and Meta Conversions API to measure the performance of our ads and to show relevant offers. When enabled, your browser and our servers send Meta events such as page views, product views, add to cart, checkout steps, searches and purchases, along with your IP address, browser details, Meta cookie identifiers (_fbp, _fbc) and, if you are signed in and have accepted, your email address and phone number in hashed (SHA-256) form.",
+    "We also remember, in your browser, which ad or campaign brought you to the store (UTM parameters and click identifiers) for up to 30 days, and attach it to your order so we can understand which campaigns lead to purchases. Meta processes this data under its own privacy policy.",
+    "You can accept or decline at any time using the Cookie & ad preferences link in the footer. If you decline, the Meta Pixel is not loaded and no advertising data about you is sent to Meta.",
+  ],
+};
+
 export default function PrivacyPolicy() {
+  const { data } = useQuery({ queryKey: ["publicSettings"], queryFn: getPublicSettings, staleTime: 5 * 60 * 1000 });
+  const marketingOn = data?.marketing?.enabled === true;
+  const list = marketingOn ? sections.flatMap((s) => (s.id === "cookies" ? [marketingSection, s] : [s])) : sections;
   return (
     <PolicyLayout
       title="Privacy Policy"
       summary="How we collect, use and protect your personal information when you shop with us."
       path="/privacy-policy"
       lastUpdated="11 November 2026"
-      sections={sections}
+      sections={list}
     />
   );
 }

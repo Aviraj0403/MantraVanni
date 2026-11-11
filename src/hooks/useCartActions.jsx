@@ -18,6 +18,7 @@ import {
 
 import { useAuth } from "../context/AuthContext";
 import { isOutOfStock } from "../utils/stock";
+import { track } from "../marketing/api";
 
 export const useCartActions = () => {
   const dispatch = useDispatch();
@@ -97,6 +98,19 @@ export const useCartActions = () => {
           })
         ).unwrap();
       }
+
+      try {
+        const unit = Number(product.variants?.price) || 0;
+        track("AddToCart", {
+          value: unit * quantity,
+          currency: "INR",
+          content_ids: [String(product._id)],
+          content_type: "product",
+          content_name: product.name,
+          contents: [{ id: String(product._id), quantity, item_price: unit }],
+          num_items: quantity,
+        });
+      } catch { /* marketing must never block the cart */ }
 
       return { success: true, newQuantity: newQty };
     };
