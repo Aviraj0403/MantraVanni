@@ -12,8 +12,18 @@ const TrackOrder = () => {
   const [error, setError] = useState(null);
 
   const [searchHistory, setSearchHistory] = useState(() => {
-    const saved = localStorage.getItem("gk_tracking_history");
-    return saved ? JSON.parse(saved) : [];
+    try {
+      // One-time migration of the legacy key to the MantraVanni-named key.
+      const legacy = localStorage.getItem("gk_tracking_history");
+      if (legacy !== null) {
+        if (localStorage.getItem("mv_tracking_history") === null) localStorage.setItem("mv_tracking_history", legacy);
+        localStorage.removeItem("mv_tracking_history");
+      }
+      const saved = localStorage.getItem("mv_tracking_history");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
   });
 
   const handleSearch = async (e) => {
@@ -43,7 +53,7 @@ const TrackOrder = () => {
           ...searchHistory.filter(h => h.id !== searchValue)
         ].slice(0, 3);
         setSearchHistory(newHistory);
-        localStorage.setItem("gk_tracking_history", JSON.stringify(newHistory));
+        localStorage.setItem("mv_tracking_history", JSON.stringify(newHistory));
       }
     } catch (err) {
       setError(

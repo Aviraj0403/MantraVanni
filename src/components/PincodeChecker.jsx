@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { checkPincodeServiceability } from '../services/shippingApi';
-import { toast } from 'react-toastify';
+import { toast } from '../utils/toast';
 
 export default function PincodeChecker({ onPincodeValidated }) {
   const [pincode, setPincode] = useState('');

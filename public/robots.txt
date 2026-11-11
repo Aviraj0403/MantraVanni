@@ -1,9 +1,16 @@
-# Allow all crawlers
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /cart
+Disallow: /checkout
+Disallow: /account
+Disallow: /profile
+Disallow: /wallet
+Disallow: /order/
+Disallow: /invoice/
+Disallow: /signin
+Disallow: /signup
+Disallow: /auth
+Disallow: /search
 
-# Sitemap for .in domain
-Sitemap: https://gurmeetkaurstore.in/sitemap.xml
-
-# Sitemap for .com domain
-Sitemap: https://gurmeetkaurstore.com/sitemap.xml
+# Add the production sitemap once one is generated, e.g.:
+# Sitemap: https://<your-store-domain>/sitemap.xml

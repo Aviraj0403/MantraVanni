@@ -6,7 +6,6 @@ import {
 import Orders from "./Orders";
 import Support from "./Support";
 import Reviews from "./Reviews";
-import BeautyProfile from "./BeautyProfile";
 import Addresses from "./Addresses";
 import DeleteAccount from "./DeleteAccount";
 import SignInPage from "../pages/auth/SignInPage";
@@ -16,7 +15,6 @@ const TABS = [
   { key: "addresses", label: "Addresses", short: "Address", icon: MapPin },
   { key: "support", label: "Support", short: "Support", icon: Smile },
   { key: "reviews", label: "Reviews", short: "Reviews", icon: Star },
-  { key: "beauty", label: "Beauty", short: "Beauty", icon: User },
   { key: "delete", label: "Delete Account", short: "Delete", icon: Trash2 },
 ];
 
@@ -25,7 +23,6 @@ function tabComponent(key) {
     case "orders": return <Orders />;
     case "support": return <Support />;
     case "reviews": return <Reviews />;
-    case "beauty": return <BeautyProfile />;
     case "addresses": return <Addresses />;
     case "delete": return <DeleteAccount />;
     default: return null;

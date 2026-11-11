@@ -1,11 +1,19 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import useStoreProfile from "../../hooks/useStoreProfile";
+import usePageMeta from "../../hooks/usePageMeta";
 import { ArrowUpRight, ChevronRight, Phone, Mail, Clock, MapPin, Flower2, MessageCircle, Package, Gift, Check } from "lucide-react";
 
 const inputClass = "mt-2 w-full rounded-xl border border-[#e5d9ca] bg-[#fcfaf6] px-4 py-3 text-sm text-[#4b382b] outline-none transition placeholder:text-[#b4a18d] hover:border-[#cdb69d] focus:border-[#a66542] focus:ring-2 focus:ring-[#a66542]/10";
 
 export default function ContactUs() {
   const [draftReady, setDraftReady] = useState(false);
+  const store = useStoreProfile();
+  usePageMeta({ title: `Contact Us | ${store.name}`, description: `Get in touch with ${store.name} for order help, product questions and support.`, canonical: "/contact-us" });
+  // Tenant settings first; the previous literals remain as a fallback until the settings carry them.
+  const email = store.supportEmail || "support@mantravanni.com";
+  const phone = store.supportPhone || "+91 8510879296";
+  const phoneHref = phone.replace(/s+/g, "");
 
   const composeMessage = (event) => {
     event.preventDefault();
@@ -15,7 +23,7 @@ export default function ContactUs() {
     const subject = String(fields.get("subject") || "");
     const message = String(fields.get("message") || "").trim();
     const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
-    window.location.href = `mailto:support@mantravanni.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     setDraftReady(true);
   };
 
@@ -34,11 +42,11 @@ export default function ContactUs() {
 
       <div className="mx-auto max-w-[1280px] px-5 pb-12 sm:px-8 sm:pb-16 lg:px-10">
         <div className="grid grid-cols-1 gap-3 py-7 sm:gap-4 sm:py-9 md:grid-cols-3">
-          <a href="tel:+918510879296" className="group flex items-center gap-4 rounded-2xl border border-[#e7dccd] bg-[#fffdf9] px-5 py-5 transition-colors hover:border-[#bfa07e]">
-            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#f1e5d5] text-[#986a47]"><Phone size={18} strokeWidth={1.5} aria-hidden="true" /></span><div className="min-w-0 flex-1"><p className="mb-1 text-[9px] tracking-[.15em] text-[#a38a72]">GIVE US A CALL</p><p className="text-sm font-medium text-[#59412d]">+91 8510879296</p></div><ArrowUpRight size={15} className="shrink-0 text-[#a98966]" aria-hidden="true" />
+          <a href={`tel:${phoneHref}`} className="group flex items-center gap-4 rounded-2xl border border-[#e7dccd] bg-[#fffdf9] px-5 py-5 transition-colors hover:border-[#bfa07e]">
+            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#f1e5d5] text-[#986a47]"><Phone size={18} strokeWidth={1.5} aria-hidden="true" /></span><div className="min-w-0 flex-1"><p className="mb-1 text-[9px] tracking-[.15em] text-[#a38a72]">GIVE US A CALL</p><p className="text-sm font-medium text-[#59412d]">{phone}</p></div><ArrowUpRight size={15} className="shrink-0 text-[#a98966]" aria-hidden="true" />
           </a>
-          <a href="mailto:support@mantravanni.com" className="group flex min-w-0 items-center gap-4 rounded-2xl border border-[#e7dccd] bg-[#fffdf9] px-5 py-5 transition-colors hover:border-[#bfa07e]">
-            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#e8ebdf] text-[#747b53]"><Mail size={18} strokeWidth={1.5} aria-hidden="true" /></span><div className="min-w-0 flex-1"><p className="mb-1 text-[9px] tracking-[.15em] text-[#a38a72]">DROP US A NOTE</p><p className="break-all text-[12px] font-medium text-[#59412d]">support@mantravanni.com</p></div><ArrowUpRight size={15} className="shrink-0 text-[#a98966]" aria-hidden="true" />
+          <a href={`mailto:${email}`} className="group flex min-w-0 items-center gap-4 rounded-2xl border border-[#e7dccd] bg-[#fffdf9] px-5 py-5 transition-colors hover:border-[#bfa07e]">
+            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#e8ebdf] text-[#747b53]"><Mail size={18} strokeWidth={1.5} aria-hidden="true" /></span><div className="min-w-0 flex-1"><p className="mb-1 text-[9px] tracking-[.15em] text-[#a38a72]">DROP US A NOTE</p><p className="break-all text-[12px] font-medium text-[#59412d]">{email}</p></div><ArrowUpRight size={15} className="shrink-0 text-[#a98966]" aria-hidden="true" />
           </a>
           <div className="flex items-center gap-4 rounded-2xl border border-[#e7dccd] bg-[#fffdf9] px-5 py-5"><span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#eee4df] text-[#a27561]"><Clock size={18} strokeWidth={1.5} aria-hidden="true" /></span><div><p className="mb-1 text-[9px] tracking-[.15em] text-[#a38a72]">HERE FOR YOU</p><p className="text-sm font-medium text-[#59412d]">Mon–Sat · 9 AM–7 PM</p></div></div>
         </div>
@@ -65,7 +73,7 @@ export default function ContactUs() {
                 </select>
               </div>
               <div><label htmlFor="contact-message" className="text-xs font-medium text-[#755943]">Your message <span className="text-[#ae7956]">*</span></label><textarea id="contact-message" name="message" rows={5} required maxLength={3000} placeholder="Tell us a little more. For order queries, please include your order number." className={`${inputClass} min-h-[140px] resize-y`} /></div>
-              <div className="border-t border-[#ede4d8] pt-5"><button type="submit" aria-describedby="email-draft-note" className="inline-flex w-full cursor-pointer items-center justify-center gap-6 rounded-full bg-[#8d5033] px-6 py-3.5 text-xs font-medium text-[#fff5e5] transition-colors hover:bg-[#6e3b24] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8d5033] sm:w-auto">Compose your message<ArrowUpRight size={16} aria-hidden="true" /></button><p id="email-draft-note" className="mt-3 max-w-[390px] text-[10px] leading-5 text-[#a38b74]">Opens your email app with a draft ready to send. You can also email us directly at support@mantravanni.com.</p></div>
+              <div className="border-t border-[#ede4d8] pt-5"><button type="submit" aria-describedby="email-draft-note" className="inline-flex w-full cursor-pointer items-center justify-center gap-6 rounded-full bg-[#8d5033] px-6 py-3.5 text-xs font-medium text-[#fff5e5] transition-colors hover:bg-[#6e3b24] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8d5033] sm:w-auto">Compose your message<ArrowUpRight size={16} aria-hidden="true" /></button><p id="email-draft-note" className="mt-3 max-w-[390px] text-[10px] leading-5 text-[#a38b74]">Opens your email app with a draft ready to send. You can also email us directly at {email}.</p></div>
               {draftReady && <p role="status" className="flex items-start gap-2 rounded-xl border border-[#d9dfc8] bg-[#f1f4e9] p-3 text-xs leading-6 text-[#68744c]"><Check size={15} className="mt-1 shrink-0" aria-hidden="true" />Your email draft is ready. If your email app didn't open, use the email link above to reach us.</p>}
             </form>
           </div>
@@ -75,7 +83,7 @@ export default function ContactUs() {
             {/* Existing Google Maps embed preserved. */}
             <div className="rounded-2xl overflow-hidden shadow-xl">
               <iframe
-                title="map"
+                title="Map showing our location"
                 className="w-full h-full min-h-[400px]"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14014.711338103568!2d77.205294!3d28.628901!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd35d8e9c0cd%3A0x4ff7c8b8c6fe4894!2sNew%20Delhi%2C%20Delhi!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
                 allowFullScreen=""
@@ -89,7 +97,7 @@ export default function ContactUs() {
         <div className="mt-8 grid gap-4 md:grid-cols-3 lg:mt-10">
           <Link to="/track-order" className="group flex items-start gap-4 rounded-2xl border border-[#e5d9c9] p-5 transition-colors hover:bg-[#f0e5d5]"><Package size={20} strokeWidth={1.4} className="mt-0.5 shrink-0 text-[#a67b55]" aria-hidden="true" /><div className="flex-1"><h3 className="font-sans text-sm font-medium text-[#694c35]">Looking for your order?</h3><p className="mt-1.5 text-xs leading-6 text-[#a0876d]">Follow its journey to your doorstep.</p></div><ArrowUpRight size={14} className="mt-1 shrink-0 text-[#aa8d6d]" aria-hidden="true" /></Link>
           <Link to="/faq" className="group flex items-start gap-4 rounded-2xl border border-[#e5d9c9] p-5 transition-colors hover:bg-[#f0e5d5]"><MessageCircle size={20} strokeWidth={1.4} className="mt-0.5 shrink-0 text-[#a67b55]" aria-hidden="true" /><div className="flex-1"><h3 className="font-sans text-sm font-medium text-[#694c35]">A quick question?</h3><p className="mt-1.5 text-xs leading-6 text-[#a0876d]">Our FAQs are a good place to start.</p></div><ArrowUpRight size={14} className="mt-1 shrink-0 text-[#aa8d6d]" aria-hidden="true" /></Link>
-          <a href="mailto:support@mantravanni.com?subject=Bulk%20orders%20%26%20gifting" className="group flex items-start gap-4 rounded-2xl border border-[#e5d9c9] p-5 transition-colors hover:bg-[#f0e5d5]"><Gift size={20} strokeWidth={1.4} className="mt-0.5 shrink-0 text-[#a67b55]" aria-hidden="true" /><div className="flex-1"><h3 className="font-sans text-sm font-medium text-[#694c35]">Something special in mind?</h3><p className="mt-1.5 text-xs leading-6 text-[#a0876d]">Let's talk gifting and bulk orders.</p></div><ArrowUpRight size={14} className="mt-1 shrink-0 text-[#aa8d6d]" aria-hidden="true" /></a>
+          <a href={`mailto:${email}?subject=Bulk%20orders%20%26%20gifting`} className="group flex items-start gap-4 rounded-2xl border border-[#e5d9c9] p-5 transition-colors hover:bg-[#f0e5d5]"><Gift size={20} strokeWidth={1.4} className="mt-0.5 shrink-0 text-[#a67b55]" aria-hidden="true" /><div className="flex-1"><h3 className="font-sans text-sm font-medium text-[#694c35]">Something special in mind?</h3><p className="mt-1.5 text-xs leading-6 text-[#a0876d]">Let's talk gifting and bulk orders.</p></div><ArrowUpRight size={14} className="mt-1 shrink-0 text-[#aa8d6d]" aria-hidden="true" /></a>
         </div>
       </div>
     </section>

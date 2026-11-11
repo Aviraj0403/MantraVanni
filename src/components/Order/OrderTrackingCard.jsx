@@ -260,7 +260,7 @@ const OrderTrackingCard = ({ order }) => {
                       src={imageUrl}
                       alt={item.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
+                    loading="lazy" decoding="async" />
                   </div>
                   <div className="absolute -top-1 -right-1 w-5 h-5 bg-brand-bg rounded-full shadow border border-gray-100 flex items-center justify-center text-[9px] font-black text-brand-text">
                     ×{item.quantity}

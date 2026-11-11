@@ -47,7 +47,7 @@ export default function PromoSection() {
                 src={product.image}
                 alt={product.brand}
                 className="w-full h-60 object-fit rounded-lg"
-              />
+              loading="lazy" decoding="async" />
               <div className="bg-brand-bg w-full py-3">
                 <h3 className="font-bold text-lg text-brand-text">
                   {product.offer}

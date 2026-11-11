@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
-import { toast } from "react-toastify";
+import { toast } from '../../utils/toast';
 import { createReview } from "../../services/reviewApi";
 import { useAuth } from "../../context/AuthContext";
 const ReviewForm = ({ productId, setReviews }) => {

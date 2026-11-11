@@ -38,7 +38,7 @@ const OrderListItem = ({ order }) => {
             src={getFirstProductImage()}
             alt="Product"
             className="w-full h-full object-cover rounded-lg"
-          />
+          loading="lazy" decoding="async" />
         </div>
 
         {/* Order Info */}

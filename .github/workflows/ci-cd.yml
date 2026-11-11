@@ -1,48 +1,57 @@
-name: CI/CD Pipeline for MantraVanni FRONTEND
+name: Storefront CI/CD
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  deploy:
-    name: Deploy Frontend to VPS
+  build:
+    name: Build
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'push'
+        with:
+          name: dist
+          path: dist
+          retention-days: 3
 
-      - name: Deploy to VPS
+  deploy:
+    name: Deploy
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Configure SSH
         run: |
-          ssh -o StrictHostKeyChecking=no root@72.61.174.82 "
-            # Load Node/NPM/PM2 (because server uses NVM)
-            export NVM_DIR=\"/root/.nvm\"
-            source \"\$NVM_DIR/nvm.sh\"
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          echo "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
 
-            cd /var/www/GKStore/gkstore-frontend &&
+      - name: Upload build
+        run: |
+          rsync -az --delete -e "ssh -i ~/.ssh/deploy_key -o UserKnownHostsFile=~/.ssh/known_hosts -o StrictHostKeyChecking=yes"             dist/ "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/"
 
-            # Pull latest code
-            git pull origin main &&
-
-            # Install dependencies
-            npm ci &&
-
-            # Build production files
-            npm run build &&
-
-            # Restart PM2 frontend app
-            pm2 restart gkstore-front 
-
-            # Save PM2 processes
-            pm2 save
-          "
+      - name: Run post-deploy command
+        env:
+          RESTART_CMD: ${{ secrets.DEPLOY_RESTART_CMD }}
+        run: |
+          if [ -n "$RESTART_CMD" ]; then
+            ssh -i ~/.ssh/deploy_key -o UserKnownHostsFile=~/.ssh/known_hosts -o StrictHostKeyChecking=yes               "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" "$RESTART_CMD"
+          fi

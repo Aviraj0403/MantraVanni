@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MapPin, Plus, Edit2, Trash2, CheckCircle } from "lucide-react";
-import { toast } from "react-toastify";
+import { toast } from '../utils/toast';
 import axios from "../utils/Axios"; // Your axios instance
 
 import { getAddress, addAddress, updateAddress, deleteAddress, setDefaultAddress } from "../services/userApi"; // Your API helpers

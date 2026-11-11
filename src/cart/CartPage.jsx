@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useCartActions } from "../hooks/useCartActions";
 import { useAuth } from "../context/AuthContext";
 import { getShippingAmount } from "../utils/shippingCalculator";
+import usePageMeta from "../hooks/usePageMeta";
+import { formatINR } from "../utils/money";
 
 const transformToSlug = (name) => {
   return name
@@ -15,6 +17,7 @@ const transformToSlug = (name) => {
 };
 
 export default function CartPage() {
+  usePageMeta({ title: "Your Cart | MantraVanni", description: "Review the items in your MantraVanni cart.", noindex: true });
   const [couponOpen, setCouponOpen] = useState(false);
   const [coupon, setCoupon] = useState({
     applied: false,
@@ -33,6 +36,7 @@ export default function CartPage() {
     totalAmount,
     totalItems,
     loading,
+    error: cartError,
   } = useCartActions();
 
   // console.log("Cart Items:", cartItems); // Debugging
@@ -134,6 +138,10 @@ export default function CartPage() {
       <div className="w-full max-w-6xl flex flex-col md:flex-row md:items-start gap-5 md:gap-6">
         {/* Left Section */}
         <div className="flex-1">
+          {/* Live region: announces cart update failures / progress to assistive tech */}
+          <p className={cartError ? "mb-2 rounded-lg bg-red-50 p-2 text-xs font-semibold text-red-700" : "sr-only"} role="status" aria-live="polite">
+            {cartError ? String(cartError) : loading ? "Updating your cart" : ""}
+          </p>
           <button
             type="button"
             onClick={() => navigate("/new-products")}
@@ -169,6 +177,7 @@ export default function CartPage() {
                 className="group relative mb-3 flex flex-col rounded-2xl border border-[#e7ded1] bg-brand-bg p-3 shadow-sm transition hover:border-[#d9c7a9] hover:shadow-[0_10px_26px_rgba(61,45,25,0.08)] sm:flex-row sm:items-center sm:justify-between sm:p-4"
               >
                 <button
+                  aria-label={`Remove ${item.name} from cart`}
                   className="absolute right-2 top-2 z-10 grid h-8 w-8 place-items-center rounded-full bg-[#fff5f4] text-[#a13a40] transition hover:bg-[#f9e5e3] md:hidden"
                   onClick={() => handleRemoveItem(item.id, item.size, item.color)}
                 >
@@ -179,6 +188,10 @@ export default function CartPage() {
                   <img
                     src={item.image}
                     alt={item.name}
+                    width="112"
+                    height="112"
+                    loading="lazy"
+                    decoding="async"
                     className="h-24 w-24 cursor-pointer rounded-xl border border-[#eee7de] bg-[#faf8f4] object-contain p-1.5 transition group-hover:scale-[1.02] sm:h-28 sm:w-28"
                     onClick={() => navigate(`/product/${transformToSlug(item.name)}`)} 
                   />
@@ -191,7 +204,7 @@ export default function CartPage() {
                       {item.color && <span className="rounded-md bg-[#f4f1ec] px-2 py-1 text-[10px] text-[#756b60]">Color: {item.color}</span>}
                     </div>
                     <p className="mt-2 font-bold text-[#D35400]">
-                      ₹{item.price.toFixed(2)}
+                      {formatINR(item.price)}
                     </p>
                   </div>
                 </div>
@@ -199,6 +212,7 @@ export default function CartPage() {
                 <div className="flex items-center justify-between gap-3 border-t border-[#f0ebe4] pt-3 sm:justify-end sm:border-0 sm:pt-0">
                   <div className="flex h-10 items-center overflow-hidden rounded-lg border border-[#dcd3c7] bg-brand-bg shadow-sm">
                     <button
+                      aria-label={`Decrease quantity of ${item.name}`}
                       className="grid h-full w-9 place-items-center text-[#6e6459] transition hover:bg-[#f5eee3] hover:text-[#D35400] disabled:opacity-40"
                       onClick={() => handleDecrement(item.id, item.size, item.color)}
                       disabled={loading}
@@ -207,6 +221,7 @@ export default function CartPage() {
                     </button>
                     <span className="grid h-full min-w-9 place-items-center border-x border-[#e7e0d7] px-2 text-sm font-bold">{item.quantity}</span>
                     <button
+                      aria-label={`Increase quantity of ${item.name}`}
                       className="grid h-full w-9 place-items-center text-[#6e6459] transition hover:bg-[#f5eee3] hover:text-[#D35400] disabled:opacity-40"
                       onClick={() => handleIncrement(item.id, item.size, item.color)}
                       disabled={loading}
@@ -215,9 +230,10 @@ export default function CartPage() {
                     </button>
                   </div>
                   <p className="font-bold text-[#312b24]">
-                    ₹{(item.price * item.quantity).toFixed(2)}
+                    {formatINR(item.price * item.quantity)}
                   </p>
                   <button
+                    aria-label={`Remove ${item.name} from cart`}
                     className="hidden h-9 w-9 place-items-center rounded-full text-[#9a8d7c] transition hover:bg-[#fff0f0] hover:text-[#a2262f] md:grid"
                     onClick={() => handleRemoveItem(item.id, item.size, item.color)}
                   >
@@ -272,7 +288,7 @@ export default function CartPage() {
             <div className="mb-5 space-y-3 text-sm text-[#6e655b]">
               <div className="flex justify-between">
                 <p>Item Total</p>
-                <p>₹{totalAmount.toFixed(2)}</p>
+                <p>{formatINR(totalAmount)}</p>
               </div>
 
               {coupon.applied && (
@@ -280,46 +296,41 @@ export default function CartPage() {
                   <p>Discount</p>
                   <p>
                     {/* Conditional display of the discount */}
-                    -₹{
-                      calculateDiscount().toFixed(2)
-                    }
+                    -{formatINR(calculateDiscount())}
                   </p>
                 </div>
               )}
 
               <div className="flex justify-between">
                 <p>Delivery Fee</p>
-                <p>₹{shippingCharges.toFixed(2)}</p>
+                <p>{formatINR(shippingCharges)}</p>
               </div>
             </div>
             <div className="mb-5 border-t border-dashed border-[#ddd3c6] pt-4">
               <div className="flex items-end justify-between">
                 <div>
                   <p className="text-sm font-bold text-[#302a23]">Total Amount</p>
-                  <p className="text-[10px] text-[#8a8075]">Inclusive of all taxes</p>
+                  <p className="text-[10px] text-[#8a8075]">Estimate. Final price, discount and delivery are confirmed at checkout.</p>
                 </div>
-                <p className="text-xl font-extrabold text-[#D35400]">₹{finalAmount.toFixed(2)}</p>
+                <p className="text-xl font-extrabold text-[#D35400]">{formatINR(finalAmount)}</p>
               </div>
             </div>
             <button
               onClick={() => {
                 if (!user) {
                   // If the user is not logged in, redirect to login page
-                  navigate("/signin", {
+                  navigate("/signin?redirect=/cart", {
                     // Redirect back to cart after successful login
                     state: { from: "/cart" },
                   });
                 } else {
                   // Proceed to checkout if the user is logged in
+                  // Checkout re-prices the cart on the server; only the coupon code and the
+                  // cart-page estimate (used for the "prices updated" notice) are passed along.
                   navigate("/checkout", {
                     state: {
-                      cartItems, // Items in the cart
-                      totalAmount, // Total amount before discount
-                      totalQuantity: totalItems, // Total quantity of items
-                      grandTotal: finalAmount.toFixed(2), // Final amount after coupon and shipping
-                      shippingCharges, // Dynamic shipping charges
-                      appliedCoupon: coupon.applied ? coupon : null, // Coupon details (if any)
-                      finalAmount: totalAmount - calculateDiscount(), // Amount after discount, before shipping
+                      grandTotal: finalAmount.toFixed(2),
+                      appliedCoupon: coupon.applied ? coupon : null,
                     },
                   });
                 }

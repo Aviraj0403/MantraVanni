@@ -1,7 +1,5 @@
-import React, { useEffect } from "react";
+import React, { Suspense } from "react";
 import { Outlet } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
 
 import Header from "./components/Header/header.jsx";
 import Footer from "./components/Footer/footer.jsx";
@@ -9,15 +7,13 @@ import ScrollToTop from "./components/ScrollToTop.jsx";
 import ProgressBar from "./components/progressbar/ProgressBar.jsx";
 import { useWindowContext } from "./context/windowContext.jsx";
 import StoreBotWidget from "./components/bots/StoreBotWidget.jsx";
+import SpiritualLoader from "./components/SpiritualLoader.jsx";
 
 const Layout = () => {
   const { divRef, progressWidth } = useWindowContext();
 
   return (
     <div className="flex flex-col min-h-screen bg-brand-bg">
-      {/* Toast container for notifications */}
-      <ToastContainer position="top-center" autoClose={3000} hideProgressBar={false} newestOnTop closeButton={true} />
-
       {/* Header Component */}
       <Header />
 
@@ -32,7 +28,9 @@ const Layout = () => {
         {/* Render the nested routes here */}
       <main className="w-full">
 
-          <Outlet />
+          <Suspense fallback={<SpiritualLoader />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
 

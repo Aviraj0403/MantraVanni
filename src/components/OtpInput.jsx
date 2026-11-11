@@ -1,10 +1,10 @@
 import React, { useRef } from "react";
 
-const OtpInput = ({ length = 4, value, onChange }) => {
+const OtpInput = ({ length = 6, value, onChange }) => {
   const inputsRef = useRef([]);
 
 const handleChange = (e, index) => {
-  const digit = e.target.value.replace(/\D/, "");
+  const digit = e.target.value.replace(/[^0-9]/g, "").slice(-1);
   const newValue = value.split("");
 
   newValue[index] = digit || "";
@@ -30,9 +30,10 @@ const handleChange = (e, index) => {
 
   const handlePaste = (e) => {
     const pasted = e.clipboardData.getData("text").replace(/\D/g, "");
-    if (pasted.length !== length) return;
+    if (pasted.length < length) return;
+    e.preventDefault();
 
-    onChange(pasted);
+    onChange(pasted.slice(0, length));
     inputsRef.current[length - 1]?.focus();
   };
 
@@ -44,6 +45,9 @@ const handleChange = (e, index) => {
           ref={(el) => (inputsRef.current[i] = el)}
           type="text"
           maxLength="1"
+          inputMode="numeric"
+          autoComplete={i === 0 ? "one-time-code" : "off"}
+          aria-label={`OTP digit ${i + 1} of ${length}`}
           value={value[i] || ""}
           onChange={(e) => handleChange(e, i)}
           onKeyDown={(e) => handleKeyDown(e, i)}

@@ -44,7 +44,7 @@ export const getProductsByCategoryAndSubCategorySlug = async (categorySlug, subC
 
 export const getMiniProducts = async (
   page = 1, 
-  limit = 1000, 
+  limit = 100, // the API caps page size at 100
   search = '', 
   category = '', 
   isHotProduct = '', 

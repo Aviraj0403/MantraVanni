@@ -43,7 +43,7 @@
   
   /* Premium Typography */
   --font-serif: 'Playfair Display', serif;
-  --font-cinzel: 'Cinzel', serif;
+  --font-cinzel: 'Playfair Display', serif; /* legacy alias: display face is Playfair Display only */
   --font-sans: 'Outfit', sans-serif;
 }
 
@@ -323,3 +323,9 @@
       .initial-spiritual-loader__center{position:absolute;left:50%;top:50%;display:grid;width:clamp(96px,22vw,132px);aspect-ratio:1;place-items:center;border:1px solid rgba(212,175,55,.46);border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 18px 50px rgba(74,32,11,.12);transform:translate(-50%,-50%);color:#8b1e1e;font-size:44px}
       @keyframes initial-spiritual-spin{to{transform:rotate(360deg)}}
     
+
+/* Visible keyboard focus everywhere (low specificity so component styles can override) */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid #D35400;
+  outline-offset: 2px;
+}

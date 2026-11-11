@@ -76,7 +76,7 @@ const cartSlice = createSlice({
         item.quantity = quantity;
         // console.log(`✅ Updated quantity: ${color} - Qty: ${quantity}`);
       } else {
-        console.log(`❌ Item not found: ${id}, ${size}, ${color}`);
+        // item no longer in the cart: nothing to update
       }
 
       const totals = calculateTotals(state.items);

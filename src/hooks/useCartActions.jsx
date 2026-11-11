@@ -17,6 +17,7 @@ import {
 } from "../features/cart/cartSlice";
 
 import { useAuth } from "../context/AuthContext";
+import { isOutOfStock } from "../utils/stock";
 
 export const useCartActions = () => {
   const dispatch = useDispatch();
@@ -56,6 +57,9 @@ export const useCartActions = () => {
 
   // ⭐ Add to Cart - FIXED
   const addToCart = async (product, size, color, quantity = 1) => {
+    if (isOutOfStock(product, product?.variants)) {
+      return { success: false, error: "This item is out of stock." };
+    }
     const existingItem = findCartItem(product._id, size, color);
     const newQty = (existingItem?.quantity || 0) + quantity;
 
@@ -104,8 +108,6 @@ export const useCartActions = () => {
   const updateQuantity = async (productId, size, color, quantity) => {
     if (quantity < 1) return;
 
-    console.log("📝 Update Quantity:", { productId, size, color, quantity });
-
     const updateQtyAction = async () => {
       // Optimistically update local cart
       dispatch(updateItemQuantity({ id: productId, size, color, quantity }));
@@ -134,8 +136,6 @@ export const useCartActions = () => {
 
   // ⭐ Remove Item - FIXED
   const removeFromCart = async (productId, size, color) => {
-    console.log("🗑️ Remove from Cart:", { productId, size, color });
-
     const removeItemAction = async () => {
       // Optimistically remove item from local cart
       dispatch(removeItem({ id: productId, size, color }));

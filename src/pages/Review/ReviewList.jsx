@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
-import { toast } from "react-toastify";
+import { toast } from '../../utils/toast';
 import { createReview } from "../../services/reviewApi";
 import { useAuth } from "../../context/AuthContext";
 const ReviewList = ({ reviews }) => {
@@ -36,7 +36,7 @@ const ReviewList = ({ reviews }) => {
                 src={review.user.avatar || "/favicon.svg"}
                 alt={review.user.userName}
                 className="w-12 h-12 rounded-full object-cover border-2 border-primary-100"
-              />
+              loading="lazy" decoding="async" />
               <div className="flex-1 min-w-0">
                 <h5 className="font-semibold text-brand-text truncate">
                   {review.user.userName}

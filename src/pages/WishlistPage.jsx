@@ -137,7 +137,7 @@ export default function WishlistPage() {
                         src={imageUrl}
                         alt={item.name}
                         className="max-h-full object-contain group-hover:scale-105 transition duration-300"
-                      />
+                      loading="lazy" decoding="async" />
                       <button
                         onClick={() => handleRemove(item)}
                         className="absolute top-3 right-3 p-2 bg-brand-bg/90 text-brand-text/40 hover:text-accent rounded-full shadow-sm border border-secondary-100 transition"

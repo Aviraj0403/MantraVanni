@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProductsByCategorySlug } from "../../services/productApi"; // Import the new API function
-import ProductCard from "../../components/Product/ProductCard"; // Import ProductCard component
+import ProductCard from "../../components/Product/ProductCard";
+import NotFoundPage from "../PNF/NotFoundPage";
+import usePageMeta from "../../hooks/usePageMeta"; // Import ProductCard component
 // on catgory slug fetch products and show them with pagination by aviraj
 export default function CategoryDetails() {
   const { categorySlug } = useParams();
@@ -41,12 +43,19 @@ export default function CategoryDetails() {
     fetchProducts(currentPage);
   }, [categorySlug, currentPage]);
 
+  usePageMeta({
+    title: categoryName ? `${categoryName} | MantraVanni` : undefined,
+    description: categoryName ? `Shop ${categoryName} at MantraVanni - authentic spiritual essentials delivered across India.` : undefined,
+    canonical: window.location.pathname,
+  });
+
   if (loading) {
-    return <div>Loading products...</div>;
+    return <div role="status" aria-live="polite">Loading products...</div>;
   }
 
+  // An unknown / mistyped slug (the API returns no category) shows the 404 page instead of an empty shell.
   if (error) {
-    return <div>{error}</div>;
+    return <NotFoundPage />;
   }
   // Navigate to product detail page
   const handleProductClick = (productId) => {

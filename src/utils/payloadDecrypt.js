@@ -1,3 +1,6 @@
+// SECURITY NOTE: this AES key ships inside the public JS bundle, so the "encrypted" settings payload is
+// OBFUSCATION ONLY (it hides the JSON from casual network inspection). Anyone can recover the key.
+// Never rely on it for secrecy: the public settings endpoint must only ever return non-sensitive data.
 // Web Crypto API AES-256-CBC Decryption (runs natively in all modern browsers without third-party dependencies)
 const HEX_KEY = '139e217a64457c40b16d4c3999460e88e51b04680c6073a8083b6261efac7465';
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Wallet, PlusCircle, ArrowUpRight, ArrowDownLeft, RefreshCw, ShieldCheck, CreditCard, Share2, Copy, Check } from 'lucide-react';
-import { getMyWallet, addWalletFunds, claimReferralCode } from '../services/walletWishlistApi';
+import { getMyWallet, addWalletFunds, claimReferralCode, claimSignupBonus } from '../services/walletWishlistApi';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Axios from '../utils/Axios';
@@ -16,6 +16,23 @@ export default function WalletPage() {
   const [referralLoading, setReferralLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [msg, setMsg] = useState({ text: '', type: '' });
+
+  const [bonusLoading, setBonusLoading] = useState(false);
+  const signupBonus = Number(walletData?.config?.signupBonus || 0);
+  const bonusGranted = !!(walletData?.signupBonusGranted ?? walletData?.config?.signupBonusGranted ?? walletData?.wallet?.signupBonusGranted);
+
+  const handleClaimBonus = async () => {
+    try {
+      setBonusLoading(true);
+      const r = await claimSignupBonus();
+      setMsg({ text: r?.message || 'Signup bonus added to your wallet', type: 'success' });
+      await fetchWallet();
+    } catch (err) {
+      setMsg({ text: err?.response?.data?.message || 'Could not claim the bonus', type: 'error' });
+    } finally {
+      setBonusLoading(false);
+    }
+  };
 
   const fetchWallet = async () => {
     try {
@@ -66,7 +83,7 @@ export default function WalletPage() {
             currency: 'INR',
             order_id: orderRes.data.order_id,
             name: 'Wallet Top-Up',
-            description: `Adding ₹${num} to Retailer Wallet`,
+            description: `Adding ₹${num} to your wallet`,
             handler: async function (response) {
               try {
                 // Verify payment & credit wallet
@@ -170,9 +187,14 @@ export default function WalletPage() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
             <div>
               <div className="inline-flex items-center gap-2 bg-primary-500/20 text-secondary-200 text-xs font-semibold px-3 py-1 rounded-full mb-3 border border-primary-500/30">
-                <ShieldCheck size={14} /> BULKO BUSINESS WALLET
+                <ShieldCheck size={14} /> MANTRAVANNI WALLET
               </div>
               <h1 className="text-3xl font-extrabold tracking-tight">My Wallet & Referral Earnings</h1>
+              {signupBonus > 0 && !bonusGranted && (
+                <button type="button" onClick={handleClaimBonus} disabled={bonusLoading} className="mt-3 rounded-full bg-secondary-200 px-4 py-2 text-xs font-bold text-accent-800 disabled:opacity-60">
+                  {bonusLoading ? 'Claiming...' : `Claim ₹${signupBonus} signup bonus`}
+                </button>
+              )}
               <p className="text-white/70 text-sm mt-1">Instant Razorpay Top-Up & ₹250 Fixed Reward per Friend Referral.</p>
             </div>
 
@@ -250,7 +272,7 @@ export default function WalletPage() {
 
               <div className="bg-accent-800 p-3 rounded-xl border border-accent-600 flex items-center justify-between mb-4">
                 <span className="font-mono font-bold tracking-wider text-secondary-300 text-sm">
-                  {walletData?.referralCode || 'BULKO...'}
+                  {walletData?.referralCode || 'MV...'}
                 </span>
                 <button
                   onClick={copyReferralCode}

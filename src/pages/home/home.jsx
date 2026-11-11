@@ -12,11 +12,19 @@ import BeautyHighlightSection from "./BeautyHighlightSection";
 import FloatingNewArrival from "./FloatingNewArrival";
 import WhyChooseUs from "./WhyChooseUs";
 // import BeautyBanner from "./BeautyDiscountBanner";
-import CosmeticTestimonials from "./CosmeticTestimonials";
+import Testimonials from "./Testimonials";
+import usePageMeta from "../../hooks/usePageMeta";
 
 
 function Home() {
   const location = useLocation();
+  usePageMeta({
+    title: "MantraVanni - Sacred Essentials for Mindful Living",
+    description: "Shop authentic spiritual essentials - idols, incense, diyas, rudraksha, crystals and thoughtful gifts - delivered across India.",
+    canonical: "/",
+    image: "/Logo.webp",
+    jsonLd: { "@context": "https://schema.org", "@type": "Organization", name: "MantraVanni", url: typeof window !== "undefined" ? window.location.origin : undefined, logo: "/Logo.webp" },
+  });
 
   React.useEffect(() => {
     if (!location.hash) return;
@@ -48,7 +56,7 @@ function Home() {
         {/* <BeautyBanner /> */}
         <WhyChooseUs />
         <BeautyHighlightSection />
-        <CosmeticTestimonials />
+        <Testimonials />
       </div>
     </div>
   );

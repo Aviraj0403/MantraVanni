@@ -6,6 +6,7 @@ import { useCartActions } from "../../hooks/useCartActions";
 import useCombosEnabled from "../../hooks/useCombosEnabled";
 import { useAuth } from "../../context/AuthContext";
 import { toggleWishlistHelper, isProductInWishlist } from "../../utils/wishlistHelper";
+import { isOutOfStock } from "../../utils/stock";
 
 export default function ProductCard({ product, onProductClick }) {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function ProductCard({ product, onProductClick }) {
   const [wished, setWished] = useState(false);
 
   const activeVariant = product?.variants;
+  const soldOut = isOutOfStock(product, activeVariant);
   const size = activeVariant?.size || "default";
   const color = Array.isArray(activeVariant?.color) ? activeVariant.color[0] : (activeVariant?.color || "default");
   
@@ -62,6 +64,7 @@ export default function ProductCard({ product, onProductClick }) {
 
   const handleAddToCart = async (e) => {
     if (e) e.stopPropagation();
+    if (soldOut) return;
     const result = await addToCart(product, size, color, 1);
     if (result.success) {
       setShowPopup(true);
@@ -71,6 +74,7 @@ export default function ProductCard({ product, onProductClick }) {
 
   const handleBuyNow = async (e) => {
     if (e) e.stopPropagation();
+    if (soldOut) return;
     const result = await addToCart(product, size, color, 1);
     if (result.success) navigate("/cart");
   };
@@ -89,6 +93,10 @@ export default function ProductCard({ product, onProductClick }) {
         <motion.img
           src={product.pimage || product.image?.[0] || product.thumbnail}
           alt={product.name}
+          loading="lazy"
+          decoding="async"
+          width="400"
+          height="400"
           animate={{ scale: isHovered ? 1.05 : 1 }}
           transition={{ duration: 0.4 }}
           className="w-full h-full object-contain p-4"
@@ -98,6 +106,12 @@ export default function ProductCard({ product, onProductClick }) {
         {discount > 0 && (
           <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-accent to-primary-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm">
             {discount}% OFF
+          </div>
+        )}
+
+        {soldOut && (
+          <div className="absolute inset-x-0 top-1/2 z-20 -translate-y-1/2 bg-brand-text/80 py-1.5 text-center text-xs font-bold uppercase tracking-widest text-white">
+            Out of stock
           </div>
         )}
 
@@ -120,6 +134,8 @@ export default function ProductCard({ product, onProductClick }) {
             wished ? 'bg-rose-50 text-rose-500 border border-rose-200' : 'bg-white/80 text-gray-400 hover:text-rose-500'
           }`}
           title={wished ? "Remove from wishlist" : "Add to wishlist"}
+          aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
+          aria-pressed={wished}
         >
           {wished ? <FaHeart className="text-rose-500 text-sm" /> : <FaRegHeart className="text-sm" />}
         </button>
@@ -127,7 +143,7 @@ export default function ProductCard({ product, onProductClick }) {
 
         {/* Add to Bag Reveal Overlay */}
         <AnimatePresence>
-          {isHovered && quantity === 0 && (
+          {isHovered && quantity === 0 && !soldOut && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -166,20 +182,25 @@ export default function ProductCard({ product, onProductClick }) {
             {quantity > 0 ? (
               <div className="flex items-center bg-gray-50 rounded-lg border border-gray-100 h-9 px-1">
                 <button 
+                  aria-label="Decrease quantity"
                   onClick={(e) => { e.stopPropagation(); if(quantity <= 1) removeFromCart(product._id, size, color); else updateQuantity(product._id, size, color, quantity - 1); }} 
                   className="w-7 h-full flex items-center justify-center text-gray-400 font-black hover:text-primary-600 transition-colors"
                 >-</button>
                 <span className="text-xs font-black px-2 tabular-nums">{quantity}</span>
                 <button 
+                  aria-label="Increase quantity"
                   onClick={(e) => { e.stopPropagation(); updateQuantity(product._id, size, color, quantity + 1); }} 
                   className="w-7 h-full flex items-center justify-center text-gray-400 font-black hover:text-primary-600 transition-colors"
                 >+</button>
               </div>
+            ) : soldOut ? (
+              <span className="rounded-lg bg-gray-100 px-2.5 py-2 text-[10px] font-bold uppercase tracking-wide text-gray-500">Out of stock</span>
             ) : (
               <button
                 onClick={handleBuyNow}
                 className="w-9 h-9 rounded-lg bg-primary-500 text-white flex items-center justify-center hover:bg-secondary hover:text-brand-text transition-colors shadow-sm"
                 title="Instant Checkout"
+                aria-label="Buy now"
               >
                 <FaBolt size={12} />
               </button>

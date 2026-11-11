@@ -16,6 +16,11 @@ export const payWithWallet = async (amount, description, referenceId) => {
   return res.data;
 };
 
+export const claimSignupBonus = async () => {
+  const res = await Axios.post('/wallet/claim-signup-bonus');
+  return res.data;
+};
+
 export const claimReferralCode = async (referralCode) => {
   const res = await Axios.post('/wallet/claim-referral', { referralCode });
   return res.data;

@@ -21,8 +21,8 @@ const testimonials = [
   },
   {
     id: 3, name: "Rohit Mehta", location: "Mumbai", initials: "RM",
-    topic: "Pooja essentials", title: "A place to come back to.",
-    feedback: "MantraVanni has a wide range of spiritual products. My go-to store for all puja needs.",
+    topic: "Sacred essentials", title: "A place to come back to.",
+    feedback: "MantraVanni has a wide range of spiritual products. My go-to store for all my spiritual needs.",
     avatar: "bg-[#eadcd7] text-[#925c4a]",
   },
   {
@@ -36,11 +36,11 @@ const testimonials = [
 const shoppingHelp = [
   { icon: Truck, title: "Shipping & delivery", subtitle: "Plan your order", to: "/shipping-info" },
   { icon: WalletCards, title: "Payments & orders", subtitle: "Find your answers", to: "/faq" },
-  { icon: RotateCcw, title: "Returns & exchanges", subtitle: "Read our policy", to: "/retun-exchnage-policy" },
+  { icon: RotateCcw, title: "Returns & exchanges", subtitle: "Read our policy", to: "/return-exchange-policy" },
   { icon: MessageCircle, title: "A little help?", subtitle: "Talk to our team", to: "/contact-us" },
 ];
 
-export default function CosmeticTestimonials() {
+export default function Testimonials() {
   const swiperRef = useRef(null);
   const [slider, setSlider] = useState({ start: 0, visible: 1, beginning: true, end: false });
 

@@ -5,7 +5,7 @@ import { ArrowUpRight, ChevronLeft, ChevronRight, Flower2, Truck, WalletCards, R
 import spiritualHero from "../../image/banner/mantravanni-spiritual-hero.png";
 
 const banners = [
-  { eyebrow: "A LITTLE DEVOTION. EVERY DAY.", title: "Bring home", highlight: "the divine.", description: "Thoughtful pooja essentials for your sacred space and everyday rituals.", action: "Explore the collection", to: "/#categories", note: "Pooja essentials · Sacred idols · Spiritual gifts" },
+  { eyebrow: "A LITTLE DEVOTION. EVERY DAY.", title: "Bring home", highlight: "the divine.", description: "Thoughtful essentials for your sacred space and everyday rituals.", action: "Explore the collection", to: "/#categories", note: "Pooja essentials · Sacred idols · Spiritual gifts" },
   { eyebrow: "MAKE SPACE FOR SACRED MOMENTS", title: "Small rituals.", highlight: "Deeper meaning.", description: "Discover meaningful additions to your daily moments of prayer and peace.", action: "Discover new arrivals", to: "/#new-arrivals", note: "For your altar. For your home. For your soul." },
   { eyebrow: "GIFTS WITH A SPIRITUAL SOUL", title: "Share blessings.", highlight: "Gift devotion.", description: "Celebrate new beginnings and special moments with thoughtful spiritual gifts.", action: "Explore sacred combos", to: "/combos", note: "Meaningful gifts for the moments that matter" },
 ];

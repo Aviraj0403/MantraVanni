@@ -33,7 +33,7 @@ export default function AboutUs() {
             <h2 id="our-story-heading" className="max-w-[520px] font-serif text-[34px] font-normal leading-[1.15] tracking-[-.035em] text-[#4d392a] sm:text-[43px] lg:text-[48px]">A familiar ritual.<br /><em className="font-normal text-[#9e603d]">A new way to find it.</em></h2>
             <div className="mt-6 max-w-[490px] space-y-4 text-[13px] leading-7 text-[#8b7460] sm:text-sm">
               <p>There is something comforting about a diya at dusk, the fragrance of incense and a quiet moment of prayer. These little rituals make a place feel like home.</p>
-              <p>MantraVanni brings pooja essentials, sacred idols, incense, diyas and meaningful gifts together in one place. Our collection is inspired by the traditions we carry with us and the ways we choose to honour them.</p>
+              <p>MantraVanni brings sacred essentials, idols, incense, diyas and meaningful gifts together in one place. Our collection is inspired by the traditions we carry with us and the ways we choose to honour them.</p>
               <p>From daily devotion to festivals and new beginnings, our purpose is simple: to help you find something that feels right for your sacred space.</p>
             </div>
             <div className="mt-7 border-l-2 border-[#c6a17c] py-1 pl-5"><p className="font-serif text-lg italic leading-relaxed text-[#a0714f] sm:text-xl">A small flame. A familiar fragrance.<br />A moment that feels like home.</p></div>

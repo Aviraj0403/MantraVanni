@@ -14,6 +14,8 @@ import RelatedProduct from "../../pages/home/RelatedProduct";
 import { useCartActions } from "../../hooks/useCartActions";
 import ReviewTab from "../../pages/Review/ReviewTab";
 import useCombosEnabled, { formatINR } from "../../hooks/useCombosEnabled";
+import usePageMeta from "../../hooks/usePageMeta";
+import { isOutOfStock, getStockQty } from "../../utils/stock";
 
 /* ── color util ── */
 const COLOR_MAP = {
@@ -86,6 +88,36 @@ export default function ProductDetails() {
     return () => clearTimeout(t);
   }, [toastMsg]);
 
+  /* SEO: title, description, og:image and Product JSON-LD */
+  const seoImage = (variant?.images?.[0]) || product?.pimages?.[0];
+  const seoPrice = variant?.price ?? product?.variants?.[0]?.price;
+  const seoDescription = (product?.description || "").replace(/<[^>]+>/g, " ").replace(/s+/g, " ").trim().slice(0, 160);
+  const seoInStock = product ? !isOutOfStock(product, variant || product?.variants?.[0]) : true;
+  usePageMeta({
+    title: product ? `${product.name} | MantraVanni` : undefined,
+    description: product ? seoDescription || `Buy ${product.name} online at MantraVanni.` : undefined,
+    canonical: product ? `/product/${slug}` : undefined,
+    image: seoImage,
+    jsonLd: product
+      ? {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.name,
+          image: product.pimages || undefined,
+          description: seoDescription || undefined,
+          sku: product.productCode || undefined,
+          brand: { "@type": "Brand", name: "MantraVanni" },
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "INR",
+            price: seoPrice != null ? String(seoPrice) : undefined,
+            availability: seoInStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            url: typeof window !== "undefined" ? window.location.href : undefined,
+          },
+        }
+      : undefined,
+  });
+
   /* init state on product load */
   useEffect(() => {
     if (product?.pimages?.length && product?.variants?.length) {
@@ -144,7 +176,11 @@ export default function ProductDetails() {
   const comboSavePct = comboSave > 0 ? Math.round((comboSave / comboRegular) * 100) : 0;
   const outOfStockItems = comboItems.filter((ci) => ci.product.inStock === false);
 
+  const soldOut = isOutOfStock(product, variant);
+  const stockLeft = getStockQty(product, variant);
+
   const doAdd = async () => {
+    if (soldOut) return;
     if (!variant || !color) return alert("Please select a size and shade.");
     const r = await addToCart(
       { _id: product._id, name, pimage: pimages[0], variants: { price, size: variant.size, color } },
@@ -155,6 +191,7 @@ export default function ProductDetails() {
   };
 
   const doBuy = async () => {
+    if (soldOut) return;
     if (!variant || !color) return alert("Please select a size and shade.");
     const r = await addToCart(
       { _id: product._id, name, pimage: pimages[0], variants: { price, size: variant.size, color } },
@@ -200,7 +237,7 @@ export default function ProductDetails() {
                         : "border-secondary-200 hover:border-primary-200 bg-secondary-50/60"
                     }`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-contain" />
+                    <img src={img} alt={`${name} - view ${i + 1}`} width="80" height="80" loading="lazy" decoding="async" className="w-full h-full object-contain" />
                   </button>
                 ))}
               </div>
@@ -223,8 +260,10 @@ export default function ProductDetails() {
                 <img
                   src={mainImg}
                   alt={name}
+                  width="420"
+                  height="420"
                   className="max-h-[420px] max-w-full object-contain p-6 transition-all duration-500 group-hover:scale-105"
-                />
+                loading="lazy" decoding="async" />
               </div>
             </div>
 
@@ -316,7 +355,7 @@ export default function ProductDetails() {
                     return (
                       <li key={p._id || i} className="flex items-center gap-3 py-2.5">
                         <Link to={`/product/${p.slug || p._id}`} className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-secondary-200 bg-brand-bg">
-                          {img && <img src={img} alt={p.name} className="h-full w-full object-contain p-1" />}
+                          {img && <img src={img} alt={p.name} className="h-full w-full object-contain p-1" loading="lazy" decoding="async" />}
                         </Link>
                         <div className="min-w-0 flex-1">
                           <Link to={`/product/${p.slug || p._id}`} className="line-clamp-2 text-sm font-semibold text-brand-text hover:text-primary-600">
@@ -418,17 +457,26 @@ export default function ProductDetails() {
               </div>
             )}
 
+            {soldOut && (
+              <p role="status" className="mb-3 text-sm font-bold text-rose-600">Out of stock</p>
+            )}
+            {!soldOut && stockLeft !== null && stockLeft > 0 && stockLeft <= 5 && (
+              <p className="mb-3 text-sm font-semibold text-amber-700">Only {stockLeft} left in stock</p>
+            )}
+
             {/* CTAs */}
             <div className="flex gap-4">
               <button
                 onClick={doAdd}
-                className="flex-1 flex items-center justify-center gap-2 bg-brand-bg border-2 border-primary-500 text-primary-600 font-bold py-4 rounded-xl hover:bg-primary-50 active:scale-[0.98] transition-all shadow-sm text-sm sm:text-base"
+                disabled={soldOut}
+                className="disabled:cursor-not-allowed disabled:opacity-50 flex-1 flex items-center justify-center gap-2 bg-brand-bg border-2 border-primary-500 text-primary-600 font-bold py-4 rounded-xl hover:bg-primary-50 active:scale-[0.98] transition-all shadow-sm text-sm sm:text-base"
               >
-                <FaShoppingCart size={16} /> Add to Cart
+                <FaShoppingCart size={16} /> {soldOut ? "Out of stock" : "Add to Cart"}
               </button>
               <button
                 onClick={doBuy}
-                className="flex-1 flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 active:scale-[0.98] text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-primary-200 text-sm sm:text-base"
+                disabled={soldOut}
+                className="disabled:cursor-not-allowed disabled:opacity-50 flex-1 flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 active:scale-[0.98] text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-primary-200 text-sm sm:text-base"
               >
                 <FaBolt size={14} /> Buy Now
               </button>
@@ -554,13 +602,15 @@ export default function ProductDetails() {
       <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 flex gap-0 border-t border-primary-100 bg-brand-bg shadow-[0_-4px_20px_rgba(107,46,159,0.1)]">
         <button
           onClick={doAdd}
-          className="flex-1 flex items-center justify-center gap-2 bg-brand-bg text-primary-600 font-bold py-4 text-sm border-r border-primary-100"
+          disabled={soldOut}
+          className="disabled:opacity-50 flex-1 flex items-center justify-center gap-2 bg-brand-bg text-primary-600 font-bold py-4 text-sm border-r border-primary-100"
         >
-          <FaShoppingCart size={15} /> Add to Cart
+          <FaShoppingCart size={15} /> {soldOut ? "Out of stock" : "Add to Cart"}
         </button>
         <button
           onClick={doBuy}
-          className="flex-1 flex items-center justify-center gap-2 bg-primary-600 text-white font-bold py-4 text-sm"
+          disabled={soldOut}
+          className="disabled:opacity-50 flex-1 flex items-center justify-center gap-2 bg-primary-600 text-white font-bold py-4 text-sm"
         >
           <FaBolt size={13} /> Buy Now
         </button>

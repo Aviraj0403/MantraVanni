@@ -6,6 +6,9 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import useCombosEnabled from "../../hooks/useCombosEnabled";
 import { getPublicSettings } from "../../services/settingsApi";
+import { getMenuCategories } from "../../services/categoryApi";
+import useStoreProfile from "../../hooks/useStoreProfile";
+import { FaInstagram, FaFacebookF, FaYoutube, FaWhatsapp } from "react-icons/fa";
 import BrandMark from "../BrandMark";
 
 const footerLinkClass = "inline-flex py-1 text-[13px] text-[#c5b5a1] transition-colors hover:text-[#f4dfba]";
@@ -17,6 +20,19 @@ export default function Footer() {
     queryFn: getPublicSettings,
     staleTime: 5 * 60 * 1000,
   });
+  const store = useStoreProfile();
+  const { data: categories = [] } = useQuery({ queryKey: ["categories"], queryFn: getMenuCategories, staleTime: 10 * 60 * 1000 });
+  const footerCategories = (Array.isArray(categories) ? categories : []).filter((c) => c?.slug).slice(0, 4);
+  // Existing contact details act as fallback until the tenant settings provide them.
+  const supportEmail = store.supportEmail || "support@mantravanni.com";
+  const supportPhone = store.supportPhone || "+91 8510879296";
+  const addressLine = store.address || "Rohini, Delhi";
+  const socials = [
+    { key: "instagram", href: store.social.instagram, label: "Instagram", Icon: FaInstagram },
+    { key: "facebook", href: store.social.facebook, label: "Facebook", Icon: FaFacebookF },
+    { key: "youtube", href: store.social.youtube, label: "YouTube", Icon: FaYoutube },
+    { key: "whatsapp", href: store.social.whatsapp, label: "WhatsApp", Icon: FaWhatsapp },
+  ].filter((s) => /^https?:[/][/]/.test(s.href || ""));
   const combosOn = useCombosEnabled();
   const isWalletEnabled = storeSettings?.walletEnabled !== false && storeSettings?.modules?.wallet !== false;
   const isWishlistEnabled = storeSettings?.wishlistEnabled !== false && storeSettings?.modules?.wishlist !== false;
@@ -46,8 +62,9 @@ export default function Footer() {
               <li><Link to="/new-products" className={footerLinkClass}>New arrivals</Link></li>
               <li><Link to="/#best-sellers" className={footerLinkClass}>Best sellers</Link></li>
               {combosOn && <li><Link to="/combos" className={footerLinkClass}>Combos & bundles</Link></li>}
-              <li><Link to="/#categories" className={footerLinkClass}>Pooja essentials</Link></li>
-              <li><Link to="/new-products" className={footerLinkClass}>Spiritual gifting</Link></li>
+              {footerCategories.map((c) => (
+                <li key={c.slug}><Link to={`/${c.slug}`} className={footerLinkClass}>{c.name}</Link></li>
+              ))}
             </ul>
           </nav>
 
@@ -56,7 +73,11 @@ export default function Footer() {
             <ul className="space-y-2">
               <li><Link to="/track-order" className={footerLinkClass}>Track your order</Link></li>
               <li><Link to="/shipping-info" className={footerLinkClass}>Shipping & delivery</Link></li>
-              <li><Link to="/retun-exchnage-policy" className={footerLinkClass}>Returns & exchanges</Link></li>
+              <li><Link to="/return-exchange-policy" className={footerLinkClass}>Returns & exchanges</Link></li>
+              <li><Link to="/cancellation-refund-policy" className={footerLinkClass}>Cancellation & refunds</Link></li>
+              <li><Link to="/shipping-policy" className={footerLinkClass}>Shipping policy</Link></li>
+              <li><Link to="/privacy-policy" className={footerLinkClass}>Privacy policy</Link></li>
+              <li><Link to="/terms-and-conditions" className={footerLinkClass}>Terms & conditions</Link></li>
               <li><Link to="/faq" className={footerLinkClass}>Common questions</Link></li>
               <li><Link to="/contact-us" className={footerLinkClass}>Contact us</Link></li>
             </ul>
@@ -64,12 +85,19 @@ export default function Footer() {
 
           <div className="col-span-2 border-t border-[#d7b88b]/15 pt-7 lg:col-span-1 lg:border-t-0 lg:pt-0">
             <h3 className="mb-4 font-sans text-[10px] font-medium uppercase tracking-[.2em] text-[#e3c79f]">Let's stay connected</h3>
-            <a href="mailto:support@mantravanni.com" className="group flex w-fit max-w-full items-center gap-2 border-b border-[#d7b88b]/30 pb-2 text-[14px] text-[#f0ddc0] transition-colors hover:text-white sm:text-base">support@mantravanni.com<ArrowUpRight size={15} className="shrink-0" aria-hidden="true" /></a>
+            <a href={`mailto:${supportEmail}`} className="group flex w-fit max-w-full items-center gap-2 border-b border-[#d7b88b]/30 pb-2 text-[14px] text-[#f0ddc0] transition-colors hover:text-white sm:text-base">{supportEmail}<ArrowUpRight size={15} className="shrink-0" aria-hidden="true" /></a>
             <div className="mt-5 space-y-3.5 text-xs leading-6 text-[#b6a48f]">
-              <a href="tel:+918510879296" className="flex w-fit items-center gap-2.5 transition-colors hover:text-[#f4dfba]"><Phone size={14} className="shrink-0 text-[#b38d62]" aria-hidden="true" />+91 8510879296</a>
-              <p className="flex items-start gap-2.5"><MapPin size={14} className="mt-1 shrink-0 text-[#b38d62]" aria-hidden="true" /><span>Rohini, Delhi<br /><span className="text-[#8f7d69]">Serving devotees across India</span></span></p>
+              <a href={`tel:${supportPhone.replace(/s+/g, "")}`} className="flex w-fit items-center gap-2.5 transition-colors hover:text-[#f4dfba]"><Phone size={14} className="shrink-0 text-[#b38d62]" aria-hidden="true" />{supportPhone}</a>
+              <p className="flex items-start gap-2.5"><MapPin size={14} className="mt-1 shrink-0 text-[#b38d62]" aria-hidden="true" /><span>{addressLine}<br /><span className="text-[#8f7d69]">Serving devotees across India</span></span></p>
               <p className="flex items-center gap-2.5"><Clock size={14} className="shrink-0 text-[#b38d62]" aria-hidden="true" />Mon–Sat · 10 AM–7 PM</p>
             </div>
+            {socials.length > 0 && (
+              <ul className="mt-5 flex gap-3" aria-label="Social media">
+                {socials.map(({ key, href, label, Icon }) => (
+                  <li key={key}><a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="grid size-8 place-items-center rounded-full border border-[#d7b88b]/25 text-[#dfc6a1] transition-colors hover:text-[#f4dfba]"><Icon size={14} aria-hidden="true" /></a></li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
 
@@ -87,7 +115,7 @@ export default function Footer() {
         <div className="pointer-events-none select-none overflow-hidden pb-2 pt-7 text-center sm:pt-9" aria-hidden="true"><span className="block font-serif text-[clamp(48px,12.8vw,184px)] font-normal leading-none tracking-[-.055em] text-[#e1c39a]/10">MantraVanni</span></div>
 
         <div className="flex flex-col items-start justify-between gap-5 border-t border-[#d7b88b]/10 py-6 text-[10px] text-[#9f8b73] md:flex-row md:items-center">
-          <div><p>© {new Date().getFullYear()} MantraVanni. All rights reserved.</p><p className="mt-1.5 text-[#7f6c59]">Developed by <a href="https://www.jdinfotechsolutions.in/" target="_blank" rel="noopener noreferrer" className="text-[#ad9477] transition-colors hover:text-[#f4dfba]">JD Infotech Solutions<ArrowUpRight className="ml-1 inline size-2.5" aria-hidden="true" /></a></p></div>
+          <div><p>© {new Date().getFullYear()} {store.name}. All rights reserved.</p><p className="mt-1.5 text-[#7f6c59]">Developed by <a href="https://www.jdinfotechsolutions.in/" target="_blank" rel="noopener noreferrer" className="text-[#ad9477] transition-colors hover:text-[#f4dfba]">JD Infotech Solutions<ArrowUpRight className="ml-1 inline size-2.5" aria-hidden="true" /></a></p></div>
           <div className="flex flex-wrap items-center gap-2" aria-label="Payment methods">
             <span className="mr-2 text-[9px] text-[#9f8b73]">Ways to pay</span>
             <span className="grid h-7 w-10 place-items-center rounded border border-[#d7b88b]/20 bg-[#fff5e7]/5 text-[#dfc6a1]" aria-label="Visa"><FaCcVisa size={23} aria-hidden="true" /></span>

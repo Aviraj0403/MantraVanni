@@ -4,7 +4,7 @@ import { addAddress, updateAddress } from "../services/userApi";
 import { checkPincodeServiceability } from "../services/shippingApi";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { toast } from 'react-toastify'; // Assuming you use react-toastify for notifications
+import { toast } from '../utils/toast';
 import { useAuth } from "../context/AuthContext";
 
 export default function AddressSidebar({ isOpen, onClose, refreshAddresses, userName, email, address: propAddress, embedded = false }) {
@@ -303,11 +303,14 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
         <form onSubmit={saveAddress} className="space-y-4">
           {fields.map(({ label, field, type, maxLength }) => (
             <div key={field}>
-              <label className="block text-brand-text font-medium mb-1">
+              <label htmlFor={`addr-${field}`} className="block text-brand-text font-medium mb-1">
                 {label}
               </label>
               <div className="relative">
                 <input
+                  id={`addr-${field}`}
+                  aria-invalid={errors[field] ? "true" : undefined}
+                  aria-describedby={errors[field] ? `addr-${field}-err` : undefined}
                   type={type}
                   name={field}
                   value={address[field]}
@@ -349,7 +352,7 @@ export default function AddressSidebar({ isOpen, onClose, refreshAddresses, user
               )}
 
               {errors[field] && (
-                <p className="text-red-500 text-sm mt-1">{errors[field]}</p>
+                <p id={`addr-${field}-err`} role="alert" aria-live="polite" className="text-red-500 text-sm mt-1">{errors[field]}</p>
               )}
             </div>
           ))}

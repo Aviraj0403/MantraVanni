@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { FcGoogle } from "react-icons/fc";
-import { useNavigate, Link } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Axios, { storeToken } from "../../utils/Axios";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { toast } from "../../utils/toast";
+import Axios, { storeToken, safeRedirect } from "../../utils/Axios";
 import { User, Mail, Lock, Phone, Fingerprint, ChevronRight } from "lucide-react";
 
 const SignupPage = () => {
@@ -19,6 +18,11 @@ const SignupPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { googleLogin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = safeRedirect(
+    location.state?.from?.pathname || location.state?.from || new URLSearchParams(location.search).get("redirect"),
+    "/"
+  );
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -40,7 +44,7 @@ const SignupPage = () => {
       if (res.data?.token) storeToken(res.data.token);
 
       toast.success("Account created successfully!");
-      navigate("/", { replace: true });
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       toast.error(err?.response?.data?.message || err?.response?.data?.error || "Registration failed");
     } finally {
@@ -53,7 +57,7 @@ const SignupPage = () => {
     try {
       await googleLogin();
       toast.success("Google signup successful");
-      navigate("/", { replace: true });
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       toast.error(err?.message || "Google signup failed");
     } finally {
@@ -188,6 +192,13 @@ const SignupPage = () => {
                 </div>
               </div>
 
+              <p className="text-center text-xs text-gray-500">
+                By creating an account you agree to our{" "}
+                <Link to="/terms-and-conditions" className="font-semibold text-accent underline">Terms &amp; Conditions</Link>{" "}
+                and{" "}
+                <Link to="/privacy-policy" className="font-semibold text-accent underline">Privacy Policy</Link>.
+              </p>
+
               <button
                 type="submit"
                 disabled={isSubmitting}
@@ -216,12 +227,6 @@ const SignupPage = () => {
         </div>
       </div>
 
-      <ToastContainer 
-        position="bottom-center" 
-        autoClose={3000} 
-        theme="light"
-        toastClassName="rounded-xl font-bold shadow-xl border border-primary-50"
-      />
     </div>
   );
 };

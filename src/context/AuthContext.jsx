@@ -3,14 +3,18 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../features/cart/cartSlice";
 import { fetchBackendCart, syncCartOnLogin } from "../features/cart/cartThunk";
-import Axios, { storeToken, clearStoredToken } from "../utils/Axios";
+import Axios, { storeToken, clearStoredToken, clearLocalSession } from "../utils/Axios";
+
+// The cached profile (name / email / phone) is PII: keep it only for the lifetime of the tab.
+const USER_CACHE_KEY = 'user_data';
+try { localStorage.removeItem(USER_CACHE_KEY); } catch { /* storage unavailable */ }
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     try {
-      const cached = localStorage.getItem('user_data');
+      const cached = sessionStorage.getItem(USER_CACHE_KEY);
       return cached ? JSON.parse(cached) : null;
     } catch {
       return null;
@@ -24,11 +28,13 @@ export const AuthProvider = ({ children }) => {
 
   const handleSetUser = (userData) => {
     setUser(userData);
-    if (userData) {
-      localStorage.setItem('user_data', JSON.stringify(userData));
-    } else {
-      localStorage.removeItem('user_data');
-    }
+    try {
+      if (userData) {
+        sessionStorage.setItem(USER_CACHE_KEY, JSON.stringify(userData));
+      } else {
+        sessionStorage.removeItem(USER_CACHE_KEY);
+      }
+    } catch { /* storage unavailable */ }
   };
 
   const syncCart = async () => {
@@ -56,7 +62,7 @@ export const AuthProvider = ({ children }) => {
           handleSetUser(null);
           clearStoredToken();
         } else {
-          console.error("Session validation error:", error);
+          console.warn("Session validation failed:", error?.message || "unknown error");
         }
       } finally {
         setLoading(false);
@@ -85,20 +91,6 @@ export const AuthProvider = ({ children }) => {
     handleSetUser(uData);
     await syncCart();
     return uData;
-  };
-
-  const loginPhoneV1 = async (phoneNumber) => {
-    const response = await Axios.post("/auth/phoneV1/login", { phoneNumber });
-    const token = response.data?.token || response.data?.accessToken;
-    if (token) storeToken(token);
-    let uData = response.data?.userData || response.data?.user;
-    if (!uData) {
-      const userRes = await Axios.get("/auth/me");
-      uData = userRes.data?.data;
-    }
-    handleSetUser(uData);
-    await syncCart();
-    return response.data;
   };
 
   const sendPhoneOTP = async (phoneNumber, sessionId = null) => {
@@ -143,8 +135,8 @@ export const AuthProvider = ({ children }) => {
       handleSetUser(null);
       dispatch(clearCart());
       queryClient.clear();
-      localStorage.clear();
-      sessionStorage.clear();
+      // Remove only auth-related keys; guest wishlist / search history must survive logout.
+      clearLocalSession();
     }
   };
 
@@ -158,7 +150,6 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         googleLogin,
-        loginPhoneV1,
         sendPhoneOTP,
         verifyPhoneOTP,
       }}

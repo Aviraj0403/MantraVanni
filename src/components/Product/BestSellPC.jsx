@@ -4,6 +4,7 @@ import { FaStar, FaHeart, FaRegHeart, FaBolt, FaShoppingCart } from "react-icons
 import { useNavigate } from "react-router-dom";
 import { useCartActions } from "../../hooks/useCartActions";
 import useCombosEnabled from "../../hooks/useCombosEnabled";
+import { isOutOfStock } from "../../utils/stock";
 
 export default function BestSellPC({ product, onProductClick }) {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function BestSellPC({ product, onProductClick }) {
   const [wished, setWished] = useState(false);
 
   const activeVariant = product?.variants;
+  const soldOut = isOutOfStock(product, activeVariant);
   const size = activeVariant?.size || "default";
   const color = Array.isArray(activeVariant?.color) ? activeVariant.color[0] : (activeVariant?.color || "default");
   
@@ -35,6 +37,7 @@ export default function BestSellPC({ product, onProductClick }) {
 
   const handleAddToCart = async (e) => {
     if (e) e.stopPropagation();
+    if (soldOut) return;
     const result = await addToCart(product, size, color, 1);
     if (result.success) {
       setShowPopup(true);
@@ -44,6 +47,7 @@ export default function BestSellPC({ product, onProductClick }) {
 
   const handleBuyNow = async (e) => {
     if (e) e.stopPropagation();
+    if (soldOut) return;
     const result = await addToCart(product, size, color, 1);
     if (result.success) navigate("/cart");
   };
@@ -62,6 +66,10 @@ export default function BestSellPC({ product, onProductClick }) {
         <motion.img
           src={product.pimage}
           alt={product.name}
+          loading="lazy"
+          decoding="async"
+          width="400"
+          height="400"
           animate={{ scale: isHovered ? 1.05 : 1 }}
           transition={{ duration: 0.4 }}
           className="w-full h-full object-contain p-4"
@@ -103,7 +111,7 @@ export default function BestSellPC({ product, onProductClick }) {
 
         {/* Quick Add Overlay */}
         <AnimatePresence>
-          {isHovered && quantity === 0 && (
+          {isHovered && quantity === 0 && !soldOut && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -151,9 +159,12 @@ export default function BestSellPC({ product, onProductClick }) {
                   className="w-7 h-full flex items-center justify-center text-gray-400 font-bold"
                 >+</button>
               </div>
+            ) : soldOut ? (
+              <span className="rounded-lg bg-gray-100 px-2.5 py-2 text-[10px] font-bold uppercase tracking-wide text-gray-500">Out of stock</span>
             ) : (
               <button
                 onClick={handleBuyNow}
+                aria-label="Buy now"
                 className="w-9 h-9 rounded-lg bg-primary-500 text-white flex items-center justify-center hover:bg-secondary hover:text-brand-text transition-colors shadow-sm"
               >
                 <FaBolt size={12} />

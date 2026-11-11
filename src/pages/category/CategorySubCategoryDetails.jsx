@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProductsByCategoryAndSubCategorySlug } from "../../services/productApi"; // Assuming this is the correct API call
 import ProductCard from "../../components/Product/ProductCard";
+import NotFoundPage from "../PNF/NotFoundPage";
+import usePageMeta from "../../hooks/usePageMeta";
 
 export default function CategorySubCategoryDetails() {
   const { categorySlug, subCategorySlug } = useParams();
@@ -41,12 +43,19 @@ export default function CategorySubCategoryDetails() {
     fetchProducts(currentPage);
   }, [categorySlug, subCategorySlug, currentPage]);
 
+  usePageMeta({
+    title: (subCategoryName || categoryName) ? `${(subCategoryName || categoryName)} | MantraVanni` : undefined,
+    description: (subCategoryName || categoryName) ? `Shop ${(subCategoryName || categoryName)} at MantraVanni - authentic spiritual essentials delivered across India.` : undefined,
+    canonical: window.location.pathname,
+  });
+
   if (loading) {
-    return <div>Loading products...</div>;
+    return <div role="status" aria-live="polite">Loading products...</div>;
   }
 
+  // An unknown / mistyped slug (the API returns no category) shows the 404 page instead of an empty shell.
   if (error) {
-    return <div>{error}</div>;
+    return <NotFoundPage />;
   }
 
   const handleProductClick = (productId) => {

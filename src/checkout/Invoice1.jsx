@@ -163,7 +163,7 @@ export default function Invoice() {
                 MantraVanni
               </h1>
               <p className="text-gray-500 text-xs md:text-sm">
-                Premium Cosmetics & Beauty Products
+                Sacred essentials for mindful living
               </p>
             </div>
           </div>

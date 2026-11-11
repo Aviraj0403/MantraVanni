@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import usePageMeta from "../../hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getMiniProducts } from "../../services/productApi";
@@ -6,11 +7,14 @@ import NewArrivalPC from "../../components/Product/NewArrivalPC";
 
 const NewProducts = () => {
   const navigate = useNavigate();
+  usePageMeta({ title: "New Arrivals | MantraVanni", description: "Explore the latest spiritual essentials at MantraVanni.", canonical: "/new-products" });
+  const [page, setPage] = useState(1);
 
   // Fetch new products from API using React Query
   const { data: productsData, isLoading, isError, error } = useQuery({
-    queryKey: ["miniProducts", { page: 1, limit: 1000, isBestSeller: false }],
-    queryFn: () => getMiniProducts(1, 1000, "", "", "", false),
+    queryKey: ["miniProducts", { page, limit: 100, isBestSeller: false }],
+    queryFn: () => getMiniProducts(page, 100, "", "", "", false),
+    keepPreviousData: true,
   });
 
   // Handle navigation to product details page
@@ -68,6 +72,14 @@ const NewProducts = () => {
             />
           ))}
         </div>
+
+        {(productsData?.pagination?.totalPages || 1) > 1 && (
+          <nav aria-label="Pagination" className="mt-10 flex items-center justify-center gap-4 text-sm font-semibold text-[#5c4a3d]">
+            <button type="button" disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="rounded-lg border border-[#E67E22]/40 px-4 py-2 disabled:opacity-40">Previous</button>
+            <span>{page} / {productsData.pagination.totalPages}</span>
+            <button type="button" disabled={page >= productsData.pagination.totalPages} onClick={() => setPage((p) => p + 1)} className="rounded-lg border border-[#E67E22]/40 px-4 py-2 disabled:opacity-40">Next</button>
+          </nav>
+        )}
 
         {products.length === 0 && (
           <div className="text-center py-12 text-[#5c4a3d] font-medium">

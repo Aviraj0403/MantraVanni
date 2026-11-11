@@ -10,10 +10,18 @@ import { PersistGate } from 'redux-persist/integration/react';
 import EB from './pages/PNF/EB.jsx';
 import { AuthProvider } from './context/AuthContext';
 import WindowContextProvider from './context/windowContext.jsx';
-import { toast, ToastContainer } from 'react-toastify'; // Import both toast and ToastContainer
-import 'react-toastify/dist/ReactToastify.css'; // Import the Toastify styles
+import { Toaster } from 'react-hot-toast';
+import { cleanupStalePaymentData } from './utils/paymentStorage';
 import { queryClient } from './utils/ReactQueryClient';
 import SpiritualLoader from './components/SpiritualLoader.jsx';
+
+// Drop any payment/shipping-address data left over from an abandoned checkout (>15 min old).
+cleanupStalePaymentData();
+try {
+  localStorage.removeItem('pendingPaymentData');
+  localStorage.removeItem('pendingCartData');
+} catch { /* storage unavailable */ }
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     {/* ✅ Wrap App inside AuthProvider */}
@@ -24,7 +32,7 @@ createRoot(document.getElementById('root')).render(
           <AuthProvider>
             <WindowContextProvider>
               <App />
-               <ToastContainer position="top-center" autoClose={2000} />
+               <Toaster position="top-center" toastOptions={{ duration: 3000 }} containerStyle={{ zIndex: 99999 }} />
             </WindowContextProvider>
           </AuthProvider>
         </PersistGate>

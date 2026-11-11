@@ -14,14 +14,8 @@ import {
   getMenuCategories,
   getSearchSuggestions,
 } from "../../services/categoryApi";
-
-const POPULAR_SEARCHES = [
-  "Puja Thali",
-  "Brass Diya",
-  "Puja Thali",
-  "Crystal Bracelet",
-  "Vastu Essentials",
-];
+import { getMiniProducts } from "../../services/productApi";
+import usePageMeta from "../../hooks/usePageMeta";
 
 const readRecentSearches = () => {
   try {
@@ -52,6 +46,14 @@ const getProductPrice = (product) => {
 };
 
 export default function MobileSearchPage() {
+  usePageMeta({ title: "Search | MantraVanni", description: "Search MantraVanni products.", noindex: true });
+  // "Popular right now" is driven by the store's best-selling products (no hard-coded terms).
+  const { data: popularData } = useQuery({
+    queryKey: ["popularSearches"],
+    queryFn: () => getMiniProducts(1, 6, "", "", "", "true"),
+    staleTime: 10 * 60 * 1000,
+  });
+  const POPULAR_SEARCHES = (popularData?.products || []).map((p) => p?.name).filter(Boolean).slice(0, 5);
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [recentSearches, setRecentSearches] = useState(readRecentSearches);
@@ -378,6 +380,7 @@ export default function MobileSearchPage() {
               </section>
             )}
 
+            {POPULAR_SEARCHES.length > 0 && (
             <section>
               <div className="mb-3 flex items-center gap-2">
                 <Flame size={17} className="text-[#9b6b22]" />
@@ -407,6 +410,7 @@ export default function MobileSearchPage() {
                 ))}
               </div>
             </section>
+            )}
 
             <section>
               <div className="mb-4">

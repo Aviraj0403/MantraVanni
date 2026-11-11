@@ -13,7 +13,9 @@ const persistConfig = {
   key: 'root',
   storage,
   version: 1,
-  whitelist: ['auth', 'cart'],
+  // Only the cart is persisted. The auth slice holds PII (name/email/phone) and is rebuilt
+  // from /auth/me on every load, so it must never be written to localStorage.
+  whitelist: ['cart'],
   stateReconciler: autoMergeLevel2,
 };
 

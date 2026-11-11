@@ -94,7 +94,7 @@ export default function MobileCategorySection() {
                 src={cat.image[1]} // Use the second image from the image array
                 alt={cat.name}
                 className="w-20 h-20 object-cover rounded-full"
-              />
+              loading="lazy" decoding="async" />
             </div>
 
             {/* Category Title */}

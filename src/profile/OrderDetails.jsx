@@ -123,7 +123,7 @@ export default function OrderDetails() {
                     src={img}
                     alt={product.name || item.name}
                     className="w-16 h-16 object-cover rounded-xl flex-shrink-0 bg-gray-50"
-                  />
+                  loading="lazy" decoding="async" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-brand-text line-clamp-2 leading-snug">
                       {product.name || item.name}

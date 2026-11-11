@@ -8,7 +8,7 @@ const reasons = [
   {
     icon: Flower2,
     title: "Rooted in tradition",
-    text: "Pooja essentials inspired by the rituals, symbols and stories we carry through generations.",
+    text: "Sacred essentials inspired by the rituals, symbols and stories we carry through generations.",
   },
   {
     icon: Sun,

@@ -1,50 +1,45 @@
 import React, { Suspense, lazy } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import Layout from "./Layout.jsx";
 import SpiritualLoader from "./components/SpiritualLoader.jsx";
 import Home from "./pages/home/home.jsx";
 import NotFoundPage from "./pages/PNF/NotFoundPage.jsx";
-import ProfilePage from "./profile/ProfilePage";
-import OrderDetails from "./profile/OrderDetails";
-import TrackOrder from "./pages/TrackOrder.jsx";
-import OrderTrackingDemo from "./pages/OrderTrackingDemo.jsx";
-
-import CartPage from "./cart/CartPage.jsx";
-import CheckoutPage from "./checkout/CheckoutPage.jsx";
-import AuthPage from "./authentication/AuthPage.jsx";
-import NewProductsPage from "./pages/NewProductsPage.jsx";
-import ProductDetails from "./components/Product/ProductDetails.jsx";
-import CategoryDetails from "./pages/category/CategoryDetails.jsx";
-import SignInPage from "./pages/auth/SignInPage.jsx";
-import SignupPage from "./pages/auth/SignupPage.jsx";
-import CategorySubCategoryDetails from "./pages/category/CategorySubCategoryDetails.jsx";
-import AboutUs from "./pages/details/AboutUs.jsx";
-import ContactUs from "./pages/details/ContactUs.jsx";
-import ReturnExchange from "./pages/details/ReturnExchange.jsx";
-import ShippingInfo from "./pages/details/ShippingInfo.jsx";
-import FAQPage from "./pages/details/FAQPage.jsx";
-import Invoice from "./profile/Invoice.jsx";
-import Invoice1 from "./checkout/Invoice1.jsx";
-import NewProducts from "./pages/newProduct/NewProducts.jsx";
-import MobileSearchPage from "./components/Header/MobileSearchPage.jsx";
-// import Login from "./authentication/Login.jsx";
-// import Signup from "./authentication/Signup.jsx";
 import RequireAuth from "./components/RequireAuth.jsx";
 
-import WishlistPage from "./pages/WishlistPage.jsx";
-import WalletPage from "./pages/WalletPage.jsx";
-import StoreUnavailable from "./pages/StoreUnavailable.jsx";
-
+// Route-level code splitting: everything except the layout, home and 404 is loaded on demand.
+const ProfilePage = lazy(() => import("./profile/ProfilePage"));
+const OrderDetails = lazy(() => import("./profile/OrderDetails"));
+const TrackOrder = lazy(() => import("./pages/TrackOrder.jsx"));
+const CartPage = lazy(() => import("./cart/CartPage.jsx"));
+const CheckoutPage = lazy(() => import("./checkout/CheckoutPage.jsx"));
+const AuthPage = lazy(() => import("./authentication/AuthPage.jsx"));
+const ProductDetails = lazy(() => import("./components/Product/ProductDetails.jsx"));
+const CategoryDetails = lazy(() => import("./pages/category/CategoryDetails.jsx"));
+const SignInPage = lazy(() => import("./pages/auth/SignInPage.jsx"));
+const SignupPage = lazy(() => import("./pages/auth/SignupPage.jsx"));
+const CategorySubCategoryDetails = lazy(() => import("./pages/category/CategorySubCategoryDetails.jsx"));
+const AboutUs = lazy(() => import("./pages/details/AboutUs.jsx"));
+const ContactUs = lazy(() => import("./pages/details/ContactUs.jsx"));
+const ReturnExchange = lazy(() => import("./pages/details/ReturnExchange.jsx"));
+const ShippingInfo = lazy(() => import("./pages/details/ShippingInfo.jsx"));
+const FAQPage = lazy(() => import("./pages/details/FAQPage.jsx"));
+const PrivacyPolicy = lazy(() => import("./pages/legal/PrivacyPolicy.jsx"));
+const TermsAndConditions = lazy(() => import("./pages/legal/TermsAndConditions.jsx"));
+const CancellationRefundPolicy = lazy(() => import("./pages/legal/CancellationRefundPolicy.jsx"));
+const ShippingPolicy = lazy(() => import("./pages/legal/ShippingPolicy.jsx"));
+const Invoice = lazy(() => import("./profile/Invoice.jsx"));
+const Invoice1 = lazy(() => import("./checkout/Invoice1.jsx"));
+const NewProducts = lazy(() => import("./pages/newProduct/NewProducts.jsx"));
+const MobileSearchPage = lazy(() => import("./components/Header/MobileSearchPage.jsx"));
+const WishlistPage = lazy(() => import("./pages/WishlistPage.jsx"));
+const WalletPage = lazy(() => import("./pages/WalletPage.jsx"));
+const StoreUnavailable = lazy(() => import("./pages/StoreUnavailable.jsx"));
 const CombosPage = lazy(() => import("./pages/CombosPage.jsx"));
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <Suspense fallback={<SpiritualLoader />}>
-        <Layout />
-      </Suspense>
-    ),
+    element: <Layout />,
     children: [
       { index: true, element: <Home /> },
       { path: "/signin", element: <SignInPage /> },
@@ -52,44 +47,42 @@ const router = createBrowserRouter([
       { path: "/profile", element: <ProfilePage /> },
       { path: "/wallet", element: <WalletPage /> },
       { path: "/wishlist", element: <WishlistPage /> },
-      { path: "/order/:orderId", element: <OrderDetails /> },
+      { path: "/order/:orderId", element: (<RequireAuth><OrderDetails /></RequireAuth>) },
       { path: "/track-order", element: <TrackOrder /> },
-      { path: "/tracking-demo", element: <OrderTrackingDemo /> },
 
       { path: "/cart", element: <CartPage /> },
-      // { path: "/checkout", element: <CheckoutPage /> },
-       { path: "/checkout", element: (
-          <RequireAuth>
-            <CheckoutPage />
-          </RequireAuth>
-      ) },
+      { path: "/checkout", element: (<RequireAuth><CheckoutPage /></RequireAuth>) },
       { path: "/combos", element: <CombosPage /> },
-      { path: "/new-product", element: <NewProductsPage /> },
       { path: "/product/:slug", element: <ProductDetails /> },
+      { path: "/about-us", element: <AboutUs /> },
+      { path: "/contact-us", element: <ContactUs /> },
+      { path: "/return-exchange-policy", element: <ReturnExchange /> },
+      // Old (misspelled) URL kept so existing links and bookmarks keep working.
+      { path: "/retun-exchnage-policy", element: <Navigate to="/return-exchange-policy" replace /> },
+      { path: "/shipping-info", element: <ShippingInfo /> },
+      { path: "/shipping-policy", element: <ShippingPolicy /> },
+      { path: "/privacy-policy", element: <PrivacyPolicy /> },
+      { path: "/terms-and-conditions", element: <TermsAndConditions /> },
+      { path: "/cancellation-refund-policy", element: <CancellationRefundPolicy /> },
+      { path: "/faq", element: <FAQPage /> },
+      { path: "/invoice/:orderId", element: (<RequireAuth><Invoice1 /></RequireAuth>) },
+      { path: "/profile/invoice/:orderId", element: (<RequireAuth><Invoice /></RequireAuth>) },
+      { path: "/new-products", element: <NewProducts /> },
+      { path: "/search", element: <MobileSearchPage /> },
+      { path: "/auth", element: <AuthPage /> },
+      // Dynamic category routes come last. An unknown slug renders the 404 page (see CategoryDetails).
       { path: "/:categorySlug", element: <CategoryDetails /> },
-      {
-        path: "/:categorySlug/:subCategorySlug",
-        element: <CategorySubCategoryDetails />,
-      },
-       { path: "/about-us", element: <AboutUs /> },
-       {path : "/contact-us", element: <ContactUs />},
-       {path : "/retun-exchnage-policy", element: <ReturnExchange />},
-       { path : "/shipping-info", element: <ShippingInfo />},
-       { path: "/faq", element: <FAQPage /> },
-      //  <Route path="/invoice/:orderId" element={<Invoice />} />
-       {path : "/invoice/:orderId", element: <Invoice1 />},
-       {path : "/profile/invoice/:orderId", element: <Invoice />},
-       {path:"/new-products", element:<NewProducts />},
-       {path :"/search", element:<MobileSearchPage />},
-
-      // {path: "/auth", element: < Login/>},
-      { path: "/auth", element: < AuthPage /> },
+      { path: "/:categorySlug/:subCategorySlug", element: <CategorySubCategoryDetails /> },
     ],
   },
   {
     // Outside <Layout> so no store API calls run while the store is suspended.
     path: "/store-unavailable",
-    element: <StoreUnavailable />,
+    element: (
+      <Suspense fallback={<SpiritualLoader />}>
+        <StoreUnavailable />
+      </Suspense>
+    ),
   },
   {
     path: "*",
