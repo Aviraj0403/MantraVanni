@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import useStoreModule from "../../hooks/useStoreModule";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   FaStar, FaRegStar, FaStarHalfAlt,
@@ -60,6 +61,7 @@ function Collapse({ title, open, onToggle, children }) {
 
 /* ════════════════════════════════════════ MAIN ════════════════════════════════════════ */
 export default function ProductDetails() {
+  const { enabled: reviewsEnabled } = useStoreModule("reviews");
   const { slug }    = useParams();
   const navigate    = useNavigate();
 
@@ -575,7 +577,7 @@ export default function ProductDetails() {
             </div>
           </Collapse>
 
-          <Collapse
+          {reviewsEnabled && <Collapse
             title={`Customer Reviews ${reviewCount ? `(${reviewCount})` : ""}`}
             open={section === "reviews"}
             onToggle={() => setSection(s => s === "reviews" ? null : "reviews")}
@@ -585,7 +587,7 @@ export default function ProductDetails() {
               reviews={reviews}
               setReviews={r => { product.reviews = r; }}
             />
-          </Collapse>
+          </Collapse>}
         </div>
 
         {/* ═══ Related Products ═══ */}

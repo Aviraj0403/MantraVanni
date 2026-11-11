@@ -1,4 +1,5 @@
 import React from "react";
+import useStoreModule from "../../hooks/useStoreModule";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Wind } from "lucide-react";
@@ -12,7 +13,7 @@ const featuredBanner = {
   featured: true,
 };
 
-export default function PromoBanner() {
+function PromoBannerInner() {
   const [promoBanners, setPromoBanners] = useState([featuredBanner]);
   const [current, setCurrent] = useState(0);
   const [interacting, setInteracting] = useState(false);
@@ -85,4 +86,10 @@ export default function PromoBanner() {
       </div>
     </section>
   );
+}
+
+// The banners module may be switched off for a store: then nothing is fetched (the API would answer 403) or shown.
+export default function PromoBanner() {
+  const { enabled } = useStoreModule("banners");
+  return enabled ? <PromoBannerInner /> : null;
 }

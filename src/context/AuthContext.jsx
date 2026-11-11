@@ -93,6 +93,18 @@ export const AuthProvider = ({ children }) => {
     return uData;
   };
 
+  // OTP-less stores (public settings phoneLoginMode === "direct"): the phone number alone signs the customer in.
+  const phoneDirectLogin = async (phoneNumber) => {
+    const response = await Axios.post("/auth/phoneV1/login", { phoneNumber });
+    const token = response.data?.token || response.data?.accessToken;
+    if (token) storeToken(token);
+    const userRes = await Axios.get("/auth/me");
+    const uData = userRes.data?.data || response.data?.userData;
+    handleSetUser(uData);
+    await syncCart();
+    return response.data;
+  };
+
   const sendPhoneOTP = async (phoneNumber, sessionId = null) => {
     const response = await Axios.post("/auth/phoneV2/send-otp", { phoneNumber, sessionId });
     return response.data;
@@ -152,6 +164,7 @@ export const AuthProvider = ({ children }) => {
         googleLogin,
         sendPhoneOTP,
         verifyPhoneOTP,
+        phoneDirectLogin,
       }}
     >
       {children}

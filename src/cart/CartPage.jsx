@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import useStoreModule from "../hooks/useStoreModule";
 import { ArrowLeft, LoaderCircle, Minus, Plus, ShieldCheck, ShoppingBag, Tag, Trash2, Truck, X } from "lucide-react";
 import ApplyCouponPanel from "./ApplyCouponPanel";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +17,7 @@ const transformToSlug = (name) => {
 };
 
 export default function CartPage() {
+  const { enabled: offersEnabled } = useStoreModule("offers");
   usePageMeta({ title: "Your Cart | MantraVanni", description: "Review the items in your MantraVanni cart.", noindex: true });
   const [couponOpen, setCouponOpen] = useState(false);
   const [coupon, setCoupon] = useState({
@@ -275,7 +277,7 @@ export default function CartPage() {
             )}
 
             {/* Apply Coupon Button */}
-            {!coupon.applied && (
+            {offersEnabled && !coupon.applied && (
               <button
                 className="mb-5 flex w-full items-center justify-between rounded-xl border border-dashed border-[#cdb78f] bg-[#fffbf4] p-3 text-sm font-semibold text-[#5b4a30] transition hover:border-[#8d692c] hover:bg-[#fff7e8]"
                 onClick={() => setCouponOpen(true)}
@@ -363,13 +365,13 @@ export default function CartPage() {
   return (
     <div className="relative flex min-h-screen justify-center bg-[#f7f5f1] px-3 pb-28 pt-5 sm:px-6 sm:py-8 md:pb-10">
       {renderContent()}
-      <ApplyCouponPanel
+      {offersEnabled && <ApplyCouponPanel
         isOpen={couponOpen}
         onClose={() => setCouponOpen(false)}
         onApply={handleCouponApply}
         appliedCoupon={coupon.applied ? coupon.code : null}
         totalAmount={totalAmount}
-      />
+      />}
     </div>
   );
 }

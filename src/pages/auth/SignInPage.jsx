@@ -6,6 +6,8 @@ import { toast } from "../../utils/toast";
 import { safeRedirect } from "../../utils/Axios";
 import OtpInput from "../../components/OtpInput";
 import { Phone, Lock, User, Mail, ChevronRight } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { getPublicSettings } from "../../services/settingsApi";
 
 const OTP_LENGTH = 6;
 
@@ -24,7 +26,12 @@ const SignInPage = () => {
     googleLogin,
     sendPhoneOTP,
     verifyPhoneOTP,
+    phoneDirectLogin,
   } = useAuth();
+
+  // Per-store option: "direct" = phone number only (no SMS OTP), "otp" = 6-digit OTP (default).
+  const { data: storeSettings } = useQuery({ queryKey: ["publicSettings"], queryFn: getPublicSettings, staleTime: 5 * 60 * 1000 });
+  const directPhoneLogin = storeSettings?.phoneLoginMode === "direct";
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -74,6 +81,23 @@ const SignInPage = () => {
       toast.success(response.message || "OTP sent");
     } catch (err) {
       toast.error(err?.response?.data?.message || err?.message || "Could not send OTP");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDirectPhoneLogin = async () => {
+    if (mobile.length !== 10) {
+      toast.error("Please enter a 10-digit number");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const response = await phoneDirectLogin(`+91${mobile}`);
+      toast.success(response?.message?.replace(/\s*\(.*\)/, "") || "Login successful");
+      navigate(redirectTo, { replace: true });
+    } catch (err) {
+      toast.error(err?.response?.data?.message || err?.message || "Login failed");
     } finally {
       setIsSubmitting(false);
     }
@@ -212,11 +236,16 @@ const SignInPage = () => {
                     placeholder="Enter 10 digit number"
                     value={mobile}
                     onChange={(e) => setMobile(e.target.value.replace(/\D/g, ""))}
-                    onKeyDown={(e) => e.key === 'Enter' && !otpSessionId && handleSendOtp()}
+                    onKeyDown={(e) => e.key === 'Enter' && !otpSessionId && (directPhoneLogin ? handleDirectPhoneLogin() : handleSendOtp())}
                   />
                 </div>
               </div>
-              {!otpSessionId ? (
+              {directPhoneLogin ? (
+                <button onClick={handleDirectPhoneLogin} disabled={isSubmitting || mobile.length !== 10} className={primaryBtn}>
+                  {isSubmitting ? "Signing in..." : "Continue"}
+                  {!isSubmitting && <ChevronRight size={18} />}
+                </button>
+              ) : !otpSessionId ? (
                 <button onClick={handleSendOtp} disabled={isSubmitting || mobile.length !== 10} className={primaryBtn}>
                   {isSubmitting ? "Sending OTP..." : "Send OTP"}
                   {!isSubmitting && <ChevronRight size={18} />}
