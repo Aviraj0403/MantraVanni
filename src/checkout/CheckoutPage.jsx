@@ -83,7 +83,7 @@ export default function CheckoutPage() {
         currency: "INR",
         content_ids: cartItems.map((i) => String(i.id)),
         contents: cartItems.map((i) => ({ id: String(i.id), quantity: Number(i.quantity) || 1, item_price: Number(i.price) || 0 })),
-        content_type: "product",
+        content_type: "product_group", // content_ids are product ids = the feed's item_group_id
         num_items: cartItems.reduce((a, i) => a + (Number(i.quantity) || 0), 0),
       });
     } catch { /* ignore */ }
@@ -94,7 +94,7 @@ export default function CheckoutPage() {
       value: Number(quoteRef.current?.total) || 0,
       currency: "INR",
       content_ids: cartRef.current.map((i) => String(i.id)),
-      content_type: "product",
+      content_type: "product_group",
     });
   };
 

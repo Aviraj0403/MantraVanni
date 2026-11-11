@@ -187,7 +187,7 @@ export function trackPurchase(orderId, { value, items } = {}) {
     if (sessionStorage.getItem(key)) return;
     loadPixel();
     const list = Array.isArray(items) ? items.filter((i) => i && i.id) : [];
-    const data = { value: Number(value) || 0, currency: "INR", content_type: "product" };
+    const data = { value: Number(value) || 0, currency: "INR", content_type: "product_group" };
     if (list.length) {
       data.content_ids = list.map((i) => String(i.id));
       data.contents = list.map((i) => ({ id: String(i.id), quantity: Number(i.quantity) || 1, item_price: Number(i.price) || 0 }));

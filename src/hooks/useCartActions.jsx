@@ -105,7 +105,7 @@ export const useCartActions = () => {
           value: unit * quantity,
           currency: "INR",
           content_ids: [String(product._id)],
-          content_type: "product",
+          content_type: "product_group",
           content_name: product.name,
           contents: [{ id: String(product._id), quantity, item_price: unit }],
           num_items: quantity,

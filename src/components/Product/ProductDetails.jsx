@@ -136,7 +136,7 @@ export default function ProductDetails() {
     if (!product?._id) return;
     track("ViewContent", {
       content_ids: [String(product._id)],
-      content_type: "product",
+      content_type: "product_group",
       content_name: product.name,
       value: Number(product.variants?.[0]?.price) || 0,
       currency: "INR",
