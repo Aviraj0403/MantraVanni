@@ -97,7 +97,9 @@ const handleSessionCode = (error) => {
 // Request interceptor
 Axios.interceptors.request.use(
   (config) => {
-    if (DEV_TENANT_ID) {
+    // The backend only honours x-tenant-id for signed-in platform superadmins (403 otherwise), so it is
+    // never sent on guest or /auth requests. Local dev should use a hostname registered in Tenant.domains.
+    if (DEV_TENANT_ID && getStoredToken() && !String(config.url || '').includes('/auth/')) {
       config.headers['x-tenant-id'] = DEV_TENANT_ID;
     }
 
@@ -165,7 +167,6 @@ Axios.interceptors.response.use(
           {},
           {
             withCredentials: true,
-            ...(DEV_TENANT_ID ? { headers: { 'x-tenant-id': DEV_TENANT_ID } } : {}),
           }
         );
 

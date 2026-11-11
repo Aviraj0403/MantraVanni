@@ -28,7 +28,8 @@ jobs:
   deploy:
     name: Deploy
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # OPT-IN: Vercel's Git integration deploys this repo; this SSH/rsync job runs only if the repository variable ENABLE_VPS_DEPLOY is 'true'.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ENABLE_VPS_DEPLOY == 'true'
     runs-on: ubuntu-latest
     environment: production
     steps:

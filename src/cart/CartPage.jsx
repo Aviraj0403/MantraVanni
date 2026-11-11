@@ -4,7 +4,6 @@ import ApplyCouponPanel from "./ApplyCouponPanel";
 import { useNavigate } from "react-router-dom";
 import { useCartActions } from "../hooks/useCartActions";
 import { useAuth } from "../context/AuthContext";
-import { getShippingAmount } from "../utils/shippingCalculator";
 import usePageMeta from "../hooks/usePageMeta";
 import { formatINR } from "../utils/money";
 
@@ -42,8 +41,7 @@ export default function CartPage() {
   // console.log("Cart Items:", cartItems); // Debugging
   const { cartSyncing, user } = useAuth();
 
-  // Calculate dynamic shipping charges based on cart weight
-  const shippingCharges = getShippingAmount(cartItems);
+  // Shipping is priced by the server (product weight + address) at checkout; no estimate is shown here.
 
   // Calculate discount based on the coupon's discount percentage and max discount cap
   const calculateDiscount = () => {
@@ -53,11 +51,13 @@ export default function CartPage() {
     const discountAmount = (totalAmount * coupon.discountPercentage) / 100;
 
     // Cap the discount to the max discount allowed
-    return Math.min(discountAmount, coupon.maxDiscountAmount);
+    const cap = Number(coupon.maxDiscountAmount);
+    // A null/0 cap means "no cap".
+    return cap > 0 ? Math.min(discountAmount, cap) : discountAmount;
   };
 
   // Calculate the final amount after applying the discount and shipping
-  const finalAmount = totalAmount - calculateDiscount() + shippingCharges;
+  const finalAmount = totalAmount - calculateDiscount();
 
   const handleIncrement = (id, size, color) => {
     const item = cartItems.find((i) => i.id === id && i.size === size && i.color === color);
@@ -303,14 +303,14 @@ export default function CartPage() {
 
               <div className="flex justify-between">
                 <p>Delivery Fee</p>
-                <p>{formatINR(shippingCharges)}</p>
+                <p className="text-xs">Calculated at checkout</p>
               </div>
             </div>
             <div className="mb-5 border-t border-dashed border-[#ddd3c6] pt-4">
               <div className="flex items-end justify-between">
                 <div>
                   <p className="text-sm font-bold text-[#302a23]">Total Amount</p>
-                  <p className="text-[10px] text-[#8a8075]">Estimate. Final price, discount and delivery are confirmed at checkout.</p>
+                  <p className="text-[10px] text-[#8a8075]">Excludes delivery. Final price, discount and delivery are confirmed at checkout.</p>
                 </div>
                 <p className="text-xl font-extrabold text-[#D35400]">{formatINR(finalAmount)}</p>
               </div>
@@ -329,7 +329,6 @@ export default function CartPage() {
                   // cart-page estimate (used for the "prices updated" notice) are passed along.
                   navigate("/checkout", {
                     state: {
-                      grandTotal: finalAmount.toFixed(2),
                       appliedCoupon: coupon.applied ? coupon : null,
                     },
                   });

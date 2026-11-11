@@ -18,17 +18,21 @@ export default function WalletPage() {
   const [msg, setMsg] = useState({ text: '', type: '' });
 
   const [bonusLoading, setBonusLoading] = useState(false);
+  const [bonusClaimed, setBonusClaimed] = useState(false);
   const signupBonus = Number(walletData?.config?.signupBonus || 0);
-  const bonusGranted = !!(walletData?.signupBonusGranted ?? walletData?.config?.signupBonusGranted ?? walletData?.wallet?.signupBonusGranted);
+  const bonusGranted = bonusClaimed || !!(walletData?.signupBonusGranted ?? walletData?.config?.signupBonusGranted ?? walletData?.wallet?.signupBonusGranted);
 
   const handleClaimBonus = async () => {
     try {
       setBonusLoading(true);
       const r = await claimSignupBonus();
       setMsg({ text: r?.message || 'Signup bonus added to your wallet', type: 'success' });
+      setBonusClaimed(true);
       await fetchWallet();
     } catch (err) {
-      setMsg({ text: err?.response?.data?.message || 'Could not claim the bonus', type: 'error' });
+      const st = err?.response?.status;
+      if (st === 400 || st === 409) setBonusClaimed(true);
+      setMsg({ text: st && st < 500 && err?.response?.data?.message ? err.response.data.message : 'Could not claim the bonus', type: 'error' });
     } finally {
       setBonusLoading(false);
     }
@@ -58,83 +62,87 @@ export default function WalletPage() {
 
   const handleTopUp = async (e) => {
     e.preventDefault();
+    if (topUpLoading) return;
     const num = Number(topUpAmount);
-    if (!num || num <= 0) {
-      setMsg({ text: 'Please enter a valid amount', type: 'error' });
+    if (!Number.isFinite(num) || num < 10 || num > 100000) {
+      setMsg({ text: 'Please enter an amount between ₹10 and ₹1,00,000', type: 'error' });
+      return;
+    }
+    if (!window.Razorpay) {
+      setMsg({ text: 'Payment gateway is still loading. Please try again in a moment.', type: 'error' });
       return;
     }
 
+    setTopUpLoading(true);
+    setMsg({ text: '', type: '' });
+    let opened = false;
     try {
-      setTopUpLoading(true);
-      setMsg({ text: '', type: '' });
-
-      // 💳 1. Attempt Real Razorpay Payment Gateway Trigger
-      try {
-        const orderRes = await Axios.post('/razorpay/createRazorpayOrder', {
-          amount: Math.round(num),
-          userId: user?._id || user?.id,
-          purpose: 'WALLET_TOPUP'
-        });
-
-        if (orderRes.data?.success && window.Razorpay) {
-          const options = {
-            key: orderRes.data.key_id,
-            amount: orderRes.data.amount,
-            currency: 'INR',
-            order_id: orderRes.data.order_id,
-            name: 'Wallet Top-Up',
-            description: `Adding ₹${num} to your wallet`,
-            handler: async function (response) {
-              try {
-                // Verify payment & credit wallet
-                const verifyRes = await Axios.post('/razorpay/verifyPayment', {
-                  payment_id: response.razorpay_payment_id,
-                  order_id: response.razorpay_order_id,
-                  signature: response.razorpay_signature,
-                  paymentId: orderRes.data.paymentId
-                });
-
-                if (verifyRes.data?.success) {
-                  const creditRes = await addWalletFunds(
-                    num,
-                    'Wallet Top-Up via Razorpay Gateway',
-                    orderRes.data.paymentId,
-                    'RAZORPAY',
-                    response.razorpay_order_id,
-                    response.razorpay_payment_id,
-                    response.razorpay_signature
-                  );
-                  if (creditRes?.success) {
-                    setWalletData(creditRes.data);
-                    setTopUpAmount('');
-                    setMsg({ text: `Successfully credited ₹${num} via Razorpay!`, type: 'success' });
-                  }
-                }
-              } catch (verifyErr) {
-                setMsg({ text: 'Payment verification failed. Please contact support.', type: 'error' });
-              } finally {
-                setTopUpLoading(false);
-              }
-            },
-            prefill: {
-              name: user?.userName || '',
-              email: user?.email || '',
-              contact: user?.phoneNumber || ''
-            },
-            theme: { color: '#dc2626' }
-          };
-
-          const rzp = new window.Razorpay(options);
-          rzp.open();
-          return;
-        }
-      } catch (rzpErr) {
-        setMsg({ text: rzpErr?.response?.data?.message || 'Razorpay Gateway error. Please try again.', type: 'error' });
+      const orderRes = await Axios.post('/wallet/create-topup-order', { amount: Math.round(num) });
+      const order = orderRes.data;
+      if (!order?.success || !order.orderId || !order.key) {
+        throw new Error('bad-order');
       }
+
+      const rzp = new window.Razorpay({
+        key: order.key,
+        amount: order.amount,
+        currency: order.currency || 'INR',
+        order_id: order.orderId,
+        name: 'Wallet Top-Up',
+        description: `Adding ₹${Math.round(num)} to your wallet`,
+        handler: async (response) => {
+          try {
+            const creditRes = await addWalletFunds({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            if (creditRes?.success) {
+              if (creditRes.data) setWalletData(creditRes.data);
+              else await fetchWallet();
+              setTopUpAmount('');
+              const credited = Number(creditRes.credited ?? creditRes.amount ?? creditRes.data?.lastCredit ?? Math.round(num));
+              setMsg({ text: `₹${credited} added to your wallet.`, type: 'success' });
+            } else {
+              setMsg({ text: 'We received your payment but could not confirm the credit yet. Please refresh, or contact support with your payment id ' + (response.razorpay_payment_id || '') + '.', type: 'error' });
+            }
+          } catch (verifyErr) {
+            const st = verifyErr?.response?.status;
+            setMsg({
+              text: st && st < 500 && verifyErr.response?.data?.message
+                ? verifyErr.response.data.message
+                : 'We could not confirm your payment yet. If money was deducted it will be credited shortly; otherwise contact support' + (response.razorpay_payment_id ? ' with payment id ' + response.razorpay_payment_id : '') + '.',
+              type: 'error',
+            });
+          } finally {
+            setTopUpLoading(false);
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            setTopUpLoading(false);
+            setMsg({ text: 'Payment window closed. No money was added.', type: 'error' });
+          },
+        },
+        prefill: {
+          name: user?.userName || '',
+          email: user?.email || '',
+          contact: user?.phoneNumber || '',
+        },
+        theme: { color: '#dc2626' },
+      });
+      rzp.on?.('payment.failed', (resp) => {
+        setTopUpLoading(false);
+        setMsg({ text: resp?.error?.description || 'Payment failed. Please try again.', type: 'error' });
+      });
+      opened = true;
+      rzp.open();
     } catch (err) {
-      setMsg({ text: err.response?.data?.message || 'Failed to add funds', type: 'error' });
+      const st = err?.response?.status;
+      const m = err?.response?.data?.message;
+      setMsg({ text: st && st < 500 && m ? m : 'Could not start the payment. Please try again.', type: 'error' });
     } finally {
-      setTopUpLoading(false);
+      if (!opened) setTopUpLoading(false);
     }
   };
 
@@ -151,7 +159,7 @@ export default function WalletPage() {
         setMsg({ text: res.message, type: 'success' });
       }
     } catch (err) {
-      setMsg({ text: err.response?.data?.message || 'Invalid or already used referral code', type: 'error' });
+      setMsg({ text: err.response?.status < 500 && err.response?.data?.message ? err.response.data.message : 'Invalid or already used referral code', type: 'error' });
     } finally {
       setReferralLoading(false);
     }

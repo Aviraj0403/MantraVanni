@@ -6,8 +6,9 @@ export const getMyWallet = async () => {
   return res.data;
 };
 
-export const addWalletFunds = async (amount, description, paymentId, source = 'RAZORPAY', razorpayOrderId = null, razorpayPaymentId = null, razorpaySignature = null) => {
-  const res = await Axios.post('/wallet/add-funds', { amount, description, paymentId, source, razorpayOrderId, razorpayPaymentId, razorpaySignature });
+// Credits the wallet after Razorpay checkout; the server verifies the signature and uses its own order amount.
+export const addWalletFunds = async ({ razorpay_order_id, razorpay_payment_id, razorpay_signature }) => {
+  const res = await Axios.post('/wallet/add-funds', { razorpay_order_id, razorpay_payment_id, razorpay_signature });
   return res.data;
 };
 

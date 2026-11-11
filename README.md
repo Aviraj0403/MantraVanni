@@ -20,7 +20,7 @@ npm run lint
 See `.env.example` for every `VITE_*` variable (names and placeholders only). Notable points:
 - Firebase web keys are public identifiers; restrict the API key by HTTP referrer in Google Cloud.
 - The Razorpay public key id is returned by the API at checkout. Never place a Razorpay secret in a `VITE_*` var.
-- `VITE_TENANT_ID` is a DEV-only override for localhost; production builds never send a tenant header.
+- Local development: run the browser against a hostname registered in the tenant's `Tenant.domains` (e.g. map the tenant's domain to 127.0.0.1 in your hosts file, or register a `localhost` domain entry). `VITE_TENANT_ID` (DEV-only) sends `x-tenant-id`, which the backend honours ONLY for signed-in platform superadmins (403 for guests/logins), so the storefront does not send it on guest or auth requests; production builds never send it.
 - Store name / support email / phone / address / social links come from the tenant's public settings, with optional
   `VITE_STORE_*` / `VITE_SOCIAL_*` fallbacks.
 

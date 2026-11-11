@@ -29,6 +29,12 @@ export const savePendingPayment = (payment, cart) => {
   write(CART_KEY, cart);
 };
 
+/** Flag set from the Razorpay success handler: money was captured, so the order may need recovery. */
+export const markPaymentCaptured = () => {
+  const payment = read(PAYMENT_KEY);
+  if (payment) write(PAYMENT_KEY, { ...payment, captured: true });
+};
+
 export const getPendingPayment = () => {
   const payment = read(PAYMENT_KEY);
   if (!payment || isStale(payment)) {

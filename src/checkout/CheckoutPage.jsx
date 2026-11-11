@@ -15,6 +15,7 @@ import {
   savePendingPayment,
   getPendingPayment,
   clearPendingPayment,
+  markPaymentCaptured,
 } from "../utils/paymentStorage";
 import usePageMeta from "../hooks/usePageMeta";
 
@@ -51,6 +52,7 @@ export default function CheckoutPage() {
   const [quote, setQuote] = useState(null);
   const [isQuoting, setIsQuoting] = useState(false);
   const [quoteError, setQuoteError] = useState(null);
+  const handleStockConflictRef = useRef(null);
   const [stockConflict, setStockConflict] = useState(null); // [{productId,name,available}] from a 409
   const [priceNotice, setPriceNotice] = useState(null);
   const quoteSeq = useRef(0);
@@ -94,9 +96,11 @@ export default function CheckoutPage() {
     } catch (err) {
       if (seq !== quoteSeq.current) return null;
       setQuote(null);
+      const qs = err?.response?.status;
       setQuoteError(
-        err?.response?.data?.message ||
-          "We could not confirm the latest prices. Please check your connection and try again."
+        qs && qs < 500 && err.response.data?.message
+          ? err.response.data.message
+          : "We could not confirm the latest prices. Please check your connection and try again."
       );
       return null;
     } finally {
@@ -212,7 +216,17 @@ export default function CheckoutPage() {
           const o = data.order || {};
           finishWithOrder({ ...o, id: o.id || o._id || data.orderId });
         }
-      } catch {
+      } catch (err) {
+        const res = err?.response;
+        if (res?.status === 402 && res.data?.code === "PAYMENT_NOT_PAID") {
+          clearPendingPayment();
+          return;
+        }
+        if (res?.status === 409 && res.data?.code === "OUT_OF_STOCK") {
+          clearPendingPayment();
+          handleStockConflictRef.current?.(res.data.items, !!res.data.refunded);
+          return;
+        }
         toast.error("Auto-recovery failed. Please contact support with your payment reference.");
       }
     },
@@ -222,32 +236,48 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (!isAuthenticated || isHandlingPayment.current) return;
     const pending = getPendingPayment(); // drops entries older than 15 minutes
-    if (pending?.payment?.paymentId) recoverPendingPayment(pending);
+    // Only a payment that was actually captured (Razorpay success handler ran) is mid-flight.
+    if (pending?.payment?.paymentId && pending.payment.captured) recoverPendingPayment(pending);
   }, [isAuthenticated, recoverPendingPayment]);
 
   /* ---------------- stock conflict helpers ---------------- */
-  const handleStockConflict = (items) => {
+  const handleStockConflict = (items, refunded, paidAmount) => {
     setStockConflict(Array.isArray(items) ? items : []);
-    toast.error("Some items are no longer available in the requested quantity.");
+    if (refunded !== undefined) {
+      const amt = Number.isFinite(paidAmount) ? ` of ${formatINR(paidAmount)}` : "";
+      toast.error(
+        `Some items just went out of stock. Your payment${amt} ${refunded ? "was refunded automatically" : "will be refunded"}.`,
+        { autoClose: 9000 }
+      );
+    } else {
+      toast.error("Some items are no longer available in the requested quantity.");
+    }
     refreshQuote();
   };
+  handleStockConflictRef.current = handleStockConflict;
 
   const removeUnavailableItems = async () => {
+    const fromQuote = (pid) => quote?.lines?.find((l) => String(l.productId) === String(pid))?.available;
     const list = stockConflict?.length
       ? stockConflict
-      : issues.map((i) => ({ productId: i.productId, available: 0 }));
+      : issues.map((i) => ({ productId: i.productId, available: i.available ?? fromQuote(i.productId) ?? 0 }));
     for (const c of list) {
+      const avail = Math.max(0, Number(c.available) || 0);
+      let remaining = avail;
       const affected = cartItems.filter((i) => String(i.id) === String(c.productId));
       for (const item of affected) {
-        if (Number(c.available) > 0 && Number(c.available) < item.quantity) {
-          await updateQuantity(item.id, item.size, item.color, Number(c.available));
-        } else {
+        const keep = Math.min(item.quantity, remaining);
+        remaining -= keep;
+        if (keep <= 0) {
           await removeFromCart(item.id, item.size, item.color);
+        } else if (keep < item.quantity) {
+          await updateQuantity(item.id, item.size, item.color, keep);
         }
       }
     }
     setStockConflict(null);
     toast.success("Your cart was updated.");
+    refreshQuote();
   };
 
   /* ---------------- placing the order ---------------- */
@@ -263,7 +293,7 @@ export default function CheckoutPage() {
       handleStockConflict(res.data.items);
       return;
     }
-    toast.error(res?.data?.message || err?.message || fallback);
+    toast.error(res && res.status < 500 && res.data?.message ? res.data.message : fallback);
   };
 
   const placeOrder = async () => {
@@ -323,7 +353,7 @@ export default function CheckoutPage() {
       if (status === 404 || status === 405 || status === 410 || status === 501) {
         toast.error("Wallet payment is currently unavailable. Please choose another payment method.");
       } else if (status === 402) {
-        toast.error(err.response?.data?.message || "Insufficient wallet balance.");
+        toast.error(err.response?.status < 500 && err.response?.data?.message ? err.response.data.message : "Could not pay with wallet. Please try again.");
       } else {
         handleOrderError(err, "Failed to pay via wallet. Please check your balance and try again.");
       }
@@ -407,6 +437,7 @@ export default function CheckoutPage() {
           }, 2000);
         });
 
+      isHandlingPayment.current = false;
       const options = {
         key: data.key_id,
         amount: data.amount, // paise, computed by the server
@@ -417,6 +448,7 @@ export default function CheckoutPage() {
         timeout: 600,
         handler: async (response) => {
           isHandlingPayment.current = true;
+          markPaymentCaptured();
           try {
             const verifyResponse = await axios.post(
               "/razorpay/verifyPayment",
@@ -458,7 +490,14 @@ export default function CheckoutPage() {
                 return;
               }
               await pollPaymentStatus(data.paymentId);
-            } catch {
+            } catch (postErr) {
+              const pr = postErr?.response;
+              if (pr?.status === 409 && pr.data?.code === "OUT_OF_STOCK") {
+                clearPendingPayment();
+                handleStockConflict(pr.data.items, !!pr.data.refunded, chargedRupees);
+                setIsPlacingOrder(false);
+                return;
+              }
               await pollPaymentStatus(data.paymentId);
             }
           } catch {
@@ -472,6 +511,9 @@ export default function CheckoutPage() {
         },
         modal: {
           ondismiss: () => {
+            // Closing the window before paying: nothing was captured, so drop the pending payment.
+            // (If the success handler already ran it has set captured and its own flow owns cleanup.)
+            if (!isHandlingPayment.current) clearPendingPayment();
             toast.info("Payment cancelled. If payment was completed, we'll recover it automatically.", {
               autoClose: 5000,
             });
