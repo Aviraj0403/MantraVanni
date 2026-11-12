@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { productPath } from "../../utils/productPath";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProductsByCategoryAndSubCategorySlug } from "../../services/productApi"; // Assuming this is the correct API call
 import ProductCard from "../../components/Product/ProductCard";
@@ -59,7 +60,7 @@ export default function CategorySubCategoryDetails() {
   }
 
   const handleProductClick = (productId) => {
-    navigate(`/product/${productId}`);
+    navigate(productPath(productId));
   };
 
   return (

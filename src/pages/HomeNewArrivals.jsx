@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from "react";
+import { productPath } from "../utils/productPath";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -16,7 +17,7 @@ export default function HomeNewArrivals() {
   });
 
   const handleProductClick = (slug) => {
-    navigate(`/product/${slug}`);
+    navigate(productPath(slug));
   };
 
   const scroll = (direction) => {

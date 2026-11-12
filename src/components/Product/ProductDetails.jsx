@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { productPath } from "../../utils/productPath";
 import useStoreModule from "../../hooks/useStoreModule";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
@@ -94,7 +95,7 @@ export default function ProductDetails() {
   /* SEO: title, description, og:image and Product JSON-LD */
   const seoImage = (variant?.images?.[0]) || product?.pimages?.[0];
   const seoPrice = variant?.price ?? product?.variants?.[0]?.price;
-  const seoDescription = (product?.description || "").replace(/<[^>]+>/g, " ").replace(/s+/g, " ").trim().slice(0, 160);
+  const seoDescription = (product?.description || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 160);
   const seoInStock = product ? !isOutOfStock(product, variant || product?.variants?.[0]) : true;
   usePageMeta({
     title: product ? `${product.name} | MantraVanni` : undefined,
@@ -370,11 +371,11 @@ export default function ProductDetails() {
                     const img = Array.isArray(p.image) ? p.image[0] : p.image;
                     return (
                       <li key={p._id || i} className="flex items-center gap-3 py-2.5">
-                        <Link to={`/product/${p.slug || p._id}`} className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-secondary-200 bg-brand-bg">
+                        <Link to={productPath(p)} className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-secondary-200 bg-brand-bg">
                           {img && <img src={img} alt={p.name} className="h-full w-full object-contain p-1" loading="lazy" decoding="async" />}
                         </Link>
                         <div className="min-w-0 flex-1">
-                          <Link to={`/product/${p.slug || p._id}`} className="line-clamp-2 text-sm font-semibold text-brand-text hover:text-primary-600">
+                          <Link to={productPath(p)} className="line-clamp-2 text-sm font-semibold text-brand-text hover:text-primary-600">
                             {p.name}
                           </Link>
                           <p className="mt-0.5 text-xs text-gray-500">

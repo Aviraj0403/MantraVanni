@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { productPath } from "../../utils/productPath";
 import {
   ArrowRight,
   ChevronRight,
@@ -133,7 +134,7 @@ export default function MobileSearchPage() {
 
   const handleProductClick = (product) => {
     saveSearch(query);
-    navigate(`/product/${product.slug}`);
+    navigate(productPath(product));
   };
 
   const hasQuery = query.trim().length > 0;

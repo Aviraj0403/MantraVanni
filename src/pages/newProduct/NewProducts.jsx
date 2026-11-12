@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { productPath } from "../../utils/productPath";
 import usePageMeta from "../../hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -19,7 +20,7 @@ const NewProducts = () => {
 
   // Handle navigation to product details page
   const handleProductClick = (slug) => {
-    navigate(`/product/${slug}`);
+    navigate(productPath(slug));
   };
 
   // Loading state

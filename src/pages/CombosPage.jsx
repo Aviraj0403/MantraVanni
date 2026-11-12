@@ -1,4 +1,5 @@
 import React from "react";
+import { productPath } from "../utils/productPath";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getMiniProducts } from "../services/productApi";
@@ -64,7 +65,7 @@ export default function CombosPage() {
               <ProductCard
                 key={product._id}
                 product={product}
-                onProductClick={(slug) => navigate(`/product/${slug}`)}
+                onProductClick={(slug) => navigate(productPath(slug))}
               />
             ))}
           </div>

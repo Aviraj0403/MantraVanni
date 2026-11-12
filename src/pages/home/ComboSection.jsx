@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from "react";
+import { productPath } from "../../utils/productPath";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -128,7 +129,7 @@ export default function ComboSection({ categorySlug }) {
                 >
                   <BestSellPC
                     product={product}
-                    onProductClick={(productId) => navigate(`/product/${productId}`)}
+                    onProductClick={(productId) => navigate(productPath(productId))}
                   />
                 </div>
               ))}

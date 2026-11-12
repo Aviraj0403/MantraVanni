@@ -8,13 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import usePageMeta from "../hooks/usePageMeta";
 import { formatINR } from "../utils/money";
 
-const transformToSlug = (name) => {
-  return name
-    .toLowerCase()               
-    .replace(/[^\w\s-]/g, '')     
-    .replace(/\s+/g, '-')        
-    .replace(/-+/g, '-');       
-};
+import { productPath } from "../utils/productPath";
 
 export default function CartPage() {
   const { enabled: offersEnabled } = useStoreModule("offers");
@@ -195,10 +189,13 @@ export default function CartPage() {
                     loading="lazy"
                     decoding="async"
                     className="h-24 w-24 cursor-pointer rounded-xl border border-[#eee7de] bg-[#faf8f4] object-contain p-1.5 transition group-hover:scale-[1.02] sm:h-28 sm:w-28"
-                    onClick={() => navigate(`/product/${transformToSlug(item.name)}`)} 
+                    onClick={() => navigate(productPath(item))}
                   />
                   <div className="min-w-0">
-                    <h2 className="line-clamp-2 text-sm font-semibold text-[#312b24] sm:text-base">
+                    <h2
+                      className="line-clamp-2 cursor-pointer text-sm font-semibold text-[#312b24] sm:text-base"
+                      onClick={() => navigate(productPath(item))}
+                    >
                       {item.name}
                     </h2>
                     <div className="mt-2 flex flex-wrap gap-1.5">

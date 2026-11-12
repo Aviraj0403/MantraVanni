@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { productPath } from "../../utils/productPath";
 import { Link } from "react-router-dom";
 import { getPublicSettings } from "../../services/settingsApi";
 import { sendStoreChat } from "./botApi";
@@ -179,7 +180,7 @@ const StoreBotWidget = () => {
                 {m.products?.length > 0 && (
                   <div className="flex w-full snap-x gap-2 overflow-x-auto pb-1">
                     {m.products.map((p) => (
-                      <Link key={p.slug} to={`/product/${encodeURIComponent(p.slug)}`} onClick={() => setOpen(false)} className="w-36 shrink-0 snap-start overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md">
+                      <Link key={p.slug || p._id} to={productPath(p)} onClick={() => setOpen(false)} className="w-36 shrink-0 snap-start overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md">
                         {p.image ? <img src={p.image} alt={p.name} loading="lazy" className="h-28 w-full object-cover" /> : <div className="h-28 w-full bg-gray-100" />}
                         <div className="p-2">
                           <div className="line-clamp-2 text-xs font-medium text-gray-800">{p.name}</div>

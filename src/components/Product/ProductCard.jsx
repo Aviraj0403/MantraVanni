@@ -7,6 +7,7 @@ import useCombosEnabled from "../../hooks/useCombosEnabled";
 import { useAuth } from "../../context/AuthContext";
 import { toggleWishlistHelper, isProductInWishlist } from "../../utils/wishlistHelper";
 import { isOutOfStock } from "../../utils/stock";
+import { productIdentifier, productPath } from "../../utils/productPath";
 
 export default function ProductCard({ product, onProductClick }) {
   const navigate = useNavigate();
@@ -50,9 +51,9 @@ export default function ProductCard({ product, onProductClick }) {
   const discount = product?.discount || 0;
 
   const handleProductClick = () => {
-    const identifier = product?.slug || product?._id;
+    const identifier = productIdentifier(product);
     if (onProductClick) onProductClick(identifier);
-    else navigate(`/product/${identifier}`);
+    else navigate(productPath(product));
   };
 
 
@@ -162,10 +163,9 @@ export default function ProductCard({ product, onProductClick }) {
       </div>
 
       {/* 📝 Compact Info Section */}
-      <div className="p-3.5 flex flex-col flex-1 gap-1.5">
+      <div className="p-3.5 flex flex-col flex-1 gap-1.5 cursor-pointer" onClick={handleProductClick}>
         <h3 
           className="text-[13px] font-bold text-brand-text line-clamp-2 leading-[1.4] h-[36px] hover:text-primary-600 transition-colors cursor-pointer tracking-tight"
-          onClick={handleProductClick}
         >
           {product.name}
         </h3>

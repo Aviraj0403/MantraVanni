@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { productPath } from "../../utils/productPath";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProductsByCategorySlug } from "../../services/productApi"; // Import the new API function
 import ProductCard from "../../components/Product/ProductCard";
@@ -59,7 +60,7 @@ export default function CategoryDetails() {
   }
   // Navigate to product detail page
   const handleProductClick = (productId) => {
-    navigate(`/product/${productId}`);
+    navigate(productPath(productId));
   };
 
   return (

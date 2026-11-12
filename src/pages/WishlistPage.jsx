@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { productPath } from "../utils/productPath";
 import { Heart, Trash2, ShoppingBag, ArrowRight, RefreshCw, Sparkles } from 'lucide-react';
 import { getWishlist } from '../services/walletWishlistApi';
 import { useAuth } from '../context/AuthContext';
@@ -132,14 +133,14 @@ export default function WishlistPage() {
               return (
                 <div key={item._id} className="bg-brand-bg rounded-3xl border border-secondary-200/80 overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col justify-between group card-3d">
                   <div>
-                    <div className="relative h-48 bg-secondary-50/30 p-4 flex items-center justify-center">
+                    <div className="relative h-48 bg-secondary-50/30 p-4 flex items-center justify-center cursor-pointer" onClick={() => navigate(productPath(item))}>
                       <img
                         src={imageUrl}
                         alt={item.name}
                         className="max-h-full object-contain group-hover:scale-105 transition duration-300"
                       loading="lazy" decoding="async" />
                       <button
-                        onClick={() => handleRemove(item)}
+                        onClick={(e) => { e.stopPropagation(); handleRemove(item); }}
                         className="absolute top-3 right-3 p-2 bg-brand-bg/90 text-brand-text/40 hover:text-accent rounded-full shadow-sm border border-secondary-100 transition"
                         title="Remove from wishlist"
                       >
@@ -151,7 +152,7 @@ export default function WishlistPage() {
                     </div>
 
                     <div className="p-4">
-                      <h3 className="font-bold text-brand-text text-sm line-clamp-2 mb-2">{item.name || item.title}</h3>
+                      <h3 className="font-bold text-brand-text text-sm line-clamp-2 mb-2 cursor-pointer" onClick={() => navigate(productPath(item))}>{item.name || item.title}</h3>
                       <div className="flex items-baseline gap-2 mb-1">
                         <span className="text-lg font-black text-brand-text">₹{price}</span>
                         {realPrice > price && <span className="text-xs text-brand-text/40 line-through">₹{realPrice}</span>}
