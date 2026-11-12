@@ -56,9 +56,9 @@ export default function MobileMenuDrawer({ open, onClose, onProfileClick, onLogo
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-5 pt-5 [scrollbar-width:thin] [scrollbar-color:#d7c3a7_transparent]">
-          <button type="button" onClick={onProfileClick} className="relative isolate flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-[20px] bg-[#354331] p-4 text-left text-[#f4f0df]">
-            <Flower2 size={115} strokeWidth={0.6} className="pointer-events-none absolute -right-8 -top-5 -z-10 text-[#d2ddbd]/10" aria-hidden="true" />
-            <span className="grid size-11 shrink-0 place-items-center rounded-full border border-[#c2cfa9]/25 bg-[#f4eedc]/10"><CircleUserRound size={24} strokeWidth={1.3} className="text-[#d8dfc4]" aria-hidden="true" /></span><span className="min-w-0 flex-1"><span className="block truncate font-serif text-xl">{user ? `Namaste, ${name.split(" ")[0]}` : "Namaste."}</span><span className="mt-1 block text-sm text-[#c2cdae]">{user ? "Your account & orders" : "Sign in or join us"}</span></span><ChevronRight size={18} className="shrink-0 text-[#d4dec1]" aria-hidden="true" />
+          <button type="button" onClick={onProfileClick} className="relative isolate flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-[20px] bg-[#2b211c] p-4 text-left text-[#f4f0df]">
+            <Flower2 size={115} strokeWidth={0.6} className="pointer-events-none absolute -right-8 -top-5 -z-10 text-[#e1c39a]/10" aria-hidden="true" />
+            <span className="grid size-11 shrink-0 place-items-center rounded-full border border-[#d7b88b]/25 bg-[#f4eedc]/10"><CircleUserRound size={24} strokeWidth={1.3} className="text-[#dfc6a1]" aria-hidden="true" /></span><span className="min-w-0 flex-1"><span className="block truncate font-serif text-xl">{user ? `Namaste, ${name.split(" ")[0]}` : "Namaste."}</span><span className="mt-1 block text-sm text-[#c5b5a1]">{user ? "Your account & orders" : "Sign in or join us"}</span></span><ChevronRight size={18} className="shrink-0 text-[#e3c79f]" aria-hidden="true" />
           </button>
 
           <nav aria-label="Discover collections" className="mt-5 grid grid-cols-2 gap-2.5">

@@ -27,18 +27,34 @@
 
     <!-- Google Site Verification -->
     <meta name="google-site-verification" content="rM-x0Dtxaq4QbrVGnM_O5Qf6IdnyBtDIcbymVFDiZKk" />
+
+    <!-- Critical loader styles are available before React or the app stylesheet. -->
+    <link rel="preload" as="image" href="/mantravanni-diya-loader.svg" type="image/svg+xml" />
+    <style id="mantravanni-loading-styles">
+      body { margin: 0; }
+      .spiritual-loader {
+        display: grid; width: 100%; min-height: 320px; place-items: center;
+        box-sizing: border-box; overflow: hidden; padding: 32px 20px;
+        background: radial-gradient(ellipse at 50% 40%, #fffdf7 0%, #faf7ef 65%, #f3ecdf 100%);
+        color: #2b211c; font-family: 'Outfit', sans-serif;
+      }
+      .spiritual-loader--screen { min-height: 100vh; min-height: 100dvh; }
+      .spiritual-loader__content { display: flex; width: min(100%, 360px); flex-direction: column; align-items: center; text-align: center; }
+      .spiritual-loader__diya { display: block; width: clamp(180px, 48vw, 240px); height: auto; }
+      .spiritual-loader__brand { margin-top: 12px; font-family: 'Playfair Display', Georgia, serif; font-size: clamp(28px, 7vw, 34px); font-weight: 500; line-height: 1.3; letter-spacing: -.025em; }
+      .spiritual-loader__caption { margin-top: 8px; color: #8a7156; font-size: 16px; line-height: 1.6; }
+      .spiritual-loader__status { margin-top: 28px; color: #927e67; font-size: 14px; line-height: 1.6; }
+    </style>
   </head>
   <body>
     <div id="root">
-      <div class="initial-spiritual-loader" role="status" aria-label="Loading MantraVanni">
-        <div class="initial-spiritual-loader__orbit" aria-hidden="true">
-          <span style="--angle: 0deg">ॐ</span>
-          <span style="--angle: 72deg">✦</span>
-          <span style="--angle: 144deg">◇</span>
-          <span style="--angle: 216deg">✺</span>
-          <span style="--angle: 288deg">✧</span>
+      <div class="spiritual-loader spiritual-loader--screen" role="status" aria-live="polite" aria-label="Loading MantraVanni">
+        <div class="spiritual-loader__content" aria-hidden="true">
+          <img src="/mantravanni-diya-loader.svg" width="240" height="190" class="spiritual-loader__diya" alt="" fetchpriority="high" />
+          <span class="spiritual-loader__brand">MantraVanni</span>
+          <span class="spiritual-loader__caption">A moment of stillness.</span>
+          <span class="spiritual-loader__status">Preparing your sacred space?</span>
         </div>
-        <div class="initial-spiritual-loader__center" aria-hidden="true">ॐ</div>
       </div>
     </div>
 

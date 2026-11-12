@@ -76,7 +76,7 @@ export default function DesktopHeader() {
   return (
     <header className="relative z-[999] w-full">
       <div
-        className={`fixed left-0 top-0 z-[999] flex h-[34px] w-full items-center bg-accent px-8 text-[12px] font-medium text-[#fff9f0] shadow-sm transition-transform duration-300 ${
+        className={`fixed left-0 top-0 z-[999] flex h-[34px] w-full items-center bg-[#2b211c] px-8 text-[12px] font-medium text-[#fff9f0] shadow-sm transition-transform duration-300 ${
           showTopBar ? "translate-y-0" : "-translate-y-full"
         }`}
       >
@@ -124,7 +124,7 @@ export default function DesktopHeader() {
                     <Link
                       key={item.label}
                       to={item.to}
-                      className="block px-4 py-2.5 text-[12px] text-[#4b463c] transition hover:bg-secondary-50 hover:text-accent"
+                      className="block px-4 py-2.5 text-[12px] text-[#4b463c] transition hover:bg-secondary-50 hover:text-[#2b211c]"
                     >
                       {item.label}
                     </Link>
@@ -151,7 +151,7 @@ export default function DesktopHeader() {
                       <div key={item._id} className="group/category relative">
                         <Link
                           to={`/${item.slug}`}
-                          className="flex items-center justify-between px-4 py-2.5 text-[12px] text-[#4b463c] transition hover:bg-secondary-50 hover:text-accent"
+                          className="flex items-center justify-between px-4 py-2.5 text-[12px] text-[#4b463c] transition hover:bg-secondary-50 hover:text-[#2b211c]"
                         >
                           {item.name}
                           {item.subcategories?.length > 0 && <ChevronDown size={12} className="-rotate-90" />}
@@ -162,7 +162,7 @@ export default function DesktopHeader() {
                               <Link
                                 key={sub._id || sub.slug}
                                 to={`/${item.slug}/${sub.slug}`}
-                                className="block px-7 py-2 text-[11px] text-[#696154] hover:text-accent"
+                                className="block px-7 py-2 text-[11px] text-[#696154] hover:text-[#2b211c]"
                               >
                                 {sub.name}
                               </Link>
@@ -195,7 +195,7 @@ export default function DesktopHeader() {
               <Link to="/wishlist" className="relative transition hover:text-primary-600" aria-label="Wishlist">
                 <Heart size={22} strokeWidth={1.8} />
                 {wishlistCount > 0 && (
-                  <span className="absolute -right-3 -top-2 grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-white ring-2 ring-white">
+                  <span className="absolute -right-3 -top-2 grid h-5 min-w-5 place-items-center rounded-full bg-[#2b211c] px-1 text-[10px] font-bold text-white ring-2 ring-white">
                     {wishlistCount}
                   </span>
                 )}

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 /**
  * MantraVanni text brand mark (Om medallion + wordmark).
- * variant "light" is for dark/maroon backgrounds.
+ * variant "light" is for dark backgrounds.
  */
 export default function BrandMark({ variant = "dark", size = "md", to = "/", className = "" }) {
   const sizes = {
@@ -17,7 +17,7 @@ export default function BrandMark({ variant = "dark", size = "md", to = "/", cla
     <>
       <span
         className={`grid shrink-0 place-items-center rounded-full border border-secondary-300/70 shadow-inner ${sizes.circle} ${
-          light ? "bg-white/10 text-secondary-200" : "bg-accent text-secondary-100"
+          light ? "bg-white/10 text-secondary-200" : "bg-[#2b211c] text-secondary-100"
         }`}
       >
         ॐ
@@ -25,7 +25,7 @@ export default function BrandMark({ variant = "dark", size = "md", to = "/", cla
       <span className="leading-none">
         <strong
           className={`block font-serif font-bold tracking-wide ${sizes.title} ${
-            light ? "text-white" : "text-accent"
+            light ? "text-white" : "text-[#2b211c]"
           }`}
         >
           MantraVanni

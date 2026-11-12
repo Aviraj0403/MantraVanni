@@ -79,7 +79,7 @@ export default function MobileHeader() {
             aria-expanded={isMenuOpen}
             aria-controls="mobile-navigation-drawer"
             aria-haspopup="dialog"
-            className="grid h-10 w-10 place-items-center rounded-full border border-secondary-200 bg-secondary-50 text-accent transition active:scale-95"
+            className="grid h-10 w-10 place-items-center rounded-full border border-secondary-200 bg-secondary-50 text-[#2b211c] transition active:scale-95"
             aria-label="Open menu"
           >
             <Menu size={22} strokeWidth={1.8} />
@@ -90,7 +90,7 @@ export default function MobileHeader() {
           <div className="flex items-center gap-1.5">
             <Link
               to="/cart"
-              className="relative grid h-10 w-10 place-items-center rounded-full text-brand-text transition hover:bg-secondary-50 hover:text-accent active:scale-95"
+              className="relative grid h-10 w-10 place-items-center rounded-full text-brand-text transition hover:bg-secondary-50 hover:text-[#2b211c] active:scale-95"
               aria-label="Open cart"
             >
               <ShoppingBasket size={24} strokeWidth={1.7} />
@@ -132,7 +132,7 @@ export default function MobileHeader() {
           >
             <span
               className={`grid h-12 w-12 place-items-center rounded-full border-[3px] border-white shadow-[0_5px_16px_rgba(139,30,30,0.28)] transition active:scale-95 ${
-                isActive("search") ? "bg-accent text-white" : "bg-primary-500 text-white"
+                isActive("search") ? "bg-[#2b211c] text-white" : "bg-primary-500 text-white"
               }`}
             >
               <Search size={22} strokeWidth={2.1} />

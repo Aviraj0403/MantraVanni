@@ -10,7 +10,7 @@ export default function FloatingNewArrival() {
           to { transform: translateX(-50%); }
         }
       `}</style>
-      <div className="w-full overflow-hidden border-y-2 border-secondary bg-gradient-to-b from-brand-text to-accent py-2">
+      <div className="w-full overflow-hidden border-y-2 border-secondary bg-[#2b211c] py-2">
         <div className="flex w-max items-center whitespace-nowrap animate-[sacred-strip-scroll_40s_linear_infinite] hover:[animation-play-state:paused] motion-reduce:animate-none">
           {[0, 1].map((copy) => (
             <div key={copy} aria-hidden={copy === 1 ? true : undefined} className="flex shrink-0 items-center gap-6 px-6 sm:gap-8 sm:px-8">
