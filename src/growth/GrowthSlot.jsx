@@ -17,6 +17,7 @@ import { useGrowthFlags } from "./flags";
  *   layout.top                 props {}                                 (very top of every page, above the header: festival strips, announcements)
  *   layout.beforeFooter        props {}                                 (above the footer on every page)
  *   productPage.seo            props { product, variant }               (render null; may call usePageMeta to override title/description/og:image)
+ *   categoryPage.seo           props { categorySlug }                   (render null; same idea for category pages)
  * Whole pages (blog, booking, ...) are registered with `export const pages = {...}`; see GrowthRoute.jsx.
  */
 const files = import.meta.glob("./slots/*.jsx", { eager: true });

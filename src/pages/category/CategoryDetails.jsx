@@ -5,6 +5,7 @@ import { getProductsByCategorySlug } from "../../services/productApi"; // Import
 import ProductCard from "../../components/Product/ProductCard";
 import NotFoundPage from "../PNF/NotFoundPage";
 import usePageMeta from "../../hooks/usePageMeta"; // Import ProductCard component
+import GrowthSlot from "../../growth/GrowthSlot";
 // on catgory slug fetch products and show them with pagination by aviraj
 export default function CategoryDetails() {
   const { categorySlug } = useParams();
@@ -65,6 +66,7 @@ export default function CategoryDetails() {
 
   return (
     <section className="py-12 bg-brand-bg min-h-screen">
+      <GrowthSlot name="categoryPage.seo" categorySlug={categorySlug} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <div className="flex justify-center mb-10">

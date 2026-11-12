@@ -16,6 +16,16 @@ import QuickAddressForm from "./QuickAddressForm";
 import SavedAddressPicker from "./SavedAddressPicker";
 import { addressKey } from "./addressKey";
 import InlineOtpLogin from "./InlineOtpLogin";
+import useMultiGateway from "./gateways/useMultiGateway";
+import GatewayOptions from "./gateways/GatewayOptions";
+import {
+  createGatewayOrder,
+  openCashfree,
+  submitPayuForm,
+  verifyGatewayPayment,
+  rememberGatewayPayment,
+  forgetGatewayPayment,
+} from "./gateways/gatewayFlow";
 import { formatINR } from "../utils/money";
 import {
   savePendingPayment,
@@ -42,7 +52,7 @@ const asRupees = (n) => Math.round(Number(n || 0) * 100) / 100;
 const MAX_SAVED_ADDRESSES = 5;
 
 // UI payment method -> the `paymentMethod` the server quote understands (COD fee / prepaid discount depend on it).
-const QUOTE_METHOD = { Razorpay: "online", COD: "cod", Wallet: "wallet" };
+const QUOTE_METHOD = { Razorpay: "online", COD: "cod", Wallet: "wallet", "gw:cashfree": "online", "gw:payu": "online" };
 
 // Same-address check used to avoid saving a duplicate.
 const sameAddress = (a, b) =>
@@ -85,6 +95,8 @@ export default function CheckoutPage() {
 
   // Server quote state
   const [quote, setQuote] = useState(null);
+  // Multi-gateway add-on: extra online gateways (Cashfree / PayU). [] when the module is off or the call fails.
+  const { gateways: extraGateways } = useMultiGateway(quote?.total);
   const [isQuoting, setIsQuoting] = useState(false);
   const [quoteError, setQuoteError] = useState(null);
   const handleStockConflictRef = useRef(null);
@@ -234,6 +246,11 @@ export default function CheckoutPage() {
     if (!isCODEnabled && paymentMethod === "COD") setPaymentMethod("Razorpay");
     if (!isWalletEnabled && paymentMethod === "Wallet") setPaymentMethod("Razorpay");
   }, [isCODEnabled, isWalletEnabled, paymentMethod]);
+
+  // A selected extra gateway that is no longer offered (config changed / amount window) falls back to the classic online option.
+  useEffect(() => {
+    if (paymentMethod.startsWith("gw:") && !extraGateways.some((g) => `gw:${g.key}` === paymentMethod)) setPaymentMethod("Razorpay");
+  }, [extraGateways, paymentMethod]);
 
   useEffect(() => {
     if (!isAuthenticated) return;
