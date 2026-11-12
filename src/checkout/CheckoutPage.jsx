@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, useNavigate, Link, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { AlertTriangle, Info } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -8,8 +8,14 @@ import axios from "../utils/Axios";
 import { clearCartThunk } from "../features/cart/cartThunk";
 import { useCartActions } from "../hooks/useCartActions";
 import AddressSidebar from "./AddressSidebar";
-import { quoteOrder, toOrderItems } from "../services/orderAPi";
+import { toOrderItems } from "../services/orderAPi";
 import { getPublicSettings } from "../services/settingsApi";
+import { addAddress } from "../services/userApi";
+import useFastCheckoutConfig from "./useFastCheckoutConfig";
+import QuickAddressForm from "./QuickAddressForm";
+import SavedAddressPicker from "./SavedAddressPicker";
+import { addressKey } from "./addressKey";
+import InlineOtpLogin from "./InlineOtpLogin";
 import { formatINR } from "../utils/money";
 import {
   savePendingPayment,
@@ -33,12 +39,28 @@ const firePurchase = (order, cart, quote) => {
 };
 
 const asRupees = (n) => Math.round(Number(n || 0) * 100) / 100;
+const MAX_SAVED_ADDRESSES = 5;
+
+// UI payment method -> the `paymentMethod` the server quote understands (COD fee / prepaid discount depend on it).
+const QUOTE_METHOD = { Razorpay: "online", COD: "cod", Wallet: "wallet" };
+
+// Same-address check used to avoid saving a duplicate.
+const sameAddress = (a, b) =>
+  String(a?.pincode || a?.postalCode || "") === String(b?.pincode || b?.postalCode || "") &&
+  String(a?.street || "").trim().toLowerCase() === String(b?.street || "").trim().toLowerCase();
 
 export default function CheckoutPage() {
   usePageMeta({ title: "Checkout | MantraVanni", description: "Complete your order securely.", noindex: true });
 
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const isAuthenticated = !!user;
+  // Fast checkout add-on: `fast` is null (classic checkout) unless the store has the module on.
+  const { config: fast, ready: fastReady } = useFastCheckoutConfig();
+  const [addrMode, setAddrMode] = useState("saved"); // fast checkout only: "saved" | "new"
+  const [addressesLoaded, setAddressesLoaded] = useState(false);
+  const [saveForLater, setSaveForLater] = useState(true);
+  const addressToSaveRef = useRef(null);
+  const [codBlockedMsg, setCodBlockedMsg] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -125,13 +147,17 @@ export default function CheckoutPage() {
     const seq = ++quoteSeq.current;
     setIsQuoting(true);
     setQuoteError(null);
+    const quoteMethod = QUOTE_METHOD[paymentMethod];
     try {
-      const result = await quoteOrder({
+      // paymentMethod lets the server add the COD fee / prepaid discount (COD shield); absent fields = classic quote.
+      const { data: result } = await axios.post("/orders/quote", {
         items: orderItems,
-        discountCode,
-        shippingAddress: shippingAddressPayload,
+        ...(discountCode ? { discountCode } : {}),
+        ...(shippingAddressPayload ? { shippingAddress: shippingAddressPayload } : {}),
+        ...(quoteMethod ? { paymentMethod: quoteMethod } : {}),
       });
       if (seq !== quoteSeq.current) return null; // a newer request superseded this one
+      if (quoteMethod === "cod") setCodBlockedMsg(typeof result?.codBlocked === "string" && result.codBlocked ? result.codBlocked : null);
       setQuote(result);
       return result;
     } catch (err) {
@@ -147,23 +173,39 @@ export default function CheckoutPage() {
     } finally {
       if (seq === quoteSeq.current) setIsQuoting(false);
     }
-  }, [isAuthenticated, orderItems, discountCode, shippingAddressPayload]);
+  }, [isAuthenticated, orderItems, discountCode, shippingAddressPayload, paymentMethod]);
 
   useEffect(() => {
     refreshQuote();
   }, [refreshQuote]);
 
+  // COD shield: a "COD not available here" verdict belongs to the delivery pincode, so forget it when that changes.
+  const shipPin = shippingAddressPayload?.postalCode;
+  useEffect(() => {
+    setCodBlockedMsg(null);
+  }, [shipPin]);
+  // If COD is blocked while selected, fall back to online payment (the message stays visible next to the COD option).
+  useEffect(() => {
+    if (codBlockedMsg && paymentMethod === "COD") setPaymentMethod("Razorpay");
+  }, [codBlockedMsg, paymentMethod]);
+
+  const codFee = Number(quote?.codFee) > 0 ? Number(quote.codFee) : 0;
+  const prepaidDiscount = Number(quote?.prepaidDiscount) > 0 ? Number(quote.prepaidDiscount) : 0;
+  const nudgeMessage = typeof quote?.nudge?.message === "string" ? quote.nudge.message : "";
+
   // "Prices updated" notice when the server total differs from what the cart page showed.
+  // (COD fee / prepaid discount depend on the chosen payment method, so they are not part of the cart-page estimate.)
   useEffect(() => {
     if (!quote || !Number.isFinite(cartEstimate)) return;
-    if (Math.abs(asRupees(quote.total) - asRupees(cartEstimate)) >= 0.01) {
+    const comparable = asRupees(quote.total) - codFee + prepaidDiscount;
+    if (Math.abs(asRupees(comparable) - asRupees(cartEstimate)) >= 0.01) {
       setPriceNotice(
         `Prices were updated. Your total is now ${formatINR(quote.total)} (it was ${formatINR(cartEstimate)} in your cart).`
       );
     } else {
       setPriceNotice(null);
     }
-  }, [quote, cartEstimate]);
+  }, [quote, cartEstimate, codFee, prepaidDiscount]);
 
   const issues = quote?.issues || [];
   const lineName = useCallback(
@@ -201,17 +243,59 @@ export default function CheckoutPage() {
         setAddresses(data.data || []);
       } catch {
         toast.error("Failed to load addresses");
+      } finally {
+        setAddressesLoaded(true);
       }
     };
     fetchAddresses();
   }, [isAuthenticated, isSidebarOpen]);
 
   useEffect(() => {
-    if (addresses.length > 0 && !selectedAddress) {
+    if (addrMode === "saved" && addresses.length > 0 && !selectedAddress) {
       const defaultAddr = addresses.find((a) => a.isDefault);
       setSelectedAddress(defaultAddr || addresses[0]);
     }
-  }, [addresses, selectedAddress]);
+  }, [addresses, selectedAddress, addrMode]);
+
+  // Fast checkout: nothing to pick from (no saved addresses, or the shop turned saved addresses off) => go straight to the quick form.
+  const savedPickerOn = !!fast?.savedAddresses && addresses.length > 0;
+  useEffect(() => {
+    if (!fast || !addressesLoaded) return;
+    if (!savedPickerOn) setAddrMode("new");
+  }, [fast, addressesLoaded, savedPickerOn]);
+
+  const onQuickAddress = useCallback((addr) => setSelectedAddress(addr), []);
+  const pickSaved = (addr) => {
+    setAddrMode("saved");
+    setSelectedAddress(addr);
+  };
+  const useNewAddress = () => {
+    setAddrMode("new");
+    setSelectedAddress(null);
+  };
+  const quickMode = !!fast && addrMode === "new";
+
+  // Best effort, after a successful order only: remember a new address for next time (max 5, no duplicates).
+  const rememberAddressAfterOrder = () => {
+    const addr = addressToSaveRef.current;
+    addressToSaveRef.current = null;
+    if (!addr) return;
+    try {
+      if (addresses.length >= MAX_SAVED_ADDRESSES || addresses.some((a) => sameAddress(a, addr))) return;
+      addAddress({
+        name: addr.name,
+        phone: addr.phoneNumber,
+        street: addr.street,
+        city: addr.city,
+        state: addr.state,
+        pincode: addr.pincode,
+        country: "India",
+        addressType: addr.label || "Home",
+      }).catch(() => {});
+    } catch { /* never block the order flow */ }
+  };
+  const rememberRef = useRef(rememberAddressAfterOrder);
+  rememberRef.current = rememberAddressAfterOrder;
 
   const refreshAddresses = () => setIsSidebarOpen(false);
 
@@ -220,6 +304,7 @@ export default function CheckoutPage() {
     (order) => {
       clearPendingPayment();
       firePurchase(order, cartRef.current, quoteRef.current);
+      rememberRef.current();
       dispatch(clearCartThunk());
       const orderId = order?.id || order?._id;
       if (!orderId) {
@@ -368,6 +453,13 @@ export default function CheckoutPage() {
       return toast.info(`Prices updated. New total: ${formatINR(fresh.total)}. Please review and pay again.`);
     }
 
+    if (paymentMethod === "COD" && codBlockedMsg) {
+      setIsPlacingOrder(false);
+      return toast.error(codBlockedMsg);
+    }
+    // fast checkout: remember a brand-new address once the order succeeds (recovery paths simply skip this)
+    addressToSaveRef.current = quickMode && saveForLater && fast?.savedAddresses && selectedAddress ? selectedAddress : null;
+
     const payload = buildPayload();
     if (paymentMethod === "Razorpay") initiateRazorpay(payload);
     else if (paymentMethod === "Wallet") initiateWalletPayment(payload);
@@ -386,6 +478,7 @@ export default function CheckoutPage() {
       if (data.success) {
         toast.success("Order placed successfully using your wallet!");
         firePurchase(data.order, cartRef.current, quoteRef.current);
+        rememberRef.current();
         dispatch(clearCartThunk());
         const orderId = data.order.id || data.order._id;
         navigate(`/invoice/${orderId}`, { state: { order: data.order } });
@@ -416,6 +509,7 @@ export default function CheckoutPage() {
       if (data.success) {
         toast.success("Order placed successfully (COD)!");
         firePurchase(data.order, cartRef.current, quoteRef.current);
+        rememberRef.current();
         dispatch(clearCartThunk());
         const orderId = data.order.id || data.order._id;
         navigate(`/invoice/${orderId}`, { state: { order: data.order } });
@@ -603,7 +697,7 @@ export default function CheckoutPage() {
 
   /* ---------------- render ---------------- */
   const payDisabled =
-    isPlacingOrder || isQuoting || !quote || hasBlockingIssues || !selectedAddress || cartItems.length === 0;
+    isPlacingOrder || isQuoting || !quote || hasBlockingIssues || !selectedAddress || cartItems.length === 0 || (paymentMethod === "COD" && !!codBlockedMsg);
 
   const payLabel = isPlacingOrder
     ? "Processing..."
@@ -627,6 +721,45 @@ export default function CheckoutPage() {
         quantity: i.quantity,
         lineTotal: null,
       }));
+
+  // Not signed in. The route normally guards this page (RequireAuth); when the route lets guests in, sign them in
+  // right here (fast checkout: phone OTP) or send them to /signin exactly as RequireAuth would.
+  // Placing an order still requires a signed-in user (placeOrder re-checks), so nothing is bypassed.
+  if (!isAuthenticated) {
+    if (authLoading || !fastReady) return null;
+    if (!fast?.otpLoginAtCheckout) return <Navigate to="/signin" state={{ from: location }} replace />;
+    return (
+      <div className="min-h-[60vh] bg-brand-bg flex justify-center items-start p-4 sm:p-8">
+        <div className="w-full max-w-md bg-brand-bg shadow-md border border-secondary-200 rounded-2xl p-6 sm:p-8">
+          <h1 className="font-serif text-xl font-bold text-brand-text mb-1 text-center">Sign in to checkout</h1>
+          <p className="text-sm text-gray-600 mb-5 text-center">Verify your mobile number to continue. Your cart is saved.</p>
+          <InlineOtpLogin />
+        </div>
+      </div>
+    );
+  }
+
+  const upiFirst = !!fast?.upiFirst;
+  const codOption = isCODEnabled && (
+    <div className="flex-1">
+      <label className={`${methodCls(paymentMethod === "COD")} ${codBlockedMsg ? "opacity-60 cursor-not-allowed" : ""}`}>
+        <input
+          type="radio"
+          name="payment_method"
+          checked={paymentMethod === "COD"}
+          disabled={!!codBlockedMsg}
+          onChange={() => choosePayment("COD")}
+          className="text-primary-500"
+        />
+        <div>
+          <p className="font-semibold text-brand-text">Cash on Delivery</p>
+          <p className="text-xs text-gray-500">Pay when you receive your order</p>
+        </div>
+      </label>
+      {codBlockedMsg && <p role="alert" className="mt-1 text-xs text-red-600">{codBlockedMsg}</p>}
+      {!codBlockedMsg && nudgeMessage && <p className="mt-1 text-xs font-medium text-green-700">{nudgeMessage}</p>}
+    </div>
+  );
 
   if (cartItems.length === 0) {
     return (
@@ -654,52 +787,78 @@ export default function CheckoutPage() {
         <div className="bg-brand-bg shadow-md border border-secondary-200 rounded-2xl p-6 sm:p-8">
           <h1 className="font-serif text-xl font-bold text-brand-text mb-6 text-center">Shipping Information</h1>
 
-          <fieldset className="space-y-4 mb-6">
-            <legend className="sr-only">Delivery address</legend>
-            {addresses.length > 0 ? (
-              addresses.map((addr) => (
-                <label
-                  key={addr._id}
-                  className={`block border-2 rounded-xl p-4 cursor-pointer transition focus-within:ring-2 focus-within:ring-primary-400 ${
-                    selectedAddress?._id === addr._id
-                      ? "border-primary-500 bg-primary-50"
-                      : "border-secondary-200 hover:bg-secondary-50"
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <input
-                      type="radio"
-                      name="address"
-                      checked={selectedAddress?._id === addr._id}
-                      onChange={() => setSelectedAddress(addr)}
-                      className="mt-1 text-primary-500"
-                    />
-                    <div>
-                      <p className="font-semibold text-brand-text">
-                        {addr.label || addr.type} ({addr.phoneNumber})
-                        {addr.isDefault && <span className="text-sm text-gray-500 ml-2">(Default)</span>}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {addr.street || addr.flat}, {addr.city}, {addr.state} - {addr.pincode || addr.postalCode}
-                      </p>
+          {fast ? (
+            <>
+              {savedPickerOn && (
+                <SavedAddressPicker
+                  addresses={addresses}
+                  selectedId={addressKey(selectedAddress)}
+                  mode={addrMode}
+                  onPick={pickSaved}
+                  onNew={useNewAddress}
+                />
+              )}
+              {quickMode && (
+                <QuickAddressForm
+                  config={fast}
+                  user={user}
+                  onChange={onQuickAddress}
+                  saveable={!!fast.savedAddresses && addresses.length < MAX_SAVED_ADDRESSES}
+                  saveChecked={saveForLater}
+                  onSaveChange={setSaveForLater}
+                />
+              )}
+            </>
+          ) : (
+            <>
+            <fieldset className="space-y-4 mb-6">
+              <legend className="sr-only">Delivery address</legend>
+              {addresses.length > 0 ? (
+                addresses.map((addr) => (
+                  <label
+                    key={addr._id}
+                    className={`block border-2 rounded-xl p-4 cursor-pointer transition focus-within:ring-2 focus-within:ring-primary-400 ${
+                      selectedAddress?._id === addr._id
+                        ? "border-primary-500 bg-primary-50"
+                        : "border-secondary-200 hover:bg-secondary-50"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="radio"
+                        name="address"
+                        checked={selectedAddress?._id === addr._id}
+                        onChange={() => setSelectedAddress(addr)}
+                        className="mt-1 text-primary-500"
+                      />
+                      <div>
+                        <p className="font-semibold text-brand-text">
+                          {addr.label || addr.type} ({addr.phoneNumber})
+                          {addr.isDefault && <span className="text-sm text-gray-500 ml-2">(Default)</span>}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {addr.street || addr.flat}, {addr.city}, {addr.state} - {addr.pincode || addr.postalCode}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </label>
-              ))
-            ) : (
-              <p className="text-center text-gray-500">No saved addresses</p>
-            )}
-          </fieldset>
+                  </label>
+                ))
+              ) : (
+                <p className="text-center text-gray-500">No saved addresses</p>
+              )}
+            </fieldset>
 
-          <div className="text-center mb-8">
-            <button
-              type="button"
-              onClick={() => setIsSidebarOpen(true)}
-              className="bg-primary-500 text-white font-semibold px-4 py-2 md:px-6 md:py-3 rounded-lg hover:bg-primary-600 shadow-md transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
-            >
-              + Add New Address
-            </button>
-          </div>
+            <div className="text-center mb-8">
+              <button
+                type="button"
+                onClick={() => setIsSidebarOpen(true)}
+                className="bg-primary-500 text-white font-semibold px-4 py-2 md:px-6 md:py-3 rounded-lg hover:bg-primary-600 shadow-md transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
+              >
+                + Add New Address
+              </button>
+            </div>
+            </>
+          )}
 
           <h2 className="text-center font-serif font-bold text-lg mb-4 text-brand-text">Select Payment Method</h2>
 
@@ -720,8 +879,11 @@ export default function CheckoutPage() {
                   className="text-primary-500"
                 />
                 <div>
-                  <p className="font-semibold text-brand-text">Pay Online</p>
-                  <p className="text-xs text-gray-500">Fast & Secure (Cards, UPI, NetBanking)</p>
+                  <p className="font-semibold text-brand-text">
+                    {upiFirst ? "UPI / Pay Online" : "Pay Online"}
+                    {upiFirst && <span className="ml-2 rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold uppercase text-green-800">Fastest</span>}
+                  </p>
+                  <p className="text-xs text-gray-500">{upiFirst ? "GPay, PhonePe, Paytm, other UPI apps, cards & NetBanking" : "Fast & Secure (Cards, UPI, NetBanking)"}</p>
                 </div>
               </label>
 
@@ -741,21 +903,7 @@ export default function CheckoutPage() {
                 </label>
               )}
 
-              {isCODEnabled && (
-                <label className={methodCls(paymentMethod === "COD")}>
-                  <input
-                    type="radio"
-                    name="payment_method"
-                    checked={paymentMethod === "COD"}
-                    onChange={() => choosePayment("COD")}
-                    className="text-primary-500"
-                  />
-                  <div>
-                    <p className="font-semibold text-brand-text">Cash on Delivery</p>
-                    <p className="text-xs text-gray-500">Pay when you receive your order</p>
-                  </div>
-                </label>
-              )}
+              {codOption}
             </div>
 
             <p className="text-center text-xs text-gray-500">
@@ -841,16 +989,28 @@ export default function CheckoutPage() {
                 <span>Subtotal</span>
                 <span className="font-semibold">{quote ? formatINR(quote.subtotal) : "—"}</span>
               </div>
-              {quote && Number(quote.discount) > 0 && (
+              {quote && Number(quote.discount) - prepaidDiscount > 0.004 && (
                 <div className="flex justify-between text-green-700">
                   <span>Discount{discountCode ? ` (${discountCode})` : ""}</span>
-                  <span>-{formatINR(quote.discount)}</span>
+                  <span>-{formatINR(Number(quote.discount) - prepaidDiscount)}</span>
+                </div>
+              )}
+              {prepaidDiscount > 0 && (
+                <div className="flex justify-between text-green-700">
+                  <span>Prepaid discount</span>
+                  <span>-{formatINR(prepaidDiscount)}</span>
                 </div>
               )}
               <div className="flex justify-between text-brand-text">
                 <span>Shipping</span>
                 <span>{quote ? (Number(quote.shipping) > 0 ? formatINR(quote.shipping) : "Free") : "—"}</span>
               </div>
+              {codFee > 0 && (
+                <div className="flex justify-between text-brand-text">
+                  <span>COD fee</span>
+                  <span>{formatINR(codFee)}</span>
+                </div>
+              )}
               {!selectedAddress && (
                 <p className="text-xs text-gray-500">Select a delivery address to confirm shipping.</p>
               )}

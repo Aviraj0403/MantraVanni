@@ -9,6 +9,7 @@ import usePageMeta from "../hooks/usePageMeta";
 import { formatINR } from "../utils/money";
 
 import { productPath } from "../utils/productPath";
+import GrowthSlot from "../growth/GrowthSlot";
 
 export default function CartPage() {
   const { enabled: offersEnabled } = useStoreModule("offers");
@@ -246,6 +247,7 @@ export default function CartPage() {
 
         {/* Right Section */}
         <div className="w-full md:sticky md:top-5 md:w-[350px] md:shrink-0">
+          <GrowthSlot name="cart.beforeSummary" cartItems={cartItems} totalAmount={totalAmount} />
           <div className="flex flex-col overflow-hidden rounded-2xl border border-[#e5ddd1] bg-brand-bg p-5 shadow-[0_8px_30px_rgba(61,45,25,0.08)] sm:p-6">
             <h2 className="text-lg font-bold text-[#302a23]">
               Order Summary

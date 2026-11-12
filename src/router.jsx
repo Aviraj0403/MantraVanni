@@ -35,6 +35,8 @@ const WishlistPage = lazy(() => import("./pages/WishlistPage.jsx"));
 const WalletPage = lazy(() => import("./pages/WalletPage.jsx"));
 const StoreUnavailable = lazy(() => import("./pages/StoreUnavailable.jsx"));
 const CombosPage = lazy(() => import("./pages/CombosPage.jsx"));
+const GrowthRoute = lazy(() => import("./growth/GrowthRoute.jsx"));
+const CodConfirm = lazy(() => import("./pages/CodConfirm.jsx"));
 
 const router = createBrowserRouter([
   {
@@ -51,8 +53,18 @@ const router = createBrowserRouter([
       { path: "/track-order", element: <TrackOrder /> },
 
       { path: "/cart", element: <CartPage /> },
-      { path: "/checkout", element: (<RequireAuth><CheckoutPage /></RequireAuth>) },
+      // CheckoutPage guards itself: guests get the inline phone-OTP panel (Fast checkout) or are sent to /signin exactly like RequireAuth did.
+      { path: "/checkout", element: <CheckoutPage /> },
       { path: "/combos", element: <CombosPage /> },
+      // Pages owned by growth add-ons (404 unless the add-on is ON for the store). Placed before the dynamic category routes.
+      { path: "/blog", element: <GrowthRoute module="seoCms" view="blog" /> },
+      { path: "/blog/:slug", element: <GrowthRoute module="seoCms" view="post" /> },
+      { path: "/page/:slug", element: <GrowthRoute module="seoCms" view="page" /> },
+      { path: "/book", element: <GrowthRoute module="serviceBooking" view="list" /> },
+      { path: "/book/:serviceId", element: <GrowthRoute module="serviceBooking" view="book" /> },
+      { path: "/affiliate", element: <GrowthRoute module="affiliates" view="dashboard" /> },
+      { path: "/downloads", element: <GrowthRoute module="digitalProducts" view="downloads" /> },
+      { path: "/wholesale", element: <GrowthRoute module="b2bWholesale" view="apply" /> },
       { path: "/product/:slug", element: <ProductDetails /> },
       { path: "/about-us", element: <AboutUs /> },
       { path: "/contact-us", element: <ContactUs /> },
@@ -70,6 +82,7 @@ const router = createBrowserRouter([
       { path: "/new-products", element: <NewProducts /> },
       { path: "/search", element: <MobileSearchPage /> },
       { path: "/auth", element: <AuthPage /> },
+      { path: "/cod-confirm/:token", element: <CodConfirm /> },
       // Dynamic category routes come last. An unknown slug renders the 404 page (see CategoryDetails).
       { path: "/:categorySlug", element: <CategoryDetails /> },
       { path: "/:categorySlug/:subCategorySlug", element: <CategorySubCategoryDetails /> },

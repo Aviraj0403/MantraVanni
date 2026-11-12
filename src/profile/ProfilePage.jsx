@@ -9,6 +9,7 @@ import Reviews from "./Reviews";
 import Addresses from "./Addresses";
 import DeleteAccount from "./DeleteAccount";
 import SignInPage from "../pages/auth/SignInPage";
+import { useProfileTabs } from "../growth/GrowthSlot";
 
 const TABS = [
   { key: "orders", label: "Orders", short: "Orders", icon: ShoppingBag },
@@ -18,7 +19,9 @@ const TABS = [
   { key: "delete", label: "Delete Account", short: "Delete", icon: Trash2 },
 ];
 
-function tabComponent(key) {
+function tabComponent(key, extraTabs = []) {
+  const extra = extraTabs.find((t) => t.key === key);
+  if (extra) { const C = extra.Component; return <C />; }
   switch (key) {
     case "orders": return <Orders />;
     case "support": return <Support />;
@@ -32,6 +35,8 @@ function tabComponent(key) {
 export default function ProfilePage() {
   const { user, logout, loading } = useAuth();
   const [activeKey, setActiveKey] = useState("orders");
+  const extraTabs = useProfileTabs(); // growth add-ons (Rewards, Subscriptions, Gift cards...) that are ON for this store
+  const allTabs = [...TABS.filter((t) => t.key !== "delete"), ...extraTabs, ...TABS.filter((t) => t.key === "delete")];
 
   if (loading) {
     return (
@@ -43,7 +48,7 @@ export default function ProfilePage() {
 
   if (!user) return <SignInPage />;
 
-  const activeTab = TABS.find((t) => t.key === activeKey);
+  const activeTab = allTabs.find((t) => t.key === activeKey);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
@@ -65,7 +70,7 @@ export default function ProfilePage() {
 
         {/* Nav links */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          {TABS.filter(t => t.key !== "delete").map((tab) => {
+          {allTabs.filter(t => t.key !== "delete").map((tab) => {
             const Icon = tab.icon;
             const isActive = activeKey === tab.key;
             return (
@@ -128,12 +133,12 @@ export default function ProfilePage() {
 
       {/* ── Main content ────────────────────────────────── */}
       <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8 min-h-screen">
-        {tabComponent(activeKey)}
+        {tabComponent(activeKey, extraTabs)}
       </main>
 
       {/* ── Mobile bottom tab bar ───────────────────────── */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-brand-bg border-t border-gray-100 flex items-stretch safe-area-inset-bottom shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
-        {TABS.filter(t => t.key !== "delete").map((tab) => {
+        {allTabs.filter(t => t.key !== "delete").map((tab) => {
           const Icon = tab.icon;
           const isActive = activeKey === tab.key;
           return (

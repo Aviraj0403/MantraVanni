@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { productPath } from "../../utils/productPath";
+import GrowthSlot from "../../growth/GrowthSlot";
 import useStoreModule from "../../hooks/useStoreModule";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
@@ -498,6 +499,8 @@ export default function ProductDetails() {
                 <FaBolt size={14} /> Buy Now
               </button>
             </div>
+            <GrowthSlot name="productPage.afterActions" product={product} variant={variant} soldOut={soldOut} />
+            <GrowthSlot name="productPage.seo" product={product} variant={variant} />
 
             {/* Mobile CTAs Only (Trust badges & Tags moved above) */}
             <div className="lg:hidden flex flex-col gap-6">
@@ -592,6 +595,7 @@ export default function ProductDetails() {
             </div>
           </Collapse>
 
+          <GrowthSlot name="productPage.beforeReviews" product={product} />
           {reviewsEnabled && <Collapse
             title={`Customer Reviews ${reviewCount ? `(${reviewCount})` : ""}`}
             open={section === "reviews"}

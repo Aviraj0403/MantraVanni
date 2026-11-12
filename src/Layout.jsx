@@ -9,12 +9,14 @@ import { useWindowContext } from "./context/windowContext.jsx";
 import StoreBotWidget from "./components/bots/StoreBotWidget.jsx";
 import SpiritualLoader from "./components/SpiritualLoader.jsx";
 import MarketingProvider from "./marketing/MarketingProvider.jsx";
+import GrowthSlot from "./growth/GrowthSlot.jsx";
 
 const Layout = () => {
   const { divRef, progressWidth } = useWindowContext();
 
   return (
     <div className="flex flex-col min-h-screen bg-brand-bg">
+      <GrowthSlot name="layout.top" />
       {/* Header Component */}
       <Header />
 
@@ -35,6 +37,7 @@ const Layout = () => {
         </main>
       </div>
 
+      <GrowthSlot name="layout.beforeFooter" />
       {/* Footer Component */}
       <Footer />
 
