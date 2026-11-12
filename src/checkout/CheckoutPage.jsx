@@ -479,6 +479,7 @@ export default function CheckoutPage() {
 
     const payload = buildPayload();
     if (paymentMethod === "Razorpay") initiateRazorpay(payload);
+    else if (paymentMethod.startsWith("gw:") && extraGateways.some((g) => `gw:${g.key}` === paymentMethod)) initiateGateway(payload, paymentMethod.slice(3));
     else if (paymentMethod === "Wallet") initiateWalletPayment(payload);
     else if (paymentMethod === "COD") initiateCOD(payload);
     else setIsPlacingOrder(false);
@@ -712,13 +713,85 @@ export default function CheckoutPage() {
     }
   };
 
+  /* ---------------- extra gateways (multi-gateway add-on: Cashfree / PayU) ---------------- */
+  // The server verifies every payment with the gateway itself; this only reacts to the server's answer.
+  const handleGatewayOutcome = useCallback(
+    (r) => {
+      if (r.kind === "order") {
+        forgetGatewayPayment();
+        finishWithOrder(r.order);
+        return;
+      }
+      forgetGatewayPayment();
+      if (r.kind === "stock") handleStockConflictRef.current?.(r.items, false);
+      else if (r.kind === "failed") toast.error(r.message || "The payment was not completed. Please try again.", { autoClose: 8000 });
+      else if (r.kind === "mismatch") toast.error(r.message || "The paid amount does not match this order. Please contact support.", { autoClose: 10000 });
+      else if (r.kind === "pending")
+        toast.info("Your payment is not confirmed yet. If money was deducted, your order will be confirmed automatically. Please check your orders shortly.", { autoClose: 9000 });
+      else toast.error(r.message || "We could not confirm your payment. If money was deducted it will be confirmed automatically.", { autoClose: 9000 });
+      setIsPlacingOrder(false);
+    },
+    [finishWithOrder]
+  );
+
+  const initiateGateway = async (payload, gateway) => {
+    try {
+      const data = await createGatewayOrder(gateway, payload);
+      const chargedRupees = Number(data.amount) / 100;
+      if (Number.isFinite(chargedRupees) && quote && Math.abs(chargedRupees - asRupees(quote.total)) >= 1) {
+        toast.info(`Final amount to pay: ${formatINR(chargedRupees)}`);
+      }
+      rememberGatewayPayment(data.paymentId, gateway);
+      if (gateway === "cashfree") {
+        const res = await openCashfree(data);
+        if (res.redirected) return; // the SDK is navigating away; the return URL brings the customer back here
+        toast.info("Confirming your payment...");
+        const r = await verifyGatewayPayment(data.paymentId, { attempts: 3, delayMs: 2000 });
+        if (r.kind === "pending") {
+          // closed without paying (or still processing): nothing to do now, the server keeps checking
+          forgetGatewayPayment();
+          toast.info(res.error || "Payment cancelled. If payment was completed, we'll confirm it automatically.", { autoClose: 6000 });
+          setIsPlacingOrder(false);
+          return;
+        }
+        handleGatewayOutcome(r);
+      } else {
+        submitPayuForm(data); // leaves the page; PayU sends the customer back to /checkout?gw=payu&pid=...
+      }
+    } catch (err) {
+      forgetGatewayPayment();
+      if (err?.response) handleOrderError(err, "Payment gateway error. Please try again.");
+      else toast.error(err?.message || "Payment gateway error. Please try again.");
+      setIsPlacingOrder(false);
+    }
+  };
+
+  // Coming back from the gateway's own page (PayU always, Cashfree when it redirects): /checkout?gw=<gateway>&pid=<payment id>.
+  const gwReturnHandled = useRef(false);
+  useEffect(() => {
+    if (!isAuthenticated || gwReturnHandled.current) return;
+    let gw = null;
+    let pid = null;
+    try {
+      const sp = new URLSearchParams(location.search);
+      gw = sp.get("gw");
+      pid = sp.get("pid");
+    } catch { return; }
+    if (!["cashfree", "payu"].includes(gw) || !/^[a-f0-9]{24}$/i.test(pid || "")) return;
+    gwReturnHandled.current = true;
+    setIsPlacingOrder(true);
+    navigate("/checkout", { replace: true, state: location.state }); // drop the query string so a reload does not repeat this
+    toast.info("Confirming your payment...");
+    verifyGatewayPayment(pid, { attempts: 6, delayMs: 3000 }).then(handleGatewayOutcome);
+  }, [isAuthenticated, location.search, location.state, navigate, handleGatewayOutcome]);
+
   /* ---------------- render ---------------- */
   const payDisabled =
     isPlacingOrder || isQuoting || !quote || hasBlockingIssues || !selectedAddress || cartItems.length === 0 || (paymentMethod === "COD" && !!codBlockedMsg);
 
   const payLabel = isPlacingOrder
     ? "Processing..."
-    : paymentMethod === "Razorpay"
+    : paymentMethod === "Razorpay" || paymentMethod.startsWith("gw:")
     ? "Complete Payment"
     : paymentMethod === "Wallet"
     ? "Pay with Wallet"
@@ -903,6 +976,8 @@ export default function CheckoutPage() {
                   <p className="text-xs text-gray-500">{upiFirst ? "GPay, PhonePe, Paytm, other UPI apps, cards & NetBanking" : "Fast & Secure (Cards, UPI, NetBanking)"}</p>
                 </div>
               </label>
+
+              <GatewayOptions gateways={extraGateways} paymentMethod={paymentMethod} onChoose={choosePayment} methodCls={methodCls} />
 
               {isWalletEnabled && (
                 <label className={methodCls(paymentMethod === "Wallet")}>
